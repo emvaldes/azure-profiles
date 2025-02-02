@@ -1,0 +1,20 @@
+{
+  "dependencies": [
+    {
+      "package": "azure-identity",
+      "version": "1.15.0"
+    },
+    {
+      "package": "azure-mgmt-resource",
+      "version": "23.0.1"
+    },
+    {
+      "package": "pytz",
+      "version": "2025.1"
+    },
+    {
+      "package": "python-dotenv",
+      "version": "1.0.1"
+    }
+  ]
+}

@@ -1,0 +1,175 @@
+{
+    "defaults": {
+        "title": "Standardized input parameters",
+        "options": {
+            "auto": {
+                "flags": [ "--auto" ],
+                "kwargs": {
+                    "type": "bool",
+                    "required": false,
+                    "action": "store_true",
+                    "help": "Executes in un-attended mode"
+                },
+                "target_env": "auto",
+                "prompt": "Executing in un-attendeding mode",
+                "default": false,
+                "example": false
+            },
+            "debug": {
+                "flags": [ "--debug" ],
+                "kwargs": {
+                    "type": "bool",
+                    "required": false,
+                    "action": "store_true",
+                    "help": "Enables debug mode"
+                },
+                "target_env": "debug",
+                "prompt": "Enabling debugging mode",
+                "default": false,
+                "example": false
+            },
+            "examples": {
+                "flags": [ "--examples" ],
+                "kwargs": {
+                    "type": "bool",
+                    "required": false,
+                    "action": "store_true",
+                    "help": "Lists execution examples"
+                },
+                "target_env": "examples",
+                "prompt": "Listing execution examples",
+                "default": false,
+                "example": false
+            },
+            "help": {
+                "flags": [ "--helper" ],
+                "kwargs": {
+                    "type": "bool",
+                    "required": false,
+                    "action": "store_true",
+                    "help": "Displays help message and exits"
+                },
+                "target_env": "help",
+                "prompt": "Displaying help message",
+                "default": false,
+                "example": false
+            },
+            "info": {
+                "flags": [ "--info" ],
+                "kwargs": {
+                    "type": "bool",
+                    "required": false,
+                    "action": "store_true",
+                    "help": "Displays (online) Project Information"
+                },
+                "target_env": "info",
+                "prompt": "Displaying Project Information",
+                "default": false,
+                "example": false
+            },
+            "json": {
+                "flags": [ "--json" ],
+                "kwargs": {
+                    "type": "bool",
+                    "required": false,
+                    "action": "store_true",
+                    "help": "Displays Script/Project Configuration"
+                },
+                "target_env": "json",
+                "prompt": "Displaying Script/Project Configs",
+                "default": false,
+                "example": false
+            },
+            "logging": {
+                "flags": [ "--logging" ],
+                "kwargs": {
+                    "type": "str",
+                    "required": false,
+                    "help": "Enables logging mode"
+                },
+                "target_env": "logging",
+                "prompt": "Enabling loggging mode",
+                "default": 10,
+                "example": false
+            },
+            "params": {
+                "flags": [ "--params" ],
+                "kwargs": {
+                    "type": "bool",
+                    "required": false,
+                    "action": "store_true",
+                    "help": "Displays Script's input parameters"
+                },
+                "target_env": "params",
+                "prompt": "Displaying Script's input parameters",
+                "default": false,
+                "example": false
+            },
+            "quiet": {
+                "flags": [ "--quiet" ],
+                "kwargs": {
+                    "type": "bool",
+                    "required": false,
+                    "action": "store_true",
+                    "help": "Disable user prompts using defaults)"
+                },
+                "target_env": "quiet",
+                "prompt": "Disabling user prompts using defaults",
+                "default": false,
+                "example": false
+            },
+            "trace": {
+                "flags": [ "--trace" ],
+                "kwargs": {
+                    "type": "bool",
+                    "required": false,
+                    "action": "store_true",
+                    "help": "Enables tracing mode"
+                },
+                "target_env": "trace",
+                "prompt": "Enabling tracing mode",
+                "default": false,
+                "example": false
+            },
+            "verbose": {
+                "flags": [ "--verbose" ],
+                "kwargs": {
+                    "type": "bool",
+                    "required": false,
+                    "action": "store_true",
+                    "help": "Enables verbose mode"
+                },
+                "target_env": "verbose",
+                "prompt": "Enabling verbose mode",
+                "default": false,
+                "example": false
+            },
+            "version": {
+                "flags": [ "--version" ],
+                "kwargs": {
+                    "type": "bool",
+                    "required": false,
+                    "action": "store_true",
+                    "help": "Display Version: %(prog)s 1.0"
+                },
+                "target_env": "version",
+                "prompt": "Display Package version",
+                "default": false,
+                "example": false
+            },
+            "wizard": {
+                "flags": [ "--wizard" ],
+                "kwargs": {
+                    "type": "bool",
+                    "required": false,
+                    "action": "store_true",
+                    "help": "Identify requests to be executed"
+                },
+                "target_env": "wizard",
+                "prompt": "EnableInteractive User Interface",
+                "default": false,
+                "example": false
+            }
+        }
+    }
+}

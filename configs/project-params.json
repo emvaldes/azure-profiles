@@ -1,0 +1,96 @@
+{
+    "required": {
+        "title": "Required input parameters",
+        "options": {
+            "environment": {
+                "flags": [ "-e", "--environment" ],
+                "kwargs": {
+                    "type": "str",
+                    "required": true,
+                    "help": "Target environment"
+                },
+                "target_env": "ENVIRONMENT",
+                "prompt": "Enter the target environment",
+                "default": "",
+                "example": false
+            },
+            "project_domain": {
+                "flags": [ "-p", "--project-domain" ],
+                "kwargs": {
+                    "type": "str",
+                    "required": true,
+                    "help": "Target project domain"
+                },
+                "target_env": "PROJECT_DOMAIN",
+                "prompt": "Enter the project domain",
+                "default": "",
+                "example": false
+            },
+            "resource_group": {
+                "flags": [ "-r", "--resource-group" ],
+                "kwargs": {
+                    "type": "str",
+                    "required": true,
+                    "help": "Resource Group name"
+                },
+                "target_env": "RESOURCE_GROUP",
+                "prompt": "Enter the resource group name",
+                "default": "",
+                "example": false
+            }
+        }
+    },
+    "optional": {
+        "title": "Optional input parameters",
+        "options": {
+            "database_name": {
+                "flags": [ "-n", "--database-name" ],
+                "kwargs": {
+                    "type": "str",
+                    "required": false,
+                    "help": "PostgreSQL Database Name"
+                },
+                "target_env": "DATABASE_NAME",
+                "prompt": "Enter the database name",
+                "default": "",
+                "example": false
+            },
+            "functionapp_name": {
+                "flags": [ "-f", "--function-app-name" ],
+                "kwargs": {
+                    "type": "str",
+                    "required": false,
+                    "help": "Function App Name"
+                },
+                "target_env": "FUNCTIONAPP_NAME",
+                "prompt": "Enter the Function App name",
+                "default": "",
+                "example": false
+            },
+            "postgres_server": {
+                "flags": [ "-s", "--postgres-server" ],
+                "kwargs": {
+                    "type": "str",
+                    "required": false,
+                    "help": "PostgreSQL Server Name"
+                },
+                "target_env": "POSTGRES_SERVER",
+                "prompt": "Enter the PostgreSQL server name",
+                "default": "",
+                "example": false
+            },
+            "vault_name": {
+                "flags": [ "-l", "--vault-name" ],
+                "kwargs": {
+                    "type": "str",
+                    "required": false,
+                    "help": "Secrets-Vault Name"
+                },
+                "target_env": "VAULT_NAME",
+                "prompt": "Enter the Key Vault name",
+                "default": "",
+                "example": false
+            }
+        }
+    }
+}

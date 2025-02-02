@@ -1,0 +1,34 @@
+{
+    "required": {
+        "options": {
+            "environment": "",
+            "project_domain": "",
+            "resource_group": ""
+        }
+    },
+    "optional": {
+        "options": {
+            "database_name": "",
+            "functionapp_name": "",
+            "postgres_server": "",
+            "vault_name": ""
+        }
+    },
+    "defaults": {
+        "options": {
+            "auto": "False",
+            "debug": "False",
+            "examples": "False",
+            "help": "False",
+            "info": "False",
+            "json": "False",
+            "logging": "10",
+            "params": "False",
+            "quiet": "False",
+            "trace": "False",
+            "verbose": "False",
+            "version": "False",
+            "wizard": "False"
+        }
+    }
+}
