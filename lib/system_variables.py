@@ -32,6 +32,7 @@ from pathlib import Path
 
 ## Project Root (path) for parent elements
 project_root = Path(__file__).resolve().parent.parent
+project_logs = project_root / "logs"
 
 ## Target .env file for the dotenv module (load_dotenv, dotenv_values)
 env_filepath = project_root / ".env"
