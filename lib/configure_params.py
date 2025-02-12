@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
 
+"""
+File Path: ./lib/configure_params.py
+
+Description:
+
+Configuration Parameters Manager
+This module is responsible for loading, validating, and managing configuration parameters.
+It integrates with the framework's parameter handling system, merging user-defined and default settings.
+
+Features:
+
+- Loads parameters from JSON configuration files.
+- Validates required, optional, and default parameters.
+- Merges user-provided input with predefined configurations.
+- Ensures consistent parameter enforcement across the framework.
+
+This module plays a critical role in dynamically setting up execution environments based on user
+input and default framework settings.
+
+Dependencies:
+
+- json
+- logging
+
+Usage:
+
+To process and validate configuration parameters:
+> python configure_params.py ;
+"""
+
 import sys
 import os
 

@@ -1,0 +1,40 @@
+{
+    "dependencies": [
+        {
+            "package": "azure-identity",
+            "version": "1.15.0",
+            "version": {
+                "target": "1.15.0",
+                "status": false
+            }
+        },
+        {
+            "package": "azure-mgmt-resource",
+            "version": {
+                "target": "23.0.1",
+                "status": false
+            }
+        },
+        {
+            "package": "pytz",
+            "version": {
+                "target": "2025.1",
+                "status": false
+            }
+        },
+        {
+            "package": "python-dotenv",
+            "version": {
+                "target": "1.0.1",
+                "status": false
+            }
+        },
+        {
+            "package": "setuptools",
+            "version": {
+                "target": "75.8.0",
+                "status": false
+            }
+        }
+    ]
+}

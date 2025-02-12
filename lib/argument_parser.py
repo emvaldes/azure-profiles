@@ -1,5 +1,36 @@
 #!/usr/bin/env python3
 
+"""
+File Path: ./lib/argument_parser.py
+
+Description:
+
+Command-Line Argument Parser
+This module provides dynamic parsing of command-line arguments based on a JSON configuration file.
+It supports structured parameter definitions, automatic type conversion, and flexible flag handling.
+
+Features:
+
+- Loads argument definitions from a JSON configuration file.
+- Ensures type conversion (e.g., str, int, bool) for CLI arguments.
+- Supports optional and required parameters with structured validation.
+- Provides debug mode to display parsed arguments in JSON format.
+
+This module is used to standardize and centralize argument parsing across the framework, ensuring consistency
+in handling user-provided parameters.
+
+Dependencies:
+
+- argparse
+- json
+- logging
+
+Usage:
+
+To run argument parsing with debug output:
+> python argument_parser.py --debug ;
+"""
+
 import sys
 import os
 

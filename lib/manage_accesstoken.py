@@ -1,5 +1,37 @@
 #!/usr/bin/env python3
 
+"""
+File Path: ./lib/manage_accesstoken.py
+
+Description:
+
+Azure Access Token Manager
+
+This module handles Azure authentication and manages access token expiration.
+It ensures that tokens remain valid for API requests and integrates with timezone
+handling for better session tracking.
+
+Features:
+
+- Retrieves and checks Azure access token expiration.
+- Integrates with local timezone offset detection.
+- Provides a command-line interface for session and token management.
+
+This module ensures that the framework maintains valid authentication tokens
+and properly handles session expiration.
+
+Dependencies:
+
+- accesstoken_expiration
+- timezone_localoffset
+- argument_parser
+
+Usage:
+
+To manage Azure session and token expiration:
+> python manage_accesstoken.py --debug ;
+"""
+
 import sys
 
 from timezone_localoffset import get_local_offset

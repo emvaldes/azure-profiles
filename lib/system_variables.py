@@ -1,5 +1,33 @@
 #!/usr/bin/env python3
 
+"""
+File Path: ./lib/system_variables.py
+
+Description:
+
+System Variables and Configuration Paths
+
+This module defines key system-wide variables, file paths, and configuration locations
+that are referenced throughout the framework.
+
+Features:
+
+- Defines paths for essential configuration files (`.env`, `runtime-params.json`, etc.).
+- Establishes the project root directory for consistent file access.
+- Manages aggregated configuration sources for parameter merging.
+- Restricts log file quota to maintain storage efficiency.
+
+This module ensures a structured and consistent reference for file paths and configurations.
+
+Dependencies:
+
+- pathlib
+
+Usage:
+
+This module is imported where system-wide configuration file paths are needed.
+"""
+
 from pathlib import Path
 
 ## Project Root (path) for parent elements

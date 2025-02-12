@@ -1,6 +1,13 @@
 .DS_Store
 .legacy
 .prototype
+.project
+
+## Ignore dynamically created installed.json
+packages/requirements/installed.json
+
+logs/
+!logs/.gitkeep  # Keeps the logs directory in Git but ignores its content
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

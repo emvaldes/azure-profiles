@@ -1,425 +1,578 @@
-# Azure Profiles - Inspecting Configurations
+# Project Documentation
+
+## Project Structure
+
+```console
+./
+├── .env
+├── .gitignore
+├── LICENSE
+├── README.md
+├── configs/
+│   ├── default-params.json
+│   ├── project-params.json
+│   └── runtime-params.json
+├── lib/
+│   ├── __init__.py
+│   ├── accesstoken_expiration.py
+│   ├── argument_parser.py
+│   ├── configure_params.py
+│   ├── manage_accesstoken.py
+│   ├── parsing_userinput.py
+│   ├── system_params.py
+│   ├── system_variables.py
+│   └── timezone_localoffset.py
+├── logs/
+│   ├── appflow_tracing/
+│   │   ├── enable_tracing_<timestamp>.log
+│   │   └── enable_tracing_<timestamp>.log
+│   └── requirements/
+│       └── dependencies_<timestamp>.log
+├── packages/
+│   ├── __init__.py
+│   ├── appflow_tracing/
+│   │   ├── __init__.py
+│   │   ├── __main__.py
+│   │   └── enable_tracing.py
+│   └── requirements/
+│       ├── __init__.py
+│       ├── __main__.py
+│       ├── dependencies.py
+│       └── requirements.json
+├── run.py
+└── scripts/
+    ├── profile-privileges.log
+    └── profile-privileges.py*
+
+10 directories, 30 files
+```
 
 ## Overview
-The **profile-privileges.ps1** script provides an automated way to manage Azure authentication, retrieve user role assignments, and profile security configurations across Azure subscriptions and resource groups. This script is specifically designed to analyze **Azure login sessions, multi-tenancy profiles, PostgreSQL database configurations, Azure Function App settings, Key Vault secrets, network security settings, and role-based access control (RBAC) assignments**.
 
-### Features
-- **Azure Session Management**: Ensures authentication, handles multi-tenant logins, and maintains access tokens.
-- **PostgreSQL Profiling**: Extracts database connection settings, firewall rules, and system configurations.
-- **Azure Function App Environment Inspection**: Retrieves and analyzes application settings.
-- **Azure Key Vault Secret Retrieval**: Lists and decrypts Key Vault secrets for evaluation.
-- **Role-Based Access Control (RBAC) Analysis**: Evaluates user and service principal privileges across Azure subscriptions and resource groups.
-- **Network Security Inspection**: Profiles security groups, private endpoints, private DNS, and network interfaces.
-- **Multi-Format Output**: Provides structured results in JSON, table format, and human-readable logs.
+This project is structured around a logging system, configuration management, and execution scripts, with core functionality implemented in `packages` and `lib`. Below is a breakdown of each file and directory.
 
-### **System Requirements**
-- **Operating System**: Windows/Linux/macOS with PowerShell 7+
-- **Azure CLI**: Installed and authenticated (`az login` required)
-- **Azure PowerShell Module**: Installed (`Install-Module -Name Az -AllowClobber -Force`)
-- **Permissions**: Sufficient privileges to retrieve role assignments and access secrets
+## Root Directory
 
-### **PowerShell Modules**
-Run the following command to install necessary PowerShell modules:
-```powershell
-Install-Module -Name Az.Accounts, Az.Resources, Az.PostgreSQL, Az.KeyVault `
-               -Force -AllowClobber ;
-```
-
-#### Installation
-Clone the repository or download the script directly:
-```bash
-git clone https://github.com/emvaldes/azure-profiles.git
-cd azure-profiles
-```
-Alternatively, download the script manually:
-```bash
-> usercontent="raw.githubusercontent.com/emvaldes" ;
-> wget https://${usercontent}/azure-profiles/refs/heads/master/profile-privileges.ps1
-```
-
-#### NAME
-    azure-profiles/profile-privileges.ps1
-
-#### SYNOPSIS
-  The script manages Azure login sessions/credentials, including multi-tenant profiles.
-  It performs comprehensive profiling of PostgreSQL database servers, firewall rules,
-  and system configurations. Additionally, it retrieves and decrypts Azure Key Vault
-  secrets, extracts Azure FunctionApp environment settings, and securely loads database
-  connection credentials into environment variables. The script also evaluates Azure
-  account profiles, inspects role assignments, and analyzes network security groups,
-  private endpoints, DNS records, and network interfaces.
-
-#### DESCRIPTION
-  This script automates Azure session management and multi-tenant authentication
-  while extracting and analyzing cloud resources. It profiles PostgreSQL database
-  configurations, retrieves and decrypts Azure Key Vault secrets, and extracts
-  environment settings from Azure Function Apps.
-  It also performs in-depth evaluations of Azure role assignments, firewall rules,
-  and security configurations. Additionally, it inspects network security groups,
-  private endpoints, DNS records, and network interfaces to provide a complete
-  security and access profile of the Azure environment.
-
-#### **Application Parameters**
-The script supports multiple modes of operation with flexible parameters.
-
-| Parameter | Alias | Description |
-|-----------|-------|-------------|
-| `-ProjectDomain` | `-p` | Target project-domain (e.g., project). |
-| `-Environment` | `-e` | Target environment (e.g., dev, test, staging, prod). |
-| `-ResourceGroup` | `-r` | Resource Group like: domain-${Environment}. |
-| `-DatabaseName` | `-n` | PostgreSQL Database Name (e.g.: project_database). |
-| `-KeyVault` | `-s` | Listing Azure KeyVault environment secrets. |
-| `-Variables` | `-a` | Listing Azure FunctionAppp environment variables. |
-| `-Networking` | `-a` | Display Infrastructure Networking information |
-| `-Firewalls` | `-a` | Display Infrastructure Firewall configuration |
-| `-EndPoints` | `-t` | Listing Azure Resource-Group Private End-Points. |
-| `-Listing` | `-l` | Listing User-Groups and their Definitions. |
-| `-Inspect` | `-i` | Profile Inspection to resolve role assignments listing. |
-| `-MaxDepth` | `-m` | Defines JSON max levels of nested objects to be parsed. |
-| `-Verbose` | `-v` | Activates the use of vervbosity-level in the script's output. |
-| `-Debug` | `-d` | Activates the use of debug-level in the script's output. |
-| `-Help` | `-h` | Provides built-in native script operational support . |
-
-```powershell
-param (
-    [ValidateNotNullOrEmpty()][Alias("p")]
-    [string]$ProjectDomain,
-    [ValidateNotNullOrEmpty()][Alias("e")]
-    [string]$Environment,
-    [ValidateNotNullOrEmpty()][Alias("r")]
-    [string]$ResourceGroup,
-    [ValidateNotNullOrEmpty()][Alias("n")]
-    [string]$DatabaseName,
-    [ValidateNotNullOrEmpty()][Alias("s")]
-    [switch]$KeyVault,
-    [ValidateNotNullOrEmpty()][Alias("a")]
-    [switch]$Variables,
-    [ValidateNotNullOrEmpty()][Alias("w")]
-    [switch]$Networking,
-    [ValidateNotNullOrEmpty()][Alias("f")]
-    [switch]$Firewalls,
-    [ValidateNotNullOrEmpty()][Alias("t")]
-    [switch]$EndPoints,
-    [ValidateNotNullOrEmpty()][Alias("l")]
-    [switch]$Listing,
-    [ValidateNotNullOrEmpty()][Alias("i")]
-    [switch]$Inspect,
-    [Alias("m")]
-    [int]$MaxDepth = 20,
-    [Alias("v")]
-    [switch]$Verbose,
-    [Alias("d")]
-    [switch]$Debug,
-    [Alias("h")]
-    [switch]$Help
-)
-```
-
-#### **Example 1:**
-
-```powershell
-.\profile-privileges.ps1 -ProjectDomain "project"
-                         -Environment "staging"
-                         -ResourceGroup "domain-data-hub-staging"
-                         -DatabaseName "project_database"
-                         -KeyVault
-                         -Variables
-                         -Networking
-                         -Firewalls
-                         -EndPoints
-                         -Listing
-                         -Inspect
-                         -MaxDepth 10
-                         -Verbose
-                         -Debug ;
-```
-
-#### **Request Support**
-
-```powershell
-.\profile-privileges.ps1 -Help ;
-```
-
-``` powershell
-profile-privileges.ps1 [[-ProjectDomain] <String>] [[-Environment] <String>]
-[[-ResourceGroup] <String>] [[-DatabaseName] <String>] [-KeyVault] [-Variables]
-[-Networking] [-Firewalls] [-EndPoints] [-Listing] [-Inspect] [[-MaxDepth] <Int32>]
-[-Verbose] [-Debug] [-Help] [<CommonParameters>]
-```
-
-#### RELATED LINKS
-  https://github.com/emvaldes/azure-profiles
-
-#### NOTES
-  - Ensure that the Azure CLI (`az`) is installed and authenticated.
+- **`run.py`**: The main entry point for executing the application. Likely orchestrates different modules.
+- **`LICENSE`**: Contains licensing information for the project.
+- **`README.md`**: Provides an overview of the project, setup instructions, and usage details.
+- **`.gitignore`**: Specifies files and directories to be ignored by Git.
+- **`.env`**: Stores environment variables for runtime configuration. This file is dynamically generated at runtime and contains user-specific settings that should not be committed to version control.
 
 ---
 
-#### Program's Execution
+## Configuration Files (`configs/`)
 
-``` console
-> ./profile-privileges.ps1 -ProjectDomain 'domain' `
-                           -Environment 'staging' `
-                           -ResourceGroup domain-staging `
-                           -DatabaseName domain-database `
-                           -Listing `
-                           -Inspect `
-                           -KeyVault `
-                           -Variables `
-                           -Networking `
-                           -Firewalls `
-                           -EndPoints `
-                           -Verbose `
-                           -Debug ;
+- **`runtime-params.json`**: Stores the merged runtime parameters derived from `default-params.json` and `project-params.json`.
+  - This file acts as the JSON equivalent of `.env`, containing structured environment variables.
+  - It is created if it does not exist and is wiped if invalid.
+  - It merges the `target_env` properties from `default-params.json` and `project-params.json`.
+  - It categorizes parameters into:
+    - **Required**: Must be specified by the user (`environment`, `project_domain`, `resource_group`).
+    - **Optional**: Project-specific configurations (`database_name`, `functionapp_name`, `postgres_server`, `vault_name`).
+    - **Defaults**: Standardized framework parameters (`auto`, `debug`, `verbose`, etc.).
+  - If no user input is provided, the system prompts the user to input required parameters.
+  - User-provided parameters override merged configurations and are stored in `.env` (local file, excluded from Git) while updating `runtime-params.json` **in memory only** (not written to file).
 
-Input Parameters:
-{
-  "ProjectDomain": "domain",
-  "Environment": "staging",
-  "ResourceGroup": "domain-staging",
-  "DatabaseName": "domain-database",
-  "Listing": {
-    "IsPresent": true
-  },
-  "Inspect": {
-    "IsPresent": true
-  },
-  "KeyVault": {
-    "IsPresent": true
-  },
-  "Variables": {
-    "IsPresent": true
-  },
-  "Networking": {
-    "IsPresent": true
-  },
-  "Firewalls": {
-    "IsPresent": true
-  },
-  "EndPoints": {
-    "IsPresent": true
-  },
-  "Verbose": {
-    "IsPresent": true
-  },
-  "Debug": {
-    "IsPresent": true
-  }
-}
+- **`project-params.json`**: Contains project-specific configurations that the end-user is expected to customize.
+  - This file is designed for project-specific configurations and is meant to be customized by the user. The parameters listed here serve only as examples for this prototype and are not required by the framework.
+  - Defines required and optional parameters specific to the project.
+  - Example of what could be considered as required parameters:
+    - `--environment`: Specifies the target environment.
+    - `--project-domain`: Defines the project domain.
+    - `--resource-group`: Identifies the resource group name.
+  - Example of optional parameters the application might include:
+    - `--database-name`: Defines the PostgreSQL database name.
+    - `--function-app-name`: Specifies the Function App name.
+    - `--postgres-server`: Names the PostgreSQL server.
+    - `--vault-name`: Specifies the secrets vault.
+  - These parameters are flexible and should be adapted based on the project's specific requirements.
 
-Loading: functions/accesstoken_expiration.ps1
-Loading: functions/connection_setttings.ps1
-Loading: functions/environment_variables.ps1
-Loading: functions/functionapp_settings.ps1
-Loading: functions/invoke_restmethod.ps1
-Loading: functions/keyvault_secrets.ps1
-Loading: functions/listing_definitions.ps1
-Loading: functions/listing_usergroups.ps1
-Loading: functions/manage_accesstoken.ps1
-Loading: functions/network_privatedns.ps1
-Loading: functions/network_securitygroups.ps1
-Loading: functions/postgres_configs.ps1
-Loading: functions/postgres_details.ps1
-Loading: functions/postgres_firewallrules.ps1
-Loading: functions/postgres_interfaces.ps1
-Loading: functions/private_endpoints_details.ps1
-Loading: functions/private_endpoints_listing.ps1
-Loading: functions/private_endpoints_matches.ps1
-Loading: functions/profile_inspection.ps1
-Loading: functions/testing_connectivity.ps1
-Loading: functions/timezone_localoffset.ps1
-
-Local Time Zone:	America/Creston ((UTC-07:00) Mountain Time (Creston))
-Current Local Time:	01/01/2025 07:00:00
-Current UTC Time:	01/01/2025 00:00:00
-Local Time Offset:	-7 hours
-```
-
-``` console
-No active Azure session found. Proceed to logging in ... To sign in,
-use a web browser to open the page https://microsoft.com/devicelogin and enter
-the code 000000000 to authenticate.
-```
-
-```console
-Access Token (JSON) -> {
-  "accessToken": "eyJ0eXAiOi...Oqyt7yiiPQ",
-  "expiresOn": "2025-01-01 00:00:00.000000",
-  "expires_on": 1735689600,
-  "subscription": "9a389aa4-c9fe-4a59-80f8-bf454f4dae06",
-  "tenant": "33888350-2082-40bb-88fa-a5e94d733f01",
-  "tokenType": "Bearer"
-}
-
-Azure session is still active. Using existing session.
-Available Remaining Time: 1 hours, 0 minutes, 0 seconds
-```
-
-```console
-Listing Account information:
-{
-  "environmentName": "AzureCloud",
-  "homeTenantId": "33888350-2082-40bb-88fa-a5e94d733f01",
-  "id": "9edc6208-d5b1-4c58-a35b-ec241d032b28",
-  "isDefault": true,
-  "managedByTenants": [
-  {
-    "tenantId": "b06ad78d-4117-42d3-8c2b-bd73337bf208"
-  }
-  ],
-  "name": "CONTOSO-COM-01",
-  "state": "Enabled",
-  "tenantDefaultDomain": "contoso.onmicrosoft.com",
-  "tenantDisplayName": "CONTOSO",
-  "tenantId": "33888350-2082-40bb-88fa-a5e94d733f01",
-  "user": {
-  "name": "user@domain.tld",
-  "type": "user"
-  }
-}
-```
-
-```console
-Filtered Resource Group: .........
-
-{
-  "id": "/subscriptions/9a389aa4-...-bf454f4dae06/resourceGroups/domain-staging",
-  "name": "domain-staging",
-  "type": "Microsoft.Resources/resourceGroups",
-  "location": "eastus",
-  "tags": {
-    "zone": "EXTRANET",
-    "entertainment_directors": [
-      {
-        "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
-        "businessPhones": [
-          "123.456.7890"
-        ],
-        "displayName": "Johnnie Walker",
-        "givenName": "Walker",
-        "id": "00000000-0000-0000-0000-000000000000",
-        "jobTitle": "Scotch Whisky Taster",
-        "mail": "johnnie@walker.com",
-        "mobilePhone": "123.456.7890",
-        "officeLocation": "Johnnie Walker Princes Street (Edinburgh, Scotland)",
-        "preferredLanguage": "Scottish Gaelic",
-        "surname": "Johnnie",
-        "userPrincipalName": "drunk-master",
-        "status": "Uncertain"
-      }
-    ],
-    "environment": "stagging",
-    "security_compliance": "relaxed",
-    "pii_data": "false",
-    "business_connoisseurs": [
-      {
-        "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
-        "businessPhones": [
-          "987.654.3210"
-        ],
-        "displayName": "Jack Daniels",
-        "givenName": "Daniels",
-        "id": "11111111-1111-1111-1111-111111111111",
-        "jobTitle": "Whiskey Quality Analyst",
-        "mail": "jack@daniels.com",
-        "mobilePhone": "987.654.3210",
-        "officeLocation": "Lynchburg, Tennessee",
-        "preferredLanguage": "Southern Drawl",
-        "surname": "Jack",
-        "userPrincipalName": "bourbon-boss",
-        "status": "Mellow"
-      }
-    ],
-    "escid": "1234567890",
-    "system": "universe",
-    "support_group": "Drunks & Jokers",
-    "technical_alchemists": [
-      {
-        "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
-        "businessPhones": [
-          "456.123.7890"
-        ],
-        "displayName": "Captain Morgan",
-        "givenName": "Morgan",
-        "id": "22222222-2222-2222-2222-222222222222",
-        "jobTitle": "Rum Formulation Engineer",
-        "mail": "captain@morgan.com",
-        "mobilePhone": "456.123.7890",
-        "officeLocation": "The Caribbean",
-        "preferredLanguage": "Pirate Speak",
-        "surname": "Captain",
-        "userPrincipalName": "yo-ho-ho",
-        "status": "Adventurous"
-      }
-    ],
-    "funding_source": "Imagination",
-    "center": "Imagination",
-    "legendary_fixers": [
-      {
-        "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
-        "businessPhones": [
-          "789.321.4560"
-        ],
-        "displayName": "Jose Cuervo",
-        "givenName": "Cuervo",
-        "id": "33333333-3333-3333-3333-333333333333",
-        "jobTitle": "Tequila Troubleshooter",
-        "mail": "jose@cuervo.com",
-        "mobilePhone": "789.321.4560",
-        "officeLocation": "Tequila, Mexico",
-        "preferredLanguage": "Spanglish",
-        "surname": "Jose",
-        "userPrincipalName": "agave-architect",
-        "status": "Spirited"
-      }
-    ]
-  },
-  "properties": {
-    "provisioningState": "Succeeded"
-  }
-}
-```
-
-#### Output Formats
-The script outputs data in multiple formats for analysis:
-- **Human-readable tables** (default in PowerShell)
-- **JSON format** (`ConvertTo-Json` for structured processing)
-- **Standard logs** (written to the console and log files)
-
-#### Security Considerations
-- **Secrets Handling**: The script retrieves sensitive information such as database credentials and Key Vault secrets. Ensure logs are not stored in unsecured locations.
-- **RBAC Permissions**: Running the script requires appropriate privileges to access Azure resources and retrieve sensitive data.
-- **Session Management**: Authentication tokens are managed internally to prevent unnecessary re-authentication.
-
-### Troubleshooting
-
-#### **Common Issues & Fixes**
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| `Access Denied` error when retrieving secrets | Insufficient Key Vault permissions | Ensure you have `Key Vault Reader` or `Secrets Reader` role. |
-| Empty role assignment list | User lacks assigned roles | Check using `az role assignment list --all`. |
-| `az not found` | Azure CLI is not installed | Install Azure CLI from https://docs.microsoft.com/en-us/cli/azure/install-azure-cli. |
-
-#### Logs and Error Handling
-- Enable verbose mode for detailed logs: `$VerbosePreference = "Continue"`
-- Error logs are stored in `error.log` for debugging.
+- **`default-params.json`**: Contains default configurations for script execution parameters.
+  - Defines standardized input parameters for the application.
+  - Supports command-line flags such as `--auto`, `--debug`, `--examples`, `--help`, and more.
+  - Specifies behavior for unattended execution, debugging, logging levels, parameter listings, and tracing.
+  - Each parameter includes:
+    - Flags: Command-line arguments (e.g., `--debug`, `--json`).
+    - Kwargs: Properties like type, requirement status, and action behavior.
+    - Target Environment: Context for execution.
+    - Prompt Messages: User messages for each action.
+    - Default Values: Predefined settings for execution.
+  - Example parameters include:
+    - `--debug`: Enables debug mode.
+    - `--json`: Displays script/project configurations.
+    - `--verbose`: Enables verbose output.
+    - `--trace`: Enables tracing mode.
+    - `--version`: Displays the application version.
 
 ---
 
-### Contributions
+## Library (`lib/`)
 
-#### How to Contribute
-
-1. Fork the repository and create a feature branch.
-2. Implement your feature or fix, ensuring tests pass.
-3. Submit a pull request with a detailed description.
+- **`__init__.py`**: Initializes the `lib` package.
+This file marks the `lib` directory as a Python package.
+It may be used to:
+- Initialize package-wide variables.
+- Import commonly used modules within `lib`.
+- Define shared utilities that may be reused across the package.
 
 ---
 
-### License
+#### `lib/accesstoken_expiration.py`
+**`accesstoken_expiration.py`**: Handles expiration policies for access tokens.
 
-This project is licensed under the [GNU General Public License](LICENSE).
+This module manages Azure access tokens by:
+- Fetching a token using `InteractiveBrowserCredential`.
+- Extracting and storing expiration details.
+- Printing token expiration and remaining validity time.
 
-#### Author
-[**Eduardo Valdés**](https://github.com/emvaldes)
-Contact: [GitHub Issues](https://github.com/emvaldes/azure-profiles/issues)
+**Key Functions:**
+- `get_access_token()`: Retrieves an Azure access token.
+- `print_token_expiration(debug=False)`: Prints the token expiration time.
+- `print_remaining_time()`: Displays the remaining validity of the token.
+- `main(debug=False)`: Handles command-line execution.
+
+**Usage:**
+To retrieve the token and check expiration details:
+
+```python
+  python lib/accesstoken_expiration.py --debug ;
+```
+
+This ensures the system has a valid authentication token for interacting with Azure services.
+
+---
+
+#### `lib/argument_parser.py`
+This module handles dynamic parsing of command-line arguments based on a JSON configuration file.
+It ensures consistency in how user-provided parameters are interpreted and validated across the framework.
+
+**Key Functions:**
+- `load_argument_config()`: Loads argument definitions from a JSON configuration file.
+- `convert_types(kwargs)`: Converts JSON string types into actual Python types.
+- `parse_arguments__prototype(context, description)`: Dynamically parses CLI arguments based on JSON configurations.
+- `parse_arguments(args)`: Parses arguments while handling type conversion, missing values, and validation.
+- `main()`: Runs the argument parser when executed as a standalone script.
+
+**Usage:**
+To execute argument parsing with debug output:
+
+```python
+> python lib/argument_parser.py --debug
+```
+
+This module ensures a consistent and structured approach to handling CLI arguments across the framework.
+
+---
+
+#### `lib/configure_params.py`
+This module is responsible for managing and validating configuration parameters by merging default
+settings with user-defined input.
+
+**Key Responsibilities:**
+- Loads and parses JSON configuration files (`default-params.json` and `project-params.json`).
+- Ensures all required parameters are provided by the user or set with defaults.
+- Validates optional parameters and applies fallback values when necessary.
+- Updates in-memory runtime parameters dynamically based on provided inputs.
+
+**Key Functions:**
+- `load_parameters()`: Reads and processes JSON configuration files.
+- `validate_parameters()`: Ensures all required parameters are present and valid.
+- `merge_configurations()`: Merges user-defined and default parameters.
+- `apply_runtime_settings()`: Updates runtime parameters dynamically.
+
+**Usage:**
+To process and validate configuration parameters:
+
+```python
+> python lib/configure_params.py ;
+```
+
+This module ensures a structured and dynamic configuration system for the framework.
+
+---
+
+#### `lib/manage_accesstoken.py`
+This module ensures proper authentication handling by managing Azure access tokens and their expiration.
+It integrates with timezone utilities to synchronize session validity across different time zones.
+
+**Key Responsibilities:**
+- Retrieves the Azure access token expiration time.
+- Integrates with the `timezone_localoffset` module to adjust session tracking.
+- Provides a CLI for debugging session and token expiration.
+
+**Key Functions:**
+- `manage_accesstoken()`: Checks access token validity and adjusts session expiration handling.
+- `print_token_expiration(debug)`: Displays access token expiration details.
+- `get_local_offset(debug)`: Retrieves the local timezone offset.
+- `parse_arguments(context, description)`: Parses command-line arguments.
+
+**Usage:**
+To manage Azure session authentication and expiration:
+
+```python
+> python lib/manage_accesstoken.py --debug ;
+```
+
+This ensures a stable and authenticated session for the framework's operations.
+
+---
+
+#### `lib/parsing_userinput.py`
+This module handles interactive user input collection and ensures that required parameters are provided
+at runtime. It is used to validate and request missing values when necessary.
+
+**Key Responsibilities:**
+- Checks for missing required environment variables.
+- Requests user input interactively with optional default values.
+- Loads argument configuration from a JSON file.
+- Dynamically sets environment variables based on user input.
+
+**Key Functions:**
+- `request_input(prompt, required, default)`: Prompts the user for input and applies validation.
+- `user_interview(arguments_config, missing_vars)`: Iterates through missing variables and requests input.
+- `parse_and_collect_user_inputs(arguments_config_path, required_runtime_vars)`: Handles input collection
+  and updates environment variables dynamically.
+
+**Usage:**
+If required parameters are missing, this module will prompt the user interactively:
+
+```python
+> python lib/parsing_userinput.py ;
+```
+
+This ensures all necessary parameters are set before execution.
+
+---
+
+#### `lib/system_params.py`
+This module is responsible for managing system-wide parameters by merging default and project-specific
+configurations, ensuring all necessary runtime parameters are available.
+
+**Key Responsibilities:**
+- Loads and validates system parameters from `runtime-params.json`, `project-params.json`, and `default-params.json`.
+- Dynamically sets environment variables based on merged configurations.
+- Ensures that required parameters are present before the system executes.
+
+**Key Functions:**
+- `load_json_config(runtime_params_filepath)`: Loads runtime parameters from a JSON configuration file.
+- `get_runtime_variable(name, required)`: Retrieves and validates environment variables.
+- `configure_params()`: Merges system and runtime parameters dynamically.
+
+**Usage:**
+To load and validate system parameters before execution:
+
+```python
+> python lib/system_params.py ;
+```
+
+This module ensures that the framework operates with a properly initialized environment.
+
+---
+
+#### `lib/system_variables.py`
+This module defines system-wide variables and paths for configuration management.
+It centralizes all critical file paths for streamlined access throughout the framework.
+
+**Key Responsibilities:**
+- Establishes the project root directory for consistent path resolution.
+- Defines paths for runtime, system, project, and default configurations.
+- Aggregates configuration sources to facilitate parameter merging.
+- Limits the number of log files to maintain efficient storage.
+
+**Defined Variables:**
+- `project_root`: Root directory of the project.
+- `env_filepath`: Path to the `.env` file for environment variables.
+- `runtime_params_filepath`: Path to `runtime-params.json` (runtime configurations).
+- `system_params_filepath`: Path to `system-params.json` (global configurations).
+- `project_params_filepath`: Path to `project-params.json` (project-specific configurations).
+- `default_params_filepath`: Path to `default-params.json` (framework default configurations).
+- `system_params_listing`: List of configuration files used for aggregation.
+- `max_logfiles`: Restricts the number of log files in `./logs/`.
+
+**Usage:**
+This module is imported wherever global paths and configuration file locations are required.
+
+---
+
+#### `lib/timezone_localoffset.py`
+This module retrieves and calculates the local time zone and offset from UTC.
+It ensures proper time synchronization for logging, scheduling, and authentication processes.
+
+**Key Responsibilities:**
+- Determines the local time zone using the `pytz` library.
+- Calculates the offset between local time and UTC.
+- Provides a command-line interface for debugging time zone information.
+
+**Key Functions:**
+- `get_local_offset(debug)`: Retrieves and displays the local time zone and UTC offset.
+- `main(debug)`: Handles command-line execution and processes time zone retrieval.
+
+**Usage:**
+To retrieve and display the local time zone and offset:
+
+```python
+> python lib/timezone_localoffset.py --debug ;
+```
+
+This module ensures that the framework operates with accurate time zone awareness.
+
+---
+
+## Packages (`packages/`)
+
+#### `packages/__init__.py`
+This file initializes the `packages/` directory as a valid Python package.
+
+**Key Responsibilities:**
+- Marks `packages/` as a Python package.
+- Ensures submodules within `packages/` can be explicitly imported.
+- Prevents automatic submodule execution to avoid unintended behaviors.
+
+**Usage:**
+Submodules within `packages/` should be imported explicitly:
+
+```python
+from packages.appflow_tracing import enable_tracing
+from packages.requirements import dependencies
+```
+
+This structure ensures controlled imports while maintaining modularity.
+
+---
+
+### Package: appflow_tracing
+
+#### `packages/appflow_tracing/__init__.py`
+This file initializes the `appflow_tracing` package and provides access to its main tracing functionality.
+
+**Key Responsibilities:**
+- Marks the `appflow_tracing` directory as a Python package.
+- Imports and exposes the `main()` function from `enable_tracing.py`.
+
+**Usage:**
+To run the tracing function from within another module:
+
+```python
+  from packages.appflow_tracing import main
+  main()
+```
+
+This allows seamless execution of the tracing functionality from the package level.
+
+---
+
+#### `packages/appflow_tracing/__main__.py`
+This file allows the `appflow_tracing` package to be executed as a standalone module.
+It initializes the tracing system and displays tracing/logging status.
+
+**Key Responsibilities:**
+- Initializes full self-tracing with logging enabled.
+- Prints tracing and logging system status.
+- Provides an entry point for running the package directly.
+
+**Key Functions:**
+- `main()`: Initializes the tracing system and displays relevant status messages.
+
+**Usage:**
+To execute the tracing system in standalone mode:
+
+```python
+> python -m packages.appflow_tracing ;
+```
+
+This ensures tracing and logging are active and ready for capturing system events.
+
+---
+
+#### `packages/appflow_tracing/enable_tracing.py`
+This module provides a detailed tracing system for monitoring function calls, imports,
+and return values within the framework. It is primarily used for debugging and logging
+execution details.
+
+**Key Responsibilities:**
+- Tracks function calls, parameters, and return values.
+- Logs execution details to console and file.
+- Limits excessive log file storage by removing old logs.
+
+**Key Functions:**
+- `trace_all(frame, event, arg)`: Traces function calls and return values within the project.
+- `log_message(message, category, json_data)`: Logs tracing details to file and console.
+- `sanitize_token_string(line)`: Cleans and formats tokenized function calls.
+- `is_project_file(filename)`: Ensures tracing is only applied to project files.
+
+**Usage:**
+To enable tracing and logging for debugging:
+
+```python
+> python lib/enable_tracing.py ;
+```
+
+This module provides detailed execution tracking for in-depth debugging and performance analysis.
+
+---
+
+### Package: requirements
+
+#### `packages/requirements/__init__.py`
+This file initializes the `requirements` package and provides access to its dependency management functionality.
+
+**Key Responsibilities:**
+- Marks the `requirements` directory as a Python package.
+- Imports and exposes the `main()` function from `dependencies.py`.
+
+**Usage:**
+To run the dependency management function from within another module:
+
+```python
+  from packages.requirements import main
+  main()
+```
+
+This allows seamless execution of the dependency management functionality from the package level.
+
+---
+
+#### `packages/requirements/__main__.py`
+This file allows the `requirements` package to be executed as a standalone module.
+It initializes the dependency management system.
+
+**Key Responsibilities:**
+- Calls the `main()` function from `dependencies.py` to handle dependency resolution.
+- Provides an entry point for executing the package directly.
+
+**Usage:**
+To execute the dependency management system in standalone mode:
+
+```python
+> python -m packages.requirements ;
+```
+
+This ensures that dependency management functions can run independently when required.
+
+---
+
+#### `packages/requirements/dependencies.py`
+This module manages project dependencies, ensuring required packages are installed
+and up to date.
+
+**Key Responsibilities:**
+- Loads and parses dependency requirements from `requirements.json`.
+- Checks if packages are installed and verifies their versions.
+- Installs missing or outdated dependencies via `pip`.
+- Updates an `installed.json` file to track package installation status.
+- Logs all dependency checks and installations.
+
+**Key Functions:**
+- `load_requirements(requirements_file)`: Loads dependencies from a JSON file.
+- `is_package_installed(package, version_info)`: Checks if a package is installed with the correct version.
+- `install_package(package, version_info)`: Installs a specified package version.
+- `install_requirements(requirements_file)`: Installs all required dependencies.
+- `update_installed_packages(requirements_file)`: Updates `installed.json` with package installation status.
+- `main()`: Parses command-line arguments and runs the dependency installation process.
+
+**Usage:**
+To install dependencies from the default `requirements.json`:
+
+```python
+> python lib/dependencies.py ;
+```
+
+To specify a custom requirements file:
+
+python lib/dependencies.py -f /path/to/custom.json
+This module ensures the framework has all necessary dependencies installed.
+
+---
+
+## Scripts (`scripts/`)
+
+#### `scripts/profile-privileges.py`
+This script ensures user privileges, dependencies, and environment configurations
+are validated before execution.
+
+**Key Responsibilities:**
+- Installs required dependencies dynamically.
+- Loads and validates system parameters.
+- Interactively prompts users for missing input values.
+- Cleans up temporary files (`__pycache__`) before execution.
+
+**Key Functions:**
+- `remove_pycache()`: Removes the `lib/__pycache__` directory to prevent stale bytecode execution.
+- `request_input(var_name)`: Prompts users for missing environment variables interactively.
+- `main()`: Manages runtime parameters and executes system checks.
+
+**Usage:**
+To verify system privileges and environment configurations:
+
+```python
+> python scripts/profile-privileges.py ;
+```
+
+This script ensures a clean and well-configured runtime environment.
+
+---
+
+#### `.env`
+This file defines environment variables dynamically at runtime. It is used to store
+user-provided configurations and standardized execution parameters.
+
+**Key Responsibilities:**
+- Stores required input parameters such as `environment`, `project_domain`, and `resource_group`.
+- Holds optional project-specific configurations.
+- Contains standardized parameters for execution settings.
+- **Excluded from version control** (`.gitignore`) to prevent storing sensitive data.
+
+**Structure:**
+- **Required Parameters:** Must be set by the user before execution.
+- **Optional Parameters:** Project-specific configurations that can be adjusted.
+- **Standardized Parameters:** Default execution behaviors managed by the framework.
+
+**Regeneration & Updates:**
+- If deleted or found invalid, this file is **automatically regenerated**.
+- During execution, missing values prompt interactive user input.
+- Any provided CLI arguments override values in `.env`.
+- **Header Preservation:**
+  - The `.env` file includes a structured header that explains its purpose and usage.
+  - This header is **stored separately** in `./configs/.env.header`.
+  - During regeneration or updates, the content of `./configs/.env.header` is **appended** to `.env` to ensure documentation is retained.
+
+**Example Usage:**
+To manually define environment variables:
+
+```ini
+environment=production
+project_domain=my_project
+resource_group=my_resource_group
+```
+
+If values are missing, the framework will prompt the user interactively.
+
+---
+
+#### `run.py`
+This script serves as the main execution entry point for the framework.
+It automatically runs the `profile-privileges.py` script to validate user privileges
+and ensure system configurations and dependencies are properly set up.
+
+**Key Responsibilities:**
+- Launches the `profile-privileges.py` script to set up the runtime environment.
+- Ensures required parameters and dependencies are validated before execution.
+- Provides a single-command startup mechanism.
+
+**Key Functions:**
+- Uses `subprocess.run()` to execute `profile-privileges.py`.
+
+**Usage:**
+To start the framework:
+
+```python
+> python run.py ;
+```
+
+This script ensures a structured and validated execution environment before launching the main workflow.
+
+---
+
+This document serves as a reference for understanding the project's structure and components.<br />
+Keep it updated as the project evolves.

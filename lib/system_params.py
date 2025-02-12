@@ -1,5 +1,38 @@
 #!/usr/bin/env python3
 
+"""
+File Path: ./lib/system_params.py
+
+Description:
+
+System Parameters Manager
+
+This module handles the management of system-wide parameters by:
+- Loading runtime parameters from JSON configuration files.
+- Merging environment variables with default and project-specific configurations.
+- Ensuring required parameters are validated and properly set at runtime.
+
+Features:
+
+- Loads parameters from `runtime-params.json`, `project-params.json`, and `default-params.json`.
+- Dynamically sets environment variables for system-wide configurations.
+- Ensures critical system parameters are properly initialized.
+
+This module ensures that the framework's environment is properly configured before execution.
+
+Dependencies:
+
+- json
+- os
+- logging
+- dotenv
+
+Usage:
+
+To load and initialize system parameters:
+> python system_params.py ;
+"""
+
 import sys
 import os
 

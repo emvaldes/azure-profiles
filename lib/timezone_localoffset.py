@@ -1,5 +1,36 @@
 #!/usr/bin/env python3
 
+"""
+File Path: ./lib/timezone_localoffset.py
+
+Description:
+
+Local Time Zone and Offset Manager
+
+This module retrieves and calculates the local time zone and its offset from UTC.
+It ensures accurate timekeeping and synchronization within the framework.
+
+Features:
+
+- Determines the local time zone using `pytz`.
+- Calculates the offset between local time and UTC.
+- Provides command-line execution for debugging time zone information.
+
+This module is critical for applications that require accurate time zone awareness
+when processing scheduled tasks or handling logs.
+
+Dependencies:
+
+- pytz
+- datetime
+- argparse
+
+Usage:
+
+To retrieve and display the local time zone and offset:
+> python timezone_localoffset.py --debug ;
+"""
+
 import sys
 import pytz
 
@@ -24,36 +55,16 @@ def get_local_offset( debug=False ):
         LocalTimeZone = local_tz
         LocalOffset = local_offset
         # Print output in the requested format
-        print(
-            f"Local Time Zone:\t{local_tz} ({local_tz.utcoffset(local_time)})"
-        )
-        print(
-            f"Current Local Time:\t{local_time.strftime('%m/%d/%Y %H:%M:%S')}"
-        )
-        print(
-            f"Current UTC Time:\t{utc_time.strftime('%m/%d/%Y %H:%M:%S')}"
-        )
-        print(
-            f"Local Time Offset:\t{int(local_offset)} hours"
-        )
+        print(f"Local Time Zone:\t{local_tz} ({local_tz.utcoffset(local_time)})")
+        print(f"Current Local Time:\t{local_time.strftime('%m/%d/%Y %H:%M:%S')}")
+        print(f"Current UTC Time:\t{utc_time.strftime('%m/%d/%Y %H:%M:%S')}")
+        print(f"Local Time Offset:\t{int(local_offset)} hours")
         # Debugging output if enabled
         if debug:
-            print(
-                f"\nLocal Time Zone:\t{local_tz} ({local_tz.tzname(local_time)})",
-                file=sys.stdout
-            )
-            print(
-                f"Current Local Time:\t{local_time.strftime('%m/%d/%Y %H:%M:%S')}",
-                file=sys.stdout
-            )
-            print(
-                f"Current UTC Time:\t{utc_time.strftime('%m/%d/%Y %H:%M:%S')}",
-                file=sys.stdout
-            )
-            print(
-                f"Local Time Offset:\t{local_offset} hours",
-                file=sys.stdout
-            )
+            print(f"\nLocal Time Zone:\t{local_tz} ({local_tz.tzname(local_time)})", file=sys.stdout)
+            print(f"Current Local Time:\t{local_time.strftime('%m/%d/%Y %H:%M:%S')}", file=sys.stdout)
+            print(f"Current UTC Time:\t{utc_time.strftime('%m/%d/%Y %H:%M:%S')}", file=sys.stdout)
+            print(f"Local Time Offset:\t{local_offset} hours", file=sys.stdout)
         return local_offset
     except Exception as e:
         print(f"Error retrieving time zone: {e}", file=sys.stderr)
@@ -63,23 +74,14 @@ def main( debug=False ):
     try:
         get_local_offset( debug )
     except Exception as e:
-        print(
-            f"Error processing time zone: {e}",
-            file=sys.stderr
-        )
+        print(f"Error processing time zone: {e}", file=sys.stderr)
         sys.exit( 1 )
 
 if __name__ == "__main__":
     # Command-line argument parsing for debug and verbose
-    parser = argparse.ArgumentParser(
-        description="Retrieve and print local time zone and offset."
-    )
-    parser.add_argument(
-        "-d", "--debug", action="store_true", help="Enable debug mode"
-    )
-    parser.add_argument(
-        "-v", "--verbose", action="store_true", help="Enable verbose mode"
-    )
+    parser = argparse.ArgumentParser(description="Retrieve and print local time zone and offset.")
+    parser.add_argument("-d", "--debug", action="store_true", help="Enable debug mode")
+    parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose mode")
     args = parser.parse_args()
     # Set global flags based on user input
     debug = args.debug

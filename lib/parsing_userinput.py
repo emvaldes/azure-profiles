@@ -1,3 +1,37 @@
+#!/usr/bin/env python3
+
+"""
+File Path: ./lib/parsing_userinput.py
+
+Description:
+
+User Input Handling and Interactive Prompts
+
+This module is responsible for collecting user input, ensuring required parameters are provided,
+and setting environment variables dynamically. It supports both interactive and non-interactive
+environments while handling missing values intelligently.
+
+Features:
+
+- Requests user input with optional default values.
+- Handles missing required parameters by prompting users interactively.
+- Loads and processes argument configuration from a JSON file.
+- Dynamically sets environment variables based on user-provided values.
+
+This module plays a crucial role in making the framework adaptable, allowing runtime configurations
+to be validated and set at execution time.
+
+Dependencies:
+- json
+- os
+- logging
+
+Usage:
+
+If required parameters are missing, this module will prompt the user interactively:
+> python parsing_userinput.py ;
+"""
+
 import sys
 import json
 import os
