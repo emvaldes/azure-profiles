@@ -212,22 +212,13 @@ CONFIGS, LOG_FILE = load_configs({
 # print( f'LOG_FILE: {LOG_FILE}' )
 # print( f'CONFIGS: {json.dumps(CONFIGS, indent=2)}' )
 
-# ✅ Ensure logging is set up globally before anything else
-# ✅ Assign the logger explicitly
-logger = setup_logging(configs=CONFIGS, logfile=LOG_FILE)
-
 # Start tracing
 if CONFIGS["logging"]["enable_tracing"]:
     # print("🔍 Tracing system initialized.")
     start_tracing(configs=CONFIGS)
 
-# Configure logging
-logging.basicConfig(
-    filename=LOG_FILE,
-    level=logging.DEBUG,
-    format="%(asctime)s - %(levelname)s - %(message)s"
-)
-
+# ✅ Ensure logging is set up globally before anything else
+logger = setup_logging(configs=CONFIGS, logfile=LOG_FILE)
 logger.info("🔍 Logging system initialized.")
 
 packages = project_root / "packages" / package_name

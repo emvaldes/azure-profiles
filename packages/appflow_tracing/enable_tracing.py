@@ -204,29 +204,27 @@ def setup_logging(configs=None, logfile=None):
     # Ensure the log file directory exists
     Path(logfile).parent.mkdir(parents=True, exist_ok=True)
 
-    # # Add a file handler if one doesn’t already exist
-    # if not logger.handlers:
-    #     file_handler = logging.FileHandler(logfile)
-    #     formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
-    #     file_handler.setFormatter(formatter)
-    #     logger.addHandler(file_handler)
-    #
-    #     # # ✅ Also log to console
-    #     # console_handler = logging.StreamHandler()
-    #     # console_handler.setFormatter(formatter)
-    #     # logger.addHandler(console_handler)
-    #
-    # logger.info("🔍 Logging system initialized.")
-
     # ✅ Remove existing handlers before adding new ones (Prevents duplicate logging)
     if logger.hasHandlers():
         logger.handlers.clear()
+
+    # Configure logging
+    logging.basicConfig(
+        filename=logfile,
+        level=logging.DEBUG,
+        format="%(asctime)s - %(levelname)s - %(message)s"
+    )
 
     # Add a file handler
     file_handler = logging.FileHandler(logfile)
     formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
+
+    # # ✅ Also log to console
+    # console_handler = logging.StreamHandler()
+    # console_handler.setFormatter(formatter)
+    # logger.addHandler(console_handler)
 
     logger.info("🔍 Logging system initialized.")
 
@@ -366,23 +364,16 @@ def main():
     # print( f'LOG_FILE: {LOG_FILE}' )
     # print( f'CONFIGS: {json.dumps(CONFIGS, indent=2)}' )
 
-    # ✅ Ensure logging is set up globally before anything else
-    setup_logging(CONFIGS)
+    # Manage log files before starting new tracing session
+    manage_logfiles()
 
     # Start tracing
     if CONFIGS["logging"]["enable_tracing"]:
         # print("🔍 Tracing system initialized.")
         start_tracing(configs=CONFIGS)
 
-    # Configure logging
-    logging.basicConfig(
-        filename=LOG_FILE,
-        level=logging.DEBUG,
-        format="%(asctime)s - %(levelname)s - %(message)s"
-    )
-
-    # Manage log files before starting new tracing session
-    manage_logfiles()
+    # ✅ Ensure logging is set up globally before anything else
+    setup_logging(CONFIGS)
 
     # Log the standalone execution
     # logger.info("🔍 Logging system initialized.")
