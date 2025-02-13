@@ -130,7 +130,7 @@ def load_configs(overrides=None):
 
         # print( f'Config Type: {type( config )}' )
         # print( f'Config: {config}' )
-        return config, log_file  # ✅ Ensure tuple is returned
+        return config, log_file  # Ensure tuple is returned
 
     except (FileNotFoundError, json.JSONDecodeError) as e:
         print(f"⚠️ Error loading {config_file}: {e}")

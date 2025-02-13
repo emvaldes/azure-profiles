@@ -110,7 +110,7 @@ def install_package(package, version_info):
             "--user",
             f"{package}=={version}"
         ])
-        log_message(f"✅ Successfully installed {package}=={version}", configs=CONFIGS)
+        log_message(f"Successfully installed {package}=={version}", configs=CONFIGS)
     except subprocess.CalledProcessError as e:
         log_message(f"❌ ERROR: Failed to install {package}=={version}. Pip error: {e}", "error", configs=CONFIGS)
         sys.exit(1)
@@ -141,7 +141,7 @@ def is_package_installed(package, version_info):
     try:
         installed_version = importlib.metadata.version(package)
         if installed_version == version:
-            log_message(f"✅ {package}=={version} is already installed.", configs=CONFIGS)
+            log_message(f"{package}=={version} is already installed.", configs=CONFIGS)
             return True
         else:
             log_message(f"⚠️ {package} installed, but version {installed_version} != {version} (expected).", "warning", configs=CONFIGS)
@@ -217,7 +217,7 @@ if CONFIGS["logging"]["enable_tracing"]:
     # print("🔍 Tracing system initialized.")
     start_tracing(configs=CONFIGS)
 
-# ✅ Ensure logging is set up globally before anything else
+# Ensure logging is set up globally before anything else
 logger = setup_logging(configs=CONFIGS, logfile=LOG_FILE)
 logger.info("🔍 Logging system initialized.")
 

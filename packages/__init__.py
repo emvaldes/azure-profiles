@@ -18,8 +18,7 @@ Important:
 Usage:
 
 Modules within `packages/` should be imported manually:
-```python
+python
     from packages.appflow_tracing import enable_tracing
     from packages.requirements import dependencies
-```
 """
