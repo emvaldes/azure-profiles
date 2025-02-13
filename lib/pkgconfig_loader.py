@@ -156,7 +156,7 @@ def setup_configs():
 
     # Convert to Path object before extracting details
     caller_path = Path(caller_path).resolve()
-    package_name = caller_path.parent.name  # e.g., "appflow_tracing" or "requirements"
+    package_name = caller_path.parent.name  # e.g., "appflow_tracer" or "requirements"
     module_name = caller_path.stem          # e.g., "enable_tracing" or "dependencies"
 
     # Use a default fallback or global override for logs location

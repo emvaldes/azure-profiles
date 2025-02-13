@@ -49,7 +49,7 @@ import importlib.metadata
 
 from pathlib import Path
 
-from packages.appflow_tracing.enable_tracing import (
+from packages.appflow_tracer.enable_tracing import (
     log_message,
     setup_logging,
     setup_configs

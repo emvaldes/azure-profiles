@@ -68,7 +68,7 @@ except ImportError as e:
     sys.exit(1)
 
 # Import tracing module (no need to pass arguments)
-from packages.appflow_tracing import enable_tracing
+from packages.appflow_tracer import enable_tracing
 
 # Import other necessary modules from `lib/`
 from lib import system_params

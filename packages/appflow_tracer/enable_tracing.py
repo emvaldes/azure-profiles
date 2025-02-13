@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-File Path: packages/appflow_tracing/enable_tracing.py
+File Path: packages/appflow_tracer/enable_tracing.py
 
 Description:
 
@@ -10,7 +10,7 @@ AppFlow Tracing System
 This module implements structured and advanced tracing system for monitoring function calls,
 imported modules, and return values within the framework. It logs execution details
 for debugging and performance analysis.
-It logs execution details to `./logs/appflow_tracing/enable_tracing.log` for self-inspection.
+It logs execution details to `./logs/appflow_tracer/enable_tracing.log` for self-inspection.
 
 Features:
 
@@ -21,7 +21,7 @@ Features:
 
 Enhancements:
 
-- Works within `packages/appflow_tracing` properly.
+- Works within `packages/appflow_tracer` properly.
 - Self-inspection enabled when executed directly.
 - Structured logging ensured.
 - Provides a `start_tracing()` function for external usage.

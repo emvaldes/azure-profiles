@@ -23,14 +23,14 @@
 │   ├── system_variables.py
 │   └── timezone_localoffset.py
 ├── logs/
-│   ├── appflow_tracing/
+│   ├── appflow_tracer/
 │   │   ├── enable_tracing_<timestamp>.log
 │   │   └── enable_tracing_<timestamp>.log
 │   └── requirements/
 │       └── dependencies_<timestamp>.log
 ├── packages/
 │   ├── __init__.py
-│   ├── appflow_tracing/
+│   ├── appflow_tracer/
 │   │   ├── __init__.py
 │   │   ├── __main__.py
 │   │   └── enable_tracing.py
@@ -333,7 +333,7 @@ This file initializes the `packages/` directory as a valid Python package.
 Submodules within `packages/` should be imported explicitly:
 
 ```python
-from packages.appflow_tracing import enable_tracing
+from packages.appflow_tracer import enable_tracing
 from packages.requirements import dependencies
 ```
 
@@ -341,20 +341,20 @@ This structure ensures controlled imports while maintaining modularity.
 
 ---
 
-### Package: appflow_tracing
+### Package: appflow_tracer
 
-#### `packages/appflow_tracing/__init__.py`
-This file initializes the `appflow_tracing` package and provides access to its main tracing functionality.
+#### `packages/appflow_tracer/__init__.py`
+This file initializes the `appflow_tracer` package and provides access to its main tracing functionality.
 
 **Key Responsibilities:**
-- Marks the `appflow_tracing` directory as a Python package.
+- Marks the `appflow_tracer` directory as a Python package.
 - Imports and exposes the `main()` function from `enable_tracing.py`.
 
 **Usage:**
 To run the tracing function from within another module:
 
 ```python
-  from packages.appflow_tracing import main
+  from packages.appflow_tracer import main
   main()
 ```
 
@@ -362,8 +362,8 @@ This allows seamless execution of the tracing functionality from the package lev
 
 ---
 
-#### `packages/appflow_tracing/__main__.py`
-This file allows the `appflow_tracing` package to be executed as a standalone module.
+#### `packages/appflow_tracer/__main__.py`
+This file allows the `appflow_tracer` package to be executed as a standalone module.
 It initializes the tracing system and displays tracing/logging status.
 
 **Key Responsibilities:**
@@ -378,14 +378,14 @@ It initializes the tracing system and displays tracing/logging status.
 To execute the tracing system in standalone mode:
 
 ```python
-> python -m packages.appflow_tracing ;
+> python -m packages.appflow_tracer ;
 ```
 
 This ensures tracing and logging are active and ready for capturing system events.
 
 ---
 
-#### `packages/appflow_tracing/enable_tracing.py`
+#### `packages/appflow_tracer/enable_tracing.py`
 This module provides a detailed tracing system for monitoring function calls, imports,
 and return values within the framework. It is primarily used for debugging and logging
 execution details.
