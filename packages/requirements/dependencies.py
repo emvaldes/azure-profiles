@@ -52,7 +52,7 @@ from pathlib import Path
 from packages.appflow_tracing.enable_tracing import (
     log_message,
     setup_logging,
-    start_tracing
+    setup_configs
 )
 
 # Define base directories
@@ -163,7 +163,7 @@ def parse_arguments():
     )
     return parser.parse_args()
 
-def update_installed_packages(requirements_file):
+def update_installed_packages(requirements_file, config_filepath):
     """Create or update the installed.json file with the local package setup."""
     dependencies = load_requirements(requirements_file)
     installed_data = []
@@ -194,43 +194,31 @@ def update_installed_packages(requirements_file):
         })
 
     # Write to installed.json
-    with open(INSTALLED_JSON_PATH, "w") as f:
+    print(f'Installed JSON file: {config_filepath}')
+    with open(config_filepath, "w") as f:
         json.dump({"dependencies": installed_data}, f, indent=4)
-    log_message(f"📄 Installed package status updated in {INSTALLED_JSON_PATH}", configs=CONFIGS)
+    log_message(f"📄 Installed package status updated in {config_filepath}", configs=CONFIGS)
 
-# Module's configurations
-package_name = Path(__file__).resolve().parent.name
-module_name = Path(__file__).stem
-CONFIGS, LOG_FILE = load_configs({
-    "logging": {
-        "module_name": module_name,
-        "package_name": package_name,
-        "package_logs": str( project_logs / package_name ),
-        "log_filename": module_name
-    }
-})
-# print( f'LOG_FILE: {LOG_FILE}' )
-# print( f'CONFIGS: {json.dumps(CONFIGS, indent=2)}' )
+# ---------- Module Global variables:
 
-# Start tracing
-if CONFIGS["logging"]["enable_tracing"]:
-    # print("🔍 Tracing system initialized.")
-    start_tracing(configs=CONFIGS)
-
-# Ensure logging is set up globally before anything else
-logger = setup_logging(configs=CONFIGS, logfile=LOG_FILE)
-logger.info("🔍 Logging system initialized.")
-
-packages = project_root / "packages" / package_name
-INSTALLED_JSON_PATH = packages / "installed.json"
+# ---------- Module operations:
 
 def main():
     """Main function to parse arguments and run the installer."""
+    # ✅ Ensure the variable exists globally
+    global CONFIGS
+
+    CONFIGS = setup_logging(configs=setup_configs())
+    print( f'CONFIGS: {json.dumps(CONFIGS, indent=2)}' )
+
+    packages = project_root / "packages" / CONFIGS["logging"].get("package_name")
+    config_filepath = packages / "installed.json"
+
     args = parse_arguments()
     log_message("🔍 Starting dependency installation process...", configs=CONFIGS)
     install_requirements(args.requirements_file)
-    update_installed_packages(args.requirements_file)
-    log_message(f"📂 Logs are being saved in: {LOG_FILE}", configs=CONFIGS)
+    update_installed_packages(args.requirements_file, config_filepath)
+    log_message(f"📂 Logs are being saved in: {CONFIGS["logging"].get("log_filename")}", configs=CONFIGS)
 
 if __name__ == "__main__":
     main()

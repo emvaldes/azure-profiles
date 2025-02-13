@@ -28,10 +28,13 @@ Enhancements:
 
 Dependencies:
 
+- os
 - sys
 - json
-- datetime
 - pathlib
+- datetime
+
+- system_variables
 
 Usage:
 
@@ -53,11 +56,12 @@ To execute and inspect the generated configuration:
 > python pkgconfig_loader.py ;
 """
 
-import json
+import os
 import sys
-import datetime
+import json
 
 from pathlib import Path
+from datetime import datetime
 
 from system_variables import (
     project_root,
@@ -68,13 +72,13 @@ def get_logfile(config, caller_log_path=None):
     """Determine the correct log file path based on the caller module's request or self-inspection."""
     package_logsdir = Path(config["logging"]["package_logs"])
     package_logsdir.mkdir(parents=True, exist_ok=True)
-    timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
     if caller_log_path:
         log_path = Path(caller_log_path).resolve()
         log_path.parent.mkdir(parents=True, exist_ok=True)  # Ensure directory exists
-        return log_path / f"{config['logging']['log_filename']}_{timestamp}.log"
+        return log_path / f"{config['logging']['package_name']}_{timestamp}.log"
     else:
-        return package_logsdir / f"{config['logging']['log_filename']}_{timestamp}.log"
+        return package_logsdir / f"{config['logging']['package_name']}_{timestamp}.log"
 
 def load_configs(overrides=None):
     """
@@ -96,7 +100,7 @@ def load_configs(overrides=None):
         module_name = Path(__file__).stem
         package_name = Path(__file__).resolve().parent.name
         package_logs = str(project_logs / package_name)
-        log_timestamp = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+        log_timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
 
         config = {
             "colors": {
@@ -109,12 +113,13 @@ def load_configs(overrides=None):
                 "enable_tracing": True,
                 "enable_logging": True,
                 "max_logfiles": 10,
+                "logs_dirname": logs_dirname,
+                "log_timestamp": log_timestamp,
+                "package_name": package_name,
+                "module_name": None,
                 "logs_basedir": logs_basedir,
                 "package_logs": package_logs,
-                "log_timestamp": log_timestamp,
-                "log_filename": module_name,
-                "logs_dirname": logs_dirname,
-                "package_name": package_name
+                "log_filename": None
             }
         }
         # Apply any overrides if provided
@@ -126,15 +131,58 @@ def load_configs(overrides=None):
                     config[key] = value  # Add new keys
 
         # Generate log file path
-        log_file = get_logfile(config)  # Generate the log file path
+        config["logging"]["log_filename"] = str(get_logfile(config))  # Generate the log file path
+        # print( f'Config Type:   {type( config )}' )
+        # print( f'Config Object: {json.dumps(config, indent=2)}' )
 
-        # print( f'Config Type: {type( config )}' )
-        # print( f'Config: {config}' )
-        return config, log_file  # Ensure tuple is returned
+        return config
 
     except (FileNotFoundError, json.JSONDecodeError) as e:
         print(f"⚠️ Error loading {config_file}: {e}")
         sys.exit(1)
+
+import sys
+import json
+from pathlib import Path
+from datetime import datetime
+
+def setup_configs():
+    """Dynamically initializes logging configuration for the calling module."""
+
+    # Identify the calling module's file path
+    caller_path = sys._getframe(1).f_globals.get("__file__", None)
+    if caller_path is None:
+        raise RuntimeError("Cannot determine calling module's file path. Ensure this function is called within a script, not an interactive shell.")
+
+    # Convert to Path object before extracting details
+    caller_path = Path(caller_path).resolve()
+    package_name = caller_path.parent.name  # e.g., "appflow_tracing" or "requirements"
+    module_name = caller_path.stem          # e.g., "enable_tracing" or "dependencies"
+
+    # Use a default fallback or global override for logs location
+    logs_basedir = globals().get("project_logs", Path.home() / ".logs")
+
+    # Ensure log directories exist
+    package_logs = logs_basedir / package_name
+    package_logs.mkdir(parents=True, exist_ok=True)
+
+    # Generate unique timestamp for log filename (avoiding collisions)
+    timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S%f')[:-3]
+    log_filename = package_logs / f"{module_name}_{timestamp}.log"
+
+    # Load configurations dynamically
+    configs = load_configs({
+        "logging": {
+            "log_timestamp": timestamp,
+            "package_name": package_name,
+            "module_name": module_name,
+            "logs_basedir": str(logs_basedir),   # ✅ Convert Path -> String
+            "package_logs": str(package_logs),   # ✅ Convert Path -> String
+            "log_filename": str(log_filename)    # ✅ Convert Path -> String
+        }
+    })
+
+    return configs
 
 if __name__ == "__main__":
     config = load_config()

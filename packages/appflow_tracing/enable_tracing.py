@@ -79,6 +79,7 @@ from lib.system_variables import (
 
 from lib.pkgconfig_loader import (
     load_configs,
+    setup_configs,
     get_logfile
 )
 
@@ -90,30 +91,6 @@ def is_project_file(filename):
         return False
     filename_path = Path(filename).resolve()
     return project_root in filename_path.parents  # Ensure it's within the project directory
-
-def output_logfile(logger, message, json_data=None):
-    """Writes log messages to the log file."""
-    # logfile_message = remove_ansi_escape_codes(message)
-    logfile_message = message
-    if json_data:
-        logfile_message += f"\n{json_data}"
-    message = remove_ansi_escape_codes(message)
-    logger.info(logfile_message)  # ✅ Write to log file
-
-def output_console(message, category, json_data=None, configs=None):
-    """Writes log messages to the console with colors."""
-    color = configs["colors"].get(category.upper(), configs["colors"]["RESET"])
-    if not color.startswith("\033"):  # ✅ Ensure it's an ANSI color code
-        color = configs["colors"]["RESET"]
-    console_message = f"{color}{message}{configs['colors']['RESET']}"
-    print(console_message)  # ✅ Print colored message
-    if json_data:
-        if isinstance(json_data, str):
-            # ✅ Print strings as-is (no JSON formatting)
-            print(json_data)
-        else:
-            # ✅ Pretty-print JSON while keeping Unicode characters
-            print(json.dumps(json_data, indent=2, ensure_ascii=False))
 
 def log_message(message, category="INFO", json_data=None, serialize_json=False, configs=None):
     """Logs messages using the correct logger while keeping console output."""
@@ -156,7 +133,7 @@ def manage_logfiles():
                 log_subdir.glob("*.log"),
                 key=lambda f: f.stat().st_mtime
             )
-            num_to_remove = len(log_files) - (CONFIGS["logging"]["max_logfiles"])
+            num_to_remove = len(log_files) - (CONFIGS["logging"].get("max_logfiles", 10))
             if num_to_remove > 0:
                 logs_to_remove = log_files[:num_to_remove]
                 for log_file in logs_to_remove:
@@ -165,6 +142,30 @@ def manage_logfiles():
                         print(f"🗑️ Deleted old log: {log_file}")
                     except Exception as e:
                         print(f"⚠️ Error deleting {log_file}: {e}")
+
+def output_logfile(logger, message, json_data=None):
+    """Writes log messages to the log file."""
+    # logfile_message = remove_ansi_escape_codes(message)
+    logfile_message = message
+    if json_data:
+        logfile_message += f"\n{json_data}"
+    message = remove_ansi_escape_codes(message)
+    logger.info(logfile_message)  # ✅ Write to log file
+
+def output_console(message, category, json_data=None, configs=None):
+    """Writes log messages to the console with colors."""
+    color = configs["colors"].get(category.upper(), configs["colors"]["RESET"])
+    if not color.startswith("\033"):  # ✅ Ensure it's an ANSI color code
+        color = configs["colors"]["RESET"]
+    console_message = f"{color}{message}{configs['colors']['RESET']}"
+    print(console_message)  # ✅ Print colored message
+    if json_data:
+        if isinstance(json_data, str):
+            # ✅ Print strings as-is (no JSON formatting)
+            print(json_data)
+        else:
+            # ✅ Pretty-print JSON while keeping Unicode characters
+            print(json.dumps(json_data, indent=2, ensure_ascii=False))
 
 def relative_path(filepath):
     """Convert absolute path to a relative path within the project while ensuring safe fallback."""
@@ -185,10 +186,6 @@ def safe_serialize(data, verbose=False):
     except (TypeError, ValueError):
         return str(data) if verbose else "[Unserializable data]"
 
-def sanitize_token_string__prototype(line):
-    """Sanitize sensitive tokens from log messages while preparing for inline encryption."""
-    return line.replace("SECRET_TOKEN", "[REDACTED]")
-
 def sanitize_token_string(line):
     """Remove trailing comments while preserving formatting and trim spaces."""
     try:
@@ -208,28 +205,28 @@ def sanitize_token_string(line):
     except Exception:
         return line.strip()  # Ensure fallback trims spaces
 
-class PrintCapture(logging.StreamHandler):
-    """ Custom logging handler that captures print() and logs it while displaying in the console. """
-    def emit(self, record):
-        log_entry = self.format(record)
-        sys.__stdout__.write(log_entry + "\n")  # Write to actual stdout
-        sys.__stdout__.flush()  # Ensure immediate flushing
-
-class ANSIFileHandler(logging.FileHandler):
-    """Custom FileHandler that removes ANSI codes and filters out logging system entries."""
-    def emit(self, record):
-        # ✅ Ensure only Python's internal logging system is ignored
-        if "logging/__init__.py" in record.pathname:
-            return  # ✅ Skip internal Python logging module logs
-        super().emit(record)  # ✅ Proceed with normal logging
-
-def setup_logging(configs=None, logfile=None):
+def setup_logging(configs=None):
     """Initialize logging globally and ensure all logs go to the correct file."""
-    global logger  # Ensure logger is available everywhere
-    configs = configs or CONFIGS  # Default to global CONFIGS if not provided
-    logfile = logfile or LOG_FILE  # Default to global LOG_FILE if not provided
+    # ✅ Ensure the variable exists globally
+    global LOGGING, CONFIGS, logger
 
-    logger = logging.getLogger(f"{configs['logging']['package_name']}.{configs['logging']['module_name']}")
+    try:
+        if not LOGGING:  # ✅ Check if logging has already been initialized
+            LOGGING = True  # ✅ Mark logging as initialized
+            # print(f'\n----------> Initializing Setup Logging ... \n')
+    except NameError:
+        return False
+
+    if configs:
+        print(f'Inheriting log-configs')
+        CONFIGS = configs
+    else:
+        print(f'Initializing log-configs')
+        CONFIGS = setup_configs()
+    # print( f'CONFIGS: {json.dumps(CONFIGS, indent=2)}' )
+
+    logfile = CONFIGS["logging"].get("log_filename", False)
+    logger = logging.getLogger(f"{CONFIGS['logging']['package_name']}.{CONFIGS['logging']['module_name']}")
     logger.propagate = False  # Prevent handler duplication
     logger.setLevel(logging.DEBUG)
 
@@ -239,16 +236,13 @@ def setup_logging(configs=None, logfile=None):
     # Remove existing handlers before adding new ones (Prevents duplicate logging)
     if logger.hasHandlers():
         logger.handlers.clear()  # ✅ Ensure handlers are properly cleared before adding new ones
-        logger.handlers.clear()
     else:
-
         # Use ANSIFileHandler as logfile handler
         file_handler = ANSIFileHandler(logfile, mode='a')
         logger.addHandler(file_handler)
         # formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
         # file_handler.setFormatter(formatter)
         # file_handler.setLevel(logging.DEBUG)
-
         # Console handler (keeps ANSI color but ensures immediate output)
         console_handler = PrintCapture()
         logger.addHandler(console_handler)
@@ -257,20 +251,28 @@ def setup_logging(configs=None, logfile=None):
 
     # Redirect print() statements to logger
     builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args))
-    # if configs["logging"].get("enable_logging", False):
+    # if CONFIGS["logging"].get("enable_logging", False):
     #     builtins.print = lambda *args, **kwargs: sys.__stdout__.write(" ".join(str(arg) for arg in args) + "\n")
 
     # Ensure all logs are flushed immediately
     sys.stdout.flush()
     sys.stderr.flush()
 
-    logger.info("🔍 Logging system initialized.")
-    return logger
+    # if not LOGGING:  # ✅ Check if logging has already been initialized
+    if CONFIGS["logging"].get("enable_tracing", True):
+        try:
+            start_tracing(CONFIGS)
+            print("🔍 \nTracing system initialized.\n")
+        except NameError:
+            return False
+
+    return CONFIGS
 
 def start_tracing(configs=None):
     """Public function to enable tracing for external modules with a given config."""
     configs = configs or CONFIGS  # Default to global CONFIGS if not provided
-    if configs["logging"]["enable_tracing"] and sys.gettrace() is None:  # Prevent multiple traces
+    # print(f'\n----------> Start Tracing invoked!\n')
+    if configs["logging"].get("enable_tracing", True) and sys.gettrace() is None:  # Prevent multiple traces
         sys.settrace(lambda frame, event, arg: trace_all(configs)(frame, event, arg))
 
 def trace_all(configs):
@@ -287,8 +289,6 @@ def trace_all(configs):
 
     # Ensure the logger is properly initialized
     global logger
-    if logger is None:
-        logger = setup_logging(configs)  # Ensure the logger is ready before tracing
 
     def trace_events(frame, event, arg):
         """Trace imports, function calls, function parameters, and return values within the project only."""
@@ -388,7 +388,7 @@ def trace_all(configs):
                 if hasattr(arg, "__dict__"):
                     return_value = vars(arg)  # Convert Namespace or similar object to a dictionary
 
-                message  = f"\n[{category}] {return_filename}[{return_lineno}] ( {return_line} ) "
+                message  = f"[{category}] {return_filename}[{return_lineno}] ( {return_line} ) "
                 message += f"-> {category} VALUE (Type: {arg_type}):"
                 # Log the return with more scope
                 # message = f"\n[RETURN] {return_filename}[{return_lineno}] ( {return_line} ) -> RETURN VALUE:",
@@ -407,54 +407,49 @@ def trace_all(configs):
 
     return trace_events
 
+class PrintCapture(logging.StreamHandler):
+    """ Custom logging handler that captures print() and logs it while displaying in the console. """
+    def emit(self, record):
+        log_entry = self.format(record)
+        sys.__stdout__.write(log_entry + "\n")  # Write to actual stdout
+        sys.__stdout__.flush()  # Ensure immediate flushing
+
+class ANSIFileHandler(logging.FileHandler):
+    """Custom FileHandler that removes ANSI codes and filters out logging system entries."""
+    def emit(self, record):
+        # ✅ Ensure only Python's internal logging system is ignored
+        if "logging/__init__.py" in record.pathname:
+            return  # ✅ Skip internal Python logging module logs
+        super().emit(record)  # ✅ Proceed with normal logging
+
 # ---------- Module Global variables:
 
+LOGGING = None
+CONFIGS = None
 logger = None  # Global logger instance
-print( f'\nDefining "logger" as {logger}\n' )
 
 # ---------- Module operations:
 
 def main():
     """Entry point for running tracing as a standalone module with self-inspection."""
-    global CONFIGS, LOG_FILE  # Ensure they are updated within the function
+    global LOGGING, CONFIGS, logger  # ✅ Ensure CONFIGS is globally accessible
 
-    # Module's configurations
-    package_name = Path(__file__).resolve().parent.name
-    module_name = Path(__file__).stem
-    CONFIGS, LOG_FILE = load_configs({
-        "logging": {
-            "module_name": module_name,
-            "package_name": package_name,
-            "package_logs": str( project_logs / package_name ),
-            "log_filename": module_name
-        }
-    })
-    # print( f'LOG_FILE: {LOG_FILE}' )
-    # print( f'CONFIGS: {json.dumps(CONFIGS, indent=2)}' )
+    # Ensure logging is set up globally before anything else
+    setup_logging()
+    print( f'CONFIGS: {json.dumps(CONFIGS, indent=2)}' )
 
     # Manage log files before starting new tracing session
     manage_logfiles()
 
-    # Ensure logging is set up globally before anything else
-    setup_logging(CONFIGS)
-
-    # Start tracing
-    if CONFIGS["logging"]["enable_tracing"]:
-        # print("🔍 Tracing system initialized.")
-        start_tracing(configs=CONFIGS)
-
-    # Log the standalone execution
-    # logger.info("🔍 Logging system initialized.")
-    log_message("Executing appflow_tracing in standalone mode.", "IMPORT", configs=CONFIGS)
-
-    # Debug: Read and display log content to verify logging works
-    try:
-        print( f'\nReading Log-file: {LOG_FILE}' )
-        with open(LOG_FILE, "r") as file:
-            print("\n📄 Log file content:")
-            print(file.read())
-    except Exception as e:
-        print(f"⚠️ Unable to read log file: {e}")
+    # # Debug: Read and display log content to verify logging works
+    # try:
+    #     log_file = CONFIGS["logging"].get("log_filename", False)
+    #     print( f'\nReading Log-file: {log_file}' )
+    #     with open(log_file, "r") as file:
+    #         # print("\n📄 Log file content:")
+    #         print(file.read())
+    # except Exception as e:
+    #     print(f"⚠️ Unable to read log file: {e}")
 
 # Automatically start tracing when executed directly
 if __name__ == "__main__":

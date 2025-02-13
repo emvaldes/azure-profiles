@@ -23,11 +23,11 @@ Usage:
 > python -m packages.appflow_tracing ;
 """
 
-from .enable_tracing import start_tracing
-
-def main():
-    print("🔍 Tracing system initialized.")
-    start_tracing()
-
-if __name__ == "__main__":
-    main()
+# from .enable_tracing import start_tracing
+#
+# def main():
+#     print("🔍 Tracing system initialized.")
+#     start_tracing()
+#
+# if __name__ == "__main__":
+#     main()
