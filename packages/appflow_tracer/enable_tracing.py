@@ -78,9 +78,7 @@ from lib.system_variables import (
 )
 
 from lib.pkgconfig_loader import (
-    load_configs,
-    setup_configs,
-    get_logfile
+    setup_configs
 )
 
 # ---------- Module functions:
@@ -116,11 +114,11 @@ def log_message(message, category="INFO", json_data=None, serialize_json=False, 
             # json_data = safe_serialize(json_data, verbose=serialize_json)
             json_data = json.dumps(json_data, separators=(",", ":"), ensure_ascii=False)
 
-    if configs["logging"].get("enable_logging", False) and not configs["logging"].get("enable_tracing", False):
+    if configs["logging"].get("enable", False) and not configs["tracing"].get("enable", False):
         if message.strip():
             output_logfile(logger, message, json_data or False)  # ✅ Write ONLY to log file if tracing is disabled
 
-    if configs["logging"].get("enable_tracing", False):
+    if configs["tracing"].get("enable", False):
         if message.strip():
             output_console(message, category, json_data or False, configs)  # ✅ Write to console
 
@@ -251,7 +249,7 @@ def setup_logging(configs=None):
 
     # Redirect print() statements to logger
     builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args))
-    # if CONFIGS["logging"].get("enable_logging", False):
+    # if CONFIGS["logging"].get("enable", False):
     #     builtins.print = lambda *args, **kwargs: sys.__stdout__.write(" ".join(str(arg) for arg in args) + "\n")
 
     # Ensure all logs are flushed immediately
@@ -259,7 +257,7 @@ def setup_logging(configs=None):
     sys.stderr.flush()
 
     # if not LOGGING:  # ✅ Check if logging has already been initialized
-    if CONFIGS["logging"].get("enable_tracing", True):
+    if CONFIGS["tracing"].get("enable", True):
         try:
             start_tracing(CONFIGS)
             print("🔍 \nTracing system initialized.\n")
@@ -272,7 +270,7 @@ def start_tracing(configs=None):
     """Public function to enable tracing for external modules with a given config."""
     configs = configs or CONFIGS  # Default to global CONFIGS if not provided
     # print(f'\n----------> Start Tracing invoked!\n')
-    if configs["logging"].get("enable_tracing", True) and sys.gettrace() is None:  # Prevent multiple traces
+    if configs["tracing"].get("enable", True) and sys.gettrace() is None:  # Prevent multiple traces
         sys.settrace(lambda frame, event, arg: trace_all(configs)(frame, event, arg))
 
 def trace_all(configs):
@@ -284,7 +282,7 @@ def trace_all(configs):
         return None  # Stop tracing if configs is not ready
     # print( f'Configs: {configs}' )
 
-    # if not configs["logging"].get("enable_logging") and not configs["logging"].get("enable_tracing"):
+    # if not configs["logging"].get("enable") and not configs["tracing"].get("enable"):
     #     sys.exit(1)  # Stop tracing if both logging & console tracing are disabled
 
     # Ensure the logger is properly initialized

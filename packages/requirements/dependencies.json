@@ -1,0 +1,24 @@
+{
+  "colors": {
+    "IMPORT": "\u001b[94m",
+    "CALL": "\u001b[92m",
+    "RETURN": "\u001b[93m",
+    "RESET": "\u001b[0m"
+  },
+  "logging": {
+    "enable": true,
+    "max_logfiles": 10,
+    "logs_dirname": "logs",
+    "package_name": "requirements",
+    "module_name": "dependencies",
+    "package_logs": "logs/requirements",
+    "log_filename": "logs/requirements/dependencies.log"
+  },
+  "tracing": {
+    "enable": true
+  },
+  "stats": {
+    "created": "2025-02-14T00:47:53.779562",
+    "updated": "2025-02-14T00:49:04.780434"
+  }
+}

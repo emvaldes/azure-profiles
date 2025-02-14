@@ -73,8 +73,7 @@ from lib.system_variables import (
 )
 
 from lib.pkgconfig_loader import (
-    load_configs,
-    get_logfile
+    setup_configs
 )
 
 def load_requirements(requirements_file):
