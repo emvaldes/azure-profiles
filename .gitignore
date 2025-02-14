@@ -4,7 +4,9 @@
 .project
 
 ## Ignore dynamically created installed.json
+packages/appflow_tracer/enable_tracing.json
 packages/requirements/installed.json
+packages/requirements/dependencies.json
 
 logs/
 !logs/.gitkeep  # Keeps the logs directory in Git but ignores its content
