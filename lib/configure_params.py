@@ -53,7 +53,7 @@ from system_variables import (
 
 env_file_header = "## Environment variables (auto-generated)\n\n"
 
-logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
+# logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
 
 def load_json_sources(filepaths: List[str], mode: str = "merge") -> Union[Dict, Tuple[Dict]]:
     """Loads JSON configuration files based on the mode.

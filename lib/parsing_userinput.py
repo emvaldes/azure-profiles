@@ -37,11 +37,11 @@ import json
 import os
 import logging
 
-# Configure logging for debugging purposes
-logging.basicConfig(
-    level=logging.DEBUG,
-    format="%(asctime)s - %(levelname)s - %(message)s"
-)
+# # Configure logging for debugging purposes
+# logging.basicConfig(
+#     level=logging.DEBUG,
+#     format="%(asctime)s - %(levelname)s - %(message)s"
+# )
 
 def request_input(prompt: str, required: bool = True, default: str = None):
     """

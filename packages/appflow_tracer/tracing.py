@@ -64,11 +64,13 @@ To enable function call tracing and log execution details:
 """
 
 import sys
-import logging
 import json
-
+import inspect
+import logging
 import builtins
+import warnings
 
+from datetime import datetime
 from typing import Optional, Union
 from pathlib import Path
 
@@ -81,6 +83,12 @@ if str(LIB_DIR) not in sys.path:
 # print("\n[DEBUG] sys.path contains:")
 # for path in sys.path:
 #     print(f"  - {path}")
+
+# Import system_variables from lib.system_variables
+from lib.system_variables import (
+    project_root,
+    project_logs
+)
 
 # Import trace_utils from lib.*_utils
 from .lib import (
@@ -95,7 +103,11 @@ from lib import (
 
 # ---------- Module functions:
 
-def setup_logging(configs: Optional[dict] = None) -> Union[bool, dict]:
+# def setup_logging(configs: Optional[dict] = None) -> Union[bool, dict]:
+def setup_logging(
+    configs: Optional[dict] = None,
+    logname_override: Optional[str] = None
+) -> Union[bool, dict]:
     """
     Configures and initializes the global logging system.
 
@@ -105,8 +117,10 @@ def setup_logging(configs: Optional[dict] = None) -> Union[bool, dict]:
     ensure proper logging behavior.
 
     Args:
-        configs (dict, optional): A dictionary of logging configurations. If
-        None, the global configurations will be used.
+        configs (dict, optional): A dictionary of logging configurations.
+            If None, the global configurations will be used.
+        logname_override (str, optional): A custom name to use as the base for the log file.
+            If not provided, it will be derived from the calling script's name.
 
     Returns:
         dict: The effective configuration dictionary after applying any
@@ -117,7 +131,7 @@ def setup_logging(configs: Optional[dict] = None) -> Union[bool, dict]:
         {
             "logging": {
                 "log_filename": "/path/to/logfile.log",
-                "max_logfiles": 10,
+                "max_logfiles": 5,
                 ...
             },
             ...
@@ -134,21 +148,82 @@ def setup_logging(configs: Optional[dict] = None) -> Union[bool, dict]:
     except NameError:
         return False
 
+    # def handle_warning(message, category, filename, lineno, file=None, line=None):
+    #     warnings_logpath = project_logs / "warnings.log"
+    #
+    #     # Redirect all warnings to the logging system
+    #     warnings.simplefilter("always", category=RuntimeWarning)
+    #     warnings.formatwarning = lambda msg, *args, **kwargs: str(msg) + "\n"
+    #     logging.basicConfig(filename=str(warnings_logpath), level=logging.INFO)
+    #     logging.info(f"{category.__name__}: {message} (in {filename}:{lineno})")
+    #
+    # warnings.showwarning = handle_warning
+
+    if logname_override:
+        log_filename = logname_override
+    else:
+        # If no override, determine the caller’s name
+
+        # Inspect the stack to find the caller’s module name or file
+        caller_frame = inspect.stack()[1]
+        # Determine the caller's module or file
+        caller_module = inspect.getmodule(caller_frame[0])
+
+        if caller_module and caller_module.__file__:
+            # Extract the script/module name without extension
+            log_filename = Path(caller_module.__file__).stem
+        else:
+            # Fallback if the name can’t be determined
+            log_filename = "unknown"
+
+    # Handle the case where __main__ is used
+    if log_filename == "__main__":
+        # Use the module that defines setup_logging as a fallback
+        current_frame = inspect.currentframe()
+        this_module = inspect.getmodule(current_frame)
+        if this_module and this_module.__file__:
+            log_filename = Path(this_module.__file__).stem
+        else:
+            # Fallback if the name can’t be determined
+            log_filename = "default"
+
+    absolute_path = None
+    # Construct the full log path separately
+    if caller_module and caller_module.__file__:
+        caller_path = Path(caller_module.__file__).resolve()
+        absolute_path = caller_path.with_name(log_filename)
+        if caller_path.is_relative_to(project_root):
+            # If the caller is within project_root, construct a relative log path
+            relative_path = caller_path.relative_to(project_root)
+            log_filename = relative_path.parent / f"{log_filename}"
+        else:
+            # If the caller is outside project_root, just use its absolute path under logs
+            log_filename = caller_path.parent.relative_to(caller_path.anchor) / f"{log_filename}"
+    # else:
+    #     # If we couldn’t determine the caller file, fallback to a default
+    #     log_filename = f"default"
+
+    # print(f'Absolute Path: {absolute_path}')
+    # Determining configs parameter
     if configs:
-        print(f'Inheriting log-configs')
+        # print(f'\nInheriting log-configs: {log_filename}')
         CONFIGS = configs
     else:
-        print(f'Initializing log-configs')
-        CONFIGS = pkgconfig.setup_configs()
-    # print( f'CONFIGS: {json.dumps(CONFIGS, indent=2)}' )
+        # print(f'\nInitializing log-configs: {log_filename}')
+        CONFIGS = pkgconfig.setup_configs(
+            absolute_path=Path(absolute_path),
+            logname_override=log_filename
+        )
+
+    if not isinstance(CONFIGS, dict):
+        raise ValueError("Configs must be a dictionary")
+
+    print( f'CONFIGS: {json.dumps(CONFIGS, indent=2)}' )
 
     logfile = CONFIGS["logging"].get("log_filename", False)
     logger = logging.getLogger(f"{CONFIGS['logging']['package_name']}.{CONFIGS['logging']['module_name']}")
     logger.propagate = False  # Prevent handler duplication
     logger.setLevel(logging.DEBUG)
-
-    # Ensure the log file directory exists
-    Path(logfile).parent.mkdir(parents=True, exist_ok=True)
 
     # Remove existing handlers before adding new ones (Prevents duplicate logging)
     if logger.hasHandlers():
@@ -235,6 +310,8 @@ def main():
     CONFIGS = setup_logging()
     print( f'CONFIGS: {json.dumps(CONFIGS, indent=2)}' )
 
+    print(f'Tracing Logger (main): {logger}')
+
     # Manage log files before starting new tracing session
     file_utils.manage_logfiles(CONFIGS)
 
@@ -250,4 +327,6 @@ def main():
 
 # Automatically start tracing when executed directly
 if __name__ == "__main__":
+    # CONFIGS = setup_logging()
+    # print(f'Tracing Logger (__main__): {logger}')
     main()

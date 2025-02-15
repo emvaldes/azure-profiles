@@ -51,26 +51,30 @@ To execute and inspect the generated configuration:
 import os
 import sys
 import json
+import inspect
 
 from pathlib import Path
 from datetime import datetime
 
 from system_variables import (
     project_root,
-    project_logs
+    project_logs,
+    project_packages,
+    max_logfiles
 )
+
+# Generate unique timestamp for log filename (avoiding collisions)
+# timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S%f')[:-3]
+timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
 
 def config_logfile(config, caller_log_path=None):
     """Determine the correct log file path based on the caller module's request or self-inspection."""
-    package_logsdir = Path(config["logging"]["package_logs"])
-    package_logsdir.mkdir(parents=True, exist_ok=True)
-    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+    logs_dirname = Path(config["logging"]["logs_dirname"])
     if caller_log_path:
         log_path = Path(caller_log_path).resolve()
-        log_path.parent.mkdir(parents=True, exist_ok=True)  # Ensure directory exists
         return log_path / f"{config['logging']['package_name']}_{timestamp}.log"
     else:
-        return package_logsdir / f"{config['logging']['package_name']}_{timestamp}.log"
+        return logs_dirname / f"{config['logging']['package_name']}_{timestamp}.log"
 
 def package_configs(overrides=None):
     """
@@ -87,11 +91,9 @@ def package_configs(overrides=None):
 
         # print( f'Config File does not exists: {Path(config_file).stem}.json' )
         # Default configuration if JSON file is missing
-        logs_dirname = "logs"
-        logs_basedir = str(project_root / logs_dirname)
         module_name = Path(__file__).stem
         package_name = Path(__file__).resolve().parent.name
-        package_logs = str(project_logs / package_name)
+        logs_dirname = str(project_logs / package_name)
         # log_timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
 
         config = {
@@ -103,11 +105,10 @@ def package_configs(overrides=None):
             },
             "logging": {
                 "enable": True,
-                "max_logfiles": 10,
-                "logs_dirname": logs_dirname,
+                "max_logfiles": max_logfiles,
                 "package_name": package_name,
                 "module_name": None,
-                "package_logs": package_logs,
+                "logs_dirname": logs_dirname,
                 "log_filename": None
             },
             "tracing": {
@@ -137,7 +138,7 @@ def package_configs(overrides=None):
         print(f"⚠️ Error loading {config_file}: {e}")
         sys.exit(1)
 
-def setup_configs():
+def setup_configs(absolute_path, logname_override=None):
     """Dynamically initializes logging configuration for the calling module."""
 
     # Identify the calling module's file path
@@ -148,66 +149,86 @@ def setup_configs():
     # Convert to Path object before extracting details
     caller_path = Path(caller_path).resolve()
 
-    # Identify the project root directory (Assumes package is inside `packages/`)
-    project_root = caller_path.parents[2]
-
     # Identify the package directory and name
     package_path = caller_path.parent
     package_name = package_path.name
-    module_name = caller_path.stem  # e.g., "tracing" or "dependencies"
 
+    # Coller-specific location and naming
+    if logname_override:
+        module_name = logname_override
+
+    # Check if given_path is in the hierarchy of check_path
+    if project_packages in absolute_path.parents:
+        module_name = absolute_path.relative_to(project_packages)
+    package_name = module_name.parent
+    module_name = module_name.stem
+
+    print(f'Package Name: {package_name}\nModule Name: {module_name}')
+
+    target_filename = absolute_path.stem
     # Determine expected configuration file path (stored in the package)
-    config_file = package_path / f"{module_name}.json"
+    config_file = Path(absolute_path.parent / f'{target_filename}.json')
+    # print(f'\nConfig File: {config_file}')
+
+    if not config_file.exists():
+        # Ensure the parent directories exist
+        config_file.parent.mkdir(parents=True, exist_ok=True)
+        # Create the file if it does not exist
+        config_file.touch(exist_ok=True)
+        print(f"Config File '{config_file}' created successfully.")
 
     config = None  # Default state if the file doesn't exist or is invalid
-    needs_update = False  # Flag to determine if the file requires updates
 
     if config_file.exists():
         try:
+            # Try to open and read the file
             with open(config_file, "r") as f:
-                config = json.load(f)  # Load the existing configuration
-                if not isinstance(config, dict) or "logging" not in config:
-                    print(f"⚠️ Invalid JSON structure in {config_file}, regenerating...")
-                    config = None  # Force regeneration if structure is incorrect
+                content = f.read().strip()  # Read the content and strip whitespace
+                # Check if the file is empty
+                if not content:
+                    print(f"⚠️ {config_file} is empty. Regenerating...")
+                    config = None
                 else:
-                    needs_update = True  # If valid, we only update the logging section
-        except json.JSONDecodeError:
-            print(f"⚠️ Invalid JSON format in {config_file}, regenerating...")
-            config = None  # Force regeneration if decoding fails
+                    try:
+                        # Attempt to parse as JSON
+                        config = json.loads(content)
+                        # Check if the structure is correct
+                        if not isinstance(config, dict) or "logging" not in config:
+                            print(f"⚠️ {config_file} JSON structure is invalid. Regenerating...")
+                            config = None
+                        # else:
+                        #     needs_update = True  # The file is valid and we just need to update the logging section
+                    except json.JSONDecodeError:
+                        print(f"⚠️ {config_file} is not valid JSON. Regenerating...")
+                        config = None
+        except (OSError, IOError) as e:
+            print(f"⚠️ Unable to read {config_file}: {e}")
+            config = None  # Proceed to regenerate or handle as needed
 
     if config is None:
         config = package_configs()  # Call `package_configs()` to create a base config
 
-        # Ensure log paths are stored as **relative** to `project_root`
-        package_logs = project_root / "logs" / package_name
-        package_logs.mkdir(parents=True, exist_ok=True)  # Ensure log directory exists
-
-        needs_update = True  # Mark for saving since it's newly created
-
     # Ensure the "logging" section is properly updated
-    package_logs = project_root / "logs" / package_name
+    logs_dirname = project_logs / package_name
+    logs_dirname.mkdir(parents=True, exist_ok=True)  # Ensure log directory exists
+    target_logfile = logs_dirname.relative_to(project_root) / module_name
+    # print( logs_dirname, target_logfile )
+
     config["logging"].update({
-        "package_name": package_name,
-        "module_name": module_name,
-        "package_logs": str(package_logs.relative_to(project_root)),  # Relative path
-        "log_filename": str((package_logs / f"{module_name}.log").relative_to(project_root))  # Relative path
+        "package_name": str(package_name),
+        "module_name": str(module_name),
+        "logs_dirname": str(logs_dirname.relative_to(project_root)),  # Relative path
+        "log_filename": str(f'{target_logfile}_{timestamp}.log')  # Relative path
     })
+    # print(json.dumps(config, indent=4))
 
     # Update "updated" timestamp only if modifications were needed
-    if needs_update:
-        config["stats"]["updated"] = datetime.utcnow().isoformat()
-
-        # Save the modified configuration to disk in the correct package location
-        with open(config_file, "w") as f:
-            json.dump(config, f, indent=2)
-
-        print(f"Configuration updated: {config_file}")
-
-    # Generate unique timestamp for log filename (avoiding collisions)
-    timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S%f')[:-3]
-
-    # Update `log_filename` at runtime (without modifying the saved config file)
-    config["logging"]["log_filename"] = str((package_logs / f"{module_name}_{timestamp}.log").relative_to(project_root))
+    config["stats"]["updated"] = datetime.utcnow().isoformat()
+    # Save the modified configuration to disk in the correct package location
+    with open(config_file, "w") as f:
+        json.dump(config, f, indent=2)
+    # print(f"Configuration updated: {config_file}")
+    # print(json.dumps(config, indent=4))
 
     return config
 

@@ -76,7 +76,7 @@ def manage_logfiles(configs=None) -> None:
                 log_subdir.glob("*.log"),
                 key=lambda f: f.stat().st_mtime
             )
-            num_to_remove = len(log_files) - (configs["logging"].get("max_logfiles", 10))
+            num_to_remove = len(log_files) - (configs["logging"].get("max_logfiles", max_logfiles))
             if num_to_remove > 0:
                 logs_to_remove = log_files[:num_to_remove]
                 for log_file in logs_to_remove:

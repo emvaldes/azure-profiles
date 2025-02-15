@@ -1,0 +1,23 @@
+{
+  "colors": {
+    "IMPORT": "\u001b[94m",
+    "CALL": "\u001b[92m",
+    "RETURN": "\u001b[93m",
+    "RESET": "\u001b[0m"
+  },
+  "logging": {
+    "enable": true,
+    "max_logfiles": 5,
+    "package_name": "scripts",
+    "module_name": "testing",
+    "logs_dirname": "logs/scripts",
+    "log_filename": "logs/scripts/testing_20250215165340.log"
+  },
+  "tracing": {
+    "enable": true
+  },
+  "stats": {
+    "created": "2025-02-15T23:53:40.518634",
+    "updated": "2025-02-15T23:53:40.519125"
+  }
+}

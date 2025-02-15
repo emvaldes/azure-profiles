@@ -45,7 +45,7 @@ from dotenv import load_dotenv
 from lib.configure_params import main as configure_params
 from lib.configure_params import load_json_sources
 
-logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
+# logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
 
 from system_variables import (
     project_root,

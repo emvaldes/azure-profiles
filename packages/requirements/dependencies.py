@@ -208,9 +208,7 @@ def main():
     # Ensure the variable exists globally
     global CONFIGS
 
-    CONFIGS = tracing.setup_logging(
-        configs=pkgconfig.setup_configs()
-    )
+    CONFIGS = tracing.setup_logging()
     print( f'CONFIGS: {json.dumps(CONFIGS, indent=2)}' )
 
     packages = environment.project_root / "packages" / CONFIGS["logging"].get("package_name")

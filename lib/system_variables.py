@@ -33,6 +33,7 @@ from pathlib import Path
 ## Project Root (path) for parent elements
 project_root = Path(__file__).resolve().parent.parent
 project_logs = project_root / "logs"
+project_packages = project_root / "packages"
 
 ## Target .env file for the dotenv module (load_dotenv, dotenv_values)
 env_filepath = project_root / ".env"
@@ -57,4 +58,4 @@ default_params_filepath = project_root / "configs" / default_params_filename
 system_params_listing = [ project_params_filepath, default_params_filepath ]
 
 ## Restricting ./.logs/* files quota
-max_logfiles = 10
+max_logfiles = 5

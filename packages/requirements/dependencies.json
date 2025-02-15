@@ -7,18 +7,17 @@
   },
   "logging": {
     "enable": true,
-    "max_logfiles": 10,
-    "logs_dirname": "logs",
+    "max_logfiles": 5,
     "package_name": "requirements",
     "module_name": "dependencies",
-    "package_logs": "logs/requirements",
-    "log_filename": "logs/requirements/dependencies.log"
+    "logs_dirname": "logs/requirements",
+    "log_filename": "logs/requirements/dependencies_20250215165346.log"
   },
   "tracing": {
     "enable": true
   },
   "stats": {
-    "created": "2025-02-14T00:47:53.779562",
-    "updated": "2025-02-15T06:27:31.848959"
+    "created": "2025-02-15T23:53:46.426057",
+    "updated": "2025-02-15T23:53:46.426522"
   }
 }

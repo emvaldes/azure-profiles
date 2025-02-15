@@ -13,12 +13,25 @@ output_logfile(): Manages writing log entries to log files.
 output_console(): Directs logging output to the console with formatting.
 """
 
+# Determine the correct logging level
+log_levels = {
+    "CALL": logging.INFO,     # Map CALL to INFO for clarity
+    "RETURN": logging.DEBUG,  # Map RETURN to DEBUG
+    "IMPORT": logging.WARNING,
+    "DEBUG": logging.DEBUG,
+    "INFO": logging.INFO,
+    "WARNING": logging.WARNING,
+    "ERROR": logging.ERROR,
+    "CRITICAL": logging.CRITICAL
+}
+
 def log_message(
     message: str,
     category: str = "INFO",
     json_data: dict = None,
     serialize_json: bool = False,
-    configs: dict = None
+    configs: dict = None,
+    handler: logging.Logger = None
 ) -> None:
     """
     Logs a structured message to the appropriate logger and optionally outputs it to the console.
@@ -33,6 +46,7 @@ def log_message(
         json_data (dict, optional): Additional structured data to log alongside the message.
         serialize_json (bool, optional): If True, the `json_data` is serialized to a JSON string.
         configs (dict, optional): A configuration dictionary. Defaults to the global `CONFIGS`.
+        handler (logging.Logger, optional): A specific logger instance to use. If None, defaults to the globally configured logger.
 
     Returns:
         None
@@ -44,19 +58,10 @@ def log_message(
     """
 
     configs = configs or CONFIGS  # Default to global CONFIGS if not provided
-    logger = logging.getLogger(f"{configs['logging']['package_name']}.{configs['logging']['module_name']}")  # Use full module logger name
+    # Define logger if not available
+    logger = handler or logging.getLogger(f"{configs['logging']['package_name']}.{configs['logging']['module_name']}")
+    # print(f'Logger: {logger}')
 
-    # Determine the correct logging level
-    log_levels = {
-        "CALL": logging.INFO,     # Map CALL to INFO for clarity
-        "RETURN": logging.DEBUG,  # Map RETURN to DEBUG
-        "IMPORT": logging.WARNING,
-        "DEBUG": logging.DEBUG,
-        "INFO": logging.INFO,
-        "WARNING": logging.WARNING,
-        "ERROR": logging.ERROR,
-        "CRITICAL": logging.CRITICAL
-    }
     log_level = log_levels.get(category.upper(), logging.INFO)
 
     # If json_data exists, append it to the message
