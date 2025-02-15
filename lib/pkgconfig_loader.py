@@ -23,7 +23,7 @@ Enhancements:
 
 - Standardizes logging configurations across multiple packages.
 - Avoids redundant code by centralizing configuration loading.
-- Enables seamless integration with `enable_tracing.py` and other logging utilities.
+- Enables seamless integration with `tracing.py` and other logging utilities.
 - Supports future scalability for additional configuration parameters.
 
 Dependencies:
@@ -137,76 +137,6 @@ def package_configs(overrides=None):
         print(f"⚠️ Error loading {config_file}: {e}")
         sys.exit(1)
 
-def __1setup_configs():
-    """Dynamically initializes logging configuration for the calling module."""
-
-    # Identify the calling module's file path
-    caller_path = sys._getframe(1).f_globals.get("__file__", None)
-    if caller_path is None:
-        raise RuntimeError("Cannot determine calling module's file path. Ensure this function is called within a script, not an interactive shell.")
-
-    # Convert to Path object before extracting details
-    caller_path = Path(caller_path).resolve()
-
-    # Identify the package directory and name correctly
-    package_path = caller_path.parent
-    package_name = package_path.name  # Correct package name
-
-    module_name = caller_path.stem  # e.g., "enable_tracing" or "dependencies"
-
-    # Determine expected configuration file path (stored next to module)
-    config_file = package_path / f"{module_name}.json"
-
-    # Step 1: Check if config file already exists
-    if config_file.exists():
-        try:
-            with open(config_file, "r") as f:
-                config = json.load(f)  # ✅ Load the existing configuration
-        except json.JSONDecodeError:
-            print(f"⚠️ Invalid JSON format in {config_file}, regenerating...")
-            config = None
-    else:
-        config = None  # If config file doesn't exist, we need to generate one
-
-    # Step 2: If no valid config file, generate a new default config
-    if config is None:
-        config = package_configs()  # Call `package_configs()` to create a base config
-
-        # Modify the configuration for the specific module
-        logs_basedir = Path(config["logging"]["logs_basedir"])  # Ensure correct base logs path
-        package_logs = logs_basedir / package_name  # Ensure logs are inside correct package
-
-        config["logging"].update({
-            "package_name": package_name,
-            "module_name": module_name,
-            "logs_basedir": str(logs_basedir),  # Store base logs path
-            "package_logs": str(package_logs),  # Store logs inside correct package
-            "log_filename": str(package_logs / f"{module_name}.log")  # Static log file name
-        })
-
-        # Save the modified configuration to disk in the correct package location
-        with open(config_file, "w") as f:
-            json.dump(config, f, indent=2)
-
-        print(f"✅ Configuration saved: {config_file}")
-
-    # Step 3: Dynamically update `log_filename` at runtime (without modifying the file)
-
-    logs_basedir = Path(config["logging"]["logs_basedir"])  # Ensure correct log directory
-    package_logs = logs_basedir / package_name  # Ensure logs go inside correct package directory
-
-    # Ensure log directory exists
-    package_logs.mkdir(parents=True, exist_ok=True)
-
-    # Generate unique timestamp for log filename (avoiding collisions)
-    timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S%f')[:-3]
-
-    # Dynamically update `log_filename` at runtime (but do not modify the saved config file)
-    config["logging"]["log_filename"] = str(package_logs / f"{module_name}_{timestamp}.log")
-
-    # Step 4: Return the final configuration (with updated log filename)
-    return config
-
 def setup_configs():
     """Dynamically initializes logging configuration for the calling module."""
 
@@ -224,7 +154,7 @@ def setup_configs():
     # Identify the package directory and name
     package_path = caller_path.parent
     package_name = package_path.name
-    module_name = caller_path.stem  # e.g., "enable_tracing" or "dependencies"
+    module_name = caller_path.stem  # e.g., "tracing" or "dependencies"
 
     # Determine expected configuration file path (stored in the package)
     config_file = package_path / f"{module_name}.json"
@@ -235,7 +165,7 @@ def setup_configs():
     if config_file.exists():
         try:
             with open(config_file, "r") as f:
-                config = json.load(f)  # ✅ Load the existing configuration
+                config = json.load(f)  # Load the existing configuration
                 if not isinstance(config, dict) or "logging" not in config:
                     print(f"⚠️ Invalid JSON structure in {config_file}, regenerating...")
                     config = None  # Force regeneration if structure is incorrect
@@ -259,8 +189,8 @@ def setup_configs():
     config["logging"].update({
         "package_name": package_name,
         "module_name": module_name,
-        "package_logs": str(package_logs.relative_to(project_root)),  # ✅ Relative path
-        "log_filename": str((package_logs / f"{module_name}.log").relative_to(project_root))  # ✅ Relative path
+        "package_logs": str(package_logs.relative_to(project_root)),  # Relative path
+        "log_filename": str((package_logs / f"{module_name}.log").relative_to(project_root))  # Relative path
     })
 
     # Update "updated" timestamp only if modifications were needed
@@ -271,7 +201,7 @@ def setup_configs():
         with open(config_file, "w") as f:
             json.dump(config, f, indent=2)
 
-        print(f"✅ Configuration updated: {config_file}")
+        print(f"Configuration updated: {config_file}")
 
     # Generate unique timestamp for log filename (avoiding collisions)
     timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S%f')[:-3]

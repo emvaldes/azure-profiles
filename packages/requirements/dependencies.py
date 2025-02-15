@@ -45,15 +45,10 @@ import datetime
 import logging
 import argparse
 import json
+
 import importlib.metadata
 
 from pathlib import Path
-
-from packages.appflow_tracer.enable_tracing import (
-    log_message,
-    setup_logging,
-    setup_configs
-)
 
 # Define base directories
 LIB_DIR = Path(__file__).resolve().parent.parent.parent / "lib"
@@ -65,22 +60,28 @@ if str(LIB_DIR) not in sys.path:
 # for path in sys.path:
 #     print(f"  - {path}")
 
-# Import system_variables from lib.system_variables
-from lib.system_variables import (
-    project_root,
-    project_logs,
-    max_logfiles
+# Import modules & variables from lib.*
+from lib import (
+    pkgconfig_loader as pkgconfig,
+    system_variables as environment
 )
 
-from lib.pkgconfig_loader import (
-    setup_configs
+from packages.appflow_tracer import (
+    tracing
+)
+
+# Import trace_utils from lib.*_utils
+from packages.appflow_tracer.lib import (
+    file_utils,
+    log_utils,
+    trace_utils
 )
 
 def load_requirements(requirements_file):
     """Load dependencies from a JSON requirements file."""
     requirements_path = Path(requirements_file).resolve()
     if not requirements_path.exists():
-        log_message(f"ERROR: Requirements file not found at {requirements_path}", "error", configs=CONFIGS)
+        log_utils.log_message(f"ERROR: Requirements file not found at {requirements_path}", "error", configs=CONFIGS)
         raise FileNotFoundError(f"ERROR: Requirements file not found at {requirements_path}")
 
     try:
@@ -92,13 +93,13 @@ def load_requirements(requirements_file):
             ]
             return dependencies
     except json.JSONDecodeError as e:
-        log_message(f"ERROR: Invalid JSON structure in '{requirements_path}'. Details: {e}", "error", configs=CONFIGS)
+        log_utils.log_message(f"ERROR: Invalid JSON structure in '{requirements_path}'. Details: {e}", "error", configs=CONFIGS)
         raise ValueError(f"ERROR: Invalid JSON structure in '{requirements_path}'.\nDetails: {e}")
 
 def install_package(package, version_info):
     """Install a specific package version using pip."""
     version = version_info["target"]
-    log_message(f"Installing {package}=={version}...", configs=CONFIGS)
+    log_utils.log_message(f"Installing {package}=={version}...", configs=CONFIGS)
     try:
         # subprocess.check_call([sys.executable, "-m", "pip", "install", f"{package}=={version}"])
         subprocess.check_call([
@@ -109,9 +110,9 @@ def install_package(package, version_info):
             "--user",
             f"{package}=={version}"
         ])
-        log_message(f"Successfully installed {package}=={version}", configs=CONFIGS)
+        log_utils.log_message(f"Successfully installed {package}=={version}", configs=CONFIGS)
     except subprocess.CalledProcessError as e:
-        log_message(f"❌ ERROR: Failed to install {package}=={version}. Pip error: {e}", "error", configs=CONFIGS)
+        log_utils.log_message(f"❌ ERROR: Failed to install {package}=={version}. Pip error: {e}", "error", configs=CONFIGS)
         sys.exit(1)
 
 def install_requirements(requirements_file):
@@ -119,7 +120,7 @@ def install_requirements(requirements_file):
     dependencies = load_requirements(requirements_file)
 
     if not dependencies:
-        log_message("⚠ No dependencies found in requirements.json", "warning", configs=CONFIGS)
+        log_utils.log_message("⚠ No dependencies found in requirements.json", "warning", configs=CONFIGS)
         return
 
     for dep in dependencies:
@@ -135,18 +136,18 @@ def is_package_installed(package, version_info):
     """Check if a specific package version is installed."""
     version = version_info.get("target", None)
     if not version:
-        log_message(f"⚠️ Skipping {package}: Missing 'target' version.", "warning", configs=CONFIGS)
+        log_utils.log_message(f"⚠️ Skipping {package}: Missing 'target' version.", "warning", configs=CONFIGS)
         return False
     try:
         installed_version = importlib.metadata.version(package)
         if installed_version == version:
-            log_message(f"{package}=={version} is already installed.", configs=CONFIGS)
+            log_utils.log_message(f"{package}=={version} is already installed.", configs=CONFIGS)
             return True
         else:
-            log_message(f"⚠️ {package} installed, but version {installed_version} != {version} (expected).", "warning", configs=CONFIGS)
+            log_utils.log_message(f"⚠️ {package} installed, but version {installed_version} != {version} (expected).", "warning", configs=CONFIGS)
             return False
     except importlib.metadata.PackageNotFoundError:
-        log_message(f"❌ {package} is NOT installed.", "error", configs=CONFIGS)
+        log_utils.log_message(f"❌ {package} is NOT installed.", "error", configs=CONFIGS)
         return False
 
 def parse_arguments():
@@ -196,7 +197,7 @@ def update_installed_packages(requirements_file, config_filepath):
     print(f'Installed JSON file: {config_filepath}')
     with open(config_filepath, "w") as f:
         json.dump({"dependencies": installed_data}, f, indent=4)
-    log_message(f"📄 Installed package status updated in {config_filepath}", configs=CONFIGS)
+    log_utils.log_message(f"📄 Installed package status updated in {config_filepath}", configs=CONFIGS)
 
 # ---------- Module Global variables:
 
@@ -204,20 +205,22 @@ def update_installed_packages(requirements_file, config_filepath):
 
 def main():
     """Main function to parse arguments and run the installer."""
-    # ✅ Ensure the variable exists globally
+    # Ensure the variable exists globally
     global CONFIGS
 
-    CONFIGS = setup_logging(configs=setup_configs())
+    CONFIGS = tracing.setup_logging(
+        configs=pkgconfig.setup_configs()
+    )
     print( f'CONFIGS: {json.dumps(CONFIGS, indent=2)}' )
 
-    packages = project_root / "packages" / CONFIGS["logging"].get("package_name")
+    packages = environment.project_root / "packages" / CONFIGS["logging"].get("package_name")
     config_filepath = packages / "installed.json"
 
     args = parse_arguments()
-    log_message("🔍 Starting dependency installation process...", configs=CONFIGS)
+    log_utils.log_message("🔍 Starting dependency installation process...", configs=CONFIGS)
     install_requirements(args.requirements_file)
     update_installed_packages(args.requirements_file, config_filepath)
-    log_message(f"📂 Logs are being saved in: {CONFIGS["logging"].get("log_filename")}", configs=CONFIGS)
+    log_utils.log_message(f"📂 Logs are being saved in: {CONFIGS["logging"].get("log_filename")}", configs=CONFIGS)
 
 if __name__ == "__main__":
     main()

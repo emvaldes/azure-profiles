@@ -24,8 +24,8 @@
 │   └── timezone_localoffset.py
 ├── logs/
 │   ├── appflow_tracer/
-│   │   ├── enable_tracing_<timestamp>.log
-│   │   └── enable_tracing_<timestamp>.log
+│   │   ├── tracing_<timestamp>.log
+│   │   └── tracing_<timestamp>.log
 │   └── requirements/
 │       └── dependencies_<timestamp>.log
 ├── packages/
@@ -33,7 +33,7 @@
 │   ├── appflow_tracer/
 │   │   ├── __init__.py
 │   │   ├── __main__.py
-│   │   └── enable_tracing.py
+│   │   └── tracing.py
 │   └── requirements/
 │       ├── __init__.py
 │       ├── __main__.py
@@ -41,8 +41,8 @@
 │       └── requirements.json
 ├── run.py
 └── scripts/
-    ├── profile-privileges.log
-    └── profile-privileges.py*
+    ├── devops-workflow.log
+    └── devops-workflow.py*
 
 10 directories, 30 files
 ```
@@ -333,7 +333,7 @@ This file initializes the `packages/` directory as a valid Python package.
 Submodules within `packages/` should be imported explicitly:
 
 ```python
-from packages.appflow_tracer import enable_tracing
+from packages.appflow_tracer import tracing
 from packages.requirements import dependencies
 ```
 
@@ -348,7 +348,7 @@ This file initializes the `appflow_tracer` package and provides access to its ma
 
 **Key Responsibilities:**
 - Marks the `appflow_tracer` directory as a Python package.
-- Imports and exposes the `main()` function from `enable_tracing.py`.
+- Imports and exposes the `main()` function from `tracing.py`.
 
 **Usage:**
 To run the tracing function from within another module:
@@ -385,7 +385,7 @@ This ensures tracing and logging are active and ready for capturing system event
 
 ---
 
-#### `packages/appflow_tracer/enable_tracing.py`
+#### `packages/appflow_tracer/tracing.py`
 This module provides a detailed tracing system for monitoring function calls, imports,
 and return values within the framework. It is primarily used for debugging and logging
 execution details.
@@ -405,7 +405,7 @@ execution details.
 To enable tracing and logging for debugging:
 
 ```python
-> python lib/enable_tracing.py ;
+> python lib/tracing.py ;
 ```
 
 This module provides detailed execution tracking for in-depth debugging and performance analysis.
@@ -487,7 +487,7 @@ This module ensures the framework has all necessary dependencies installed.
 
 ## Scripts (`scripts/`)
 
-#### `scripts/profile-privileges.py`
+#### `scripts/devops-workflow.py`
 This script ensures user privileges, dependencies, and environment configurations
 are validated before execution.
 
@@ -506,7 +506,7 @@ are validated before execution.
 To verify system privileges and environment configurations:
 
 ```python
-> python scripts/profile-privileges.py ;
+> python scripts/devops-workflow.py ;
 ```
 
 This script ensures a clean and well-configured runtime environment.
@@ -552,16 +552,16 @@ If values are missing, the framework will prompt the user interactively.
 
 #### `run.py`
 This script serves as the main execution entry point for the framework.
-It automatically runs the `profile-privileges.py` script to validate user privileges
+It automatically runs the `devops-workflow.py` script to validate user privileges
 and ensure system configurations and dependencies are properly set up.
 
 **Key Responsibilities:**
-- Launches the `profile-privileges.py` script to set up the runtime environment.
+- Launches the `devops-workflow.py` script to set up the runtime environment.
 - Ensures required parameters and dependencies are validated before execution.
 - Provides a single-command startup mechanism.
 
 **Key Functions:**
-- Uses `subprocess.run()` to execute `profile-privileges.py`.
+- Uses `subprocess.run()` to execute `devops-workflow.py`.
 
 **Usage:**
 To start the framework:

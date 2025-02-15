@@ -13,7 +13,7 @@ are properly validated before launching the main workflow.
 
 Features:
 
-- Automatically runs the `profile-privileges.py` script to set up the environment.
+- Automatically runs the `devops-workflow.py` script to set up the environment.
 - Ensures required dependencies and runtime configurations are properly initialized.
 - Provides a simple way to start the framework with a single command.
 
@@ -33,5 +33,5 @@ To start the framework:
 
 import subprocess
 
-print("Running profile-privileges script...")
-subprocess.run(["python", "scripts/profile-privileges.py"])
+print("Running devops-workflow script...")
+subprocess.run(["python", "scripts/devops-workflow.py"])

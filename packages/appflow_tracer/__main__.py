@@ -8,21 +8,22 @@ Description:
 AppFlow Tracing Package Entry Point
 
 This file serves as the entry point for executing the `appflow_tracer` package in standalone mode.
-It initializes the tracing system and ensures logging is enabled.
+It initializes the logging system using `setup_logging()`.
 
 Features:
 
-- Automatically enables tracing and logging when run as a script.
-- Retrieves the tracer instance and prints system status.
-- Provides an overview of log file storage.
-
-This module allows the package to be executed directly using:
+- Ensures structured logging is initialized when executed directly.
+- Provides a standalone execution mode for quick validation.
+- Supports `python -m packages.appflow_tracer` execution.
 
 Usage:
 
-> python -m packages.appflow_tracer ;
+> python -m packages.appflow_tracer
 """
+import json
+from .tracing import setup_logging
 
-from .enable_tracing import main
 if __name__ == "__main__":
-    main()
+    CONFIGS = setup_logging()
+    # print("Logging system initialized via standalone execution.")
+    # print( f'CONFIGS: {json.dumps(CONFIGS, indent=2)}' )

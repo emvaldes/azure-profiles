@@ -4,7 +4,7 @@
 .project
 
 ## Ignore dynamically created installed.json
-packages/appflow_tracer/enable_tracing.json
+packages/appflow_tracer/tracing.json
 packages/requirements/installed.json
 packages/requirements/dependencies.json
 

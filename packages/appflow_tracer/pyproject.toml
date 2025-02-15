@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "appflow-tracer"
+version = "1.0.0"
+description = "Structured tracing system for Python applications"
+readme = "README.md"
+authors = [{ name = "Eduardo Valdes", email = "emvaldes@hotmail.com" }]
+license = { file = "LICENSE" }
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/emvaldes/appflow-tracer"
+Repository = "https://github.com/emvaldes/appflow-tracer"

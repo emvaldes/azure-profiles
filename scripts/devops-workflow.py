@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-File Path: scripts/profile-privileges.py
+File Path: scripts/devops-workflow.py
 
 
 Description:
@@ -32,7 +32,7 @@ Dependencies:
 Usage:
 
 To execute privilege validation and environment setup:
-> python scripts/profile-privileges.py ;
+> python scripts/devops-workflow.py ;
 """
 
 import sys
@@ -68,7 +68,7 @@ except ImportError as e:
     sys.exit(1)
 
 # Import tracing module (no need to pass arguments)
-from packages.appflow_tracer import enable_tracing
+from packages.appflow_tracer import tracing
 
 # Import other necessary modules from `lib/`
 from lib import system_params
@@ -87,8 +87,8 @@ logging.basicConfig(
 logging.getLogger().setLevel(logging.DEBUG)  # Force debug logging
 
 # # Optionally override default tracing settings
-# enable_tracing.TRACE = True  # Disable console output if needed
-# enable_tracing.LOGS = True    # Ensure logging is enabled
+# tracing.TRACE = True  # Disable console output if needed
+# tracing.LOGS = True    # Ensure logging is enabled
 
 # Function to remove the specific lib/__pycache__ folder
 def remove_pycache():
