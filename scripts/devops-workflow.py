@@ -3,36 +3,41 @@
 """
 File Path: scripts/devops-workflow.py
 
-
 Description:
 
-User Privileges and Environment Setup
+Execution Readiness & Environment Setup
 
-This script validates user privileges and system configurations, ensuring all required
-environment variables are properly set. It dynamically manages runtime parameters
-and interacts with dependency and tracing modules.
+This script validates user privileges, ensures system dependencies are installed,
+and dynamically manages runtime configurations before execution.
+
+It processes CLI arguments, loads required parameters, and ensures all missing
+variables are either retrieved interactively or handled appropriately.
 
 Features:
 
-- Ensures required dependencies are installed before execution.
-- Loads and validates system parameters dynamically.
-- Prompts users interactively for missing environment variables.
-- Removes `__pycache__` directories to prevent stale bytecode issues.
-- Logs execution details for debugging.
+- **Dependency Validation**: Ensures required dependencies are installed before execution.
+- **Runtime Parameter Handling**: Dynamically loads and validates system parameters.
+- **Interactive User Input**: Prompts users for missing environment variables when needed.
+- **System Cleanup**: Removes stale cache files (`__pycache__`) to prevent inconsistencies.
+- **Logging & Tracing**: Logs execution details and system configurations for debugging.
 
-This script is essential for ensuring a properly configured execution environment.
+Expected Behavior:
+
+- If required dependencies are missing, an error is logged, and execution stops.
+- If required parameters are missing, the user is prompted interactively.
+- All system checks and runtime configurations are logged for debugging.
 
 Dependencies:
 
-- argparse
-- logging
-- json
-- shutil
+- `argparse`, `logging`, `json`, `sys`, `os`
+- `packages.requirements.dependencies` (for dependency validation)
+- `packages.appflow_tracer.tracing` (for structured logging)
+- `lib.system_params`, `lib.argument_parser`, `lib.system_variables` (for system parameter handling)
 
 Usage:
 
 To execute privilege validation and environment setup:
-> python scripts/devops-workflow.py ;
+> python scripts/devops-workflow.py
 """
 
 import sys
@@ -86,21 +91,51 @@ logging.basicConfig(
 )
 logging.getLogger().setLevel(logging.DEBUG)  # Force debug logging
 
-# # Optionally override default tracing settings
-# tracing.TRACE = True  # Disable console output if needed
-# tracing.LOGS = True    # Ensure logging is enabled
+def remove_pycache() -> None:
+    """
+    Remove the `lib/__pycache__` directory if it exists.
 
-# Function to remove the specific lib/__pycache__ folder
-def remove_pycache():
-    """Remove the lib/__pycache__ directory."""
+    This function ensures that stale Python bytecode files are removed before execution
+    to prevent inconsistencies during dependency validation and execution.
+
+    Raises:
+        OSError: If an error occurs while deleting the directory.
+
+    Returns:
+        None
+
+    Example:
+        >>> remove_pycache()
+        # Removes `lib/__pycache__/` if present.
+    """
+
     pycache_dir = project_root / "lib" / "__pycache__"
     if pycache_dir.exists():
         shutil.rmtree(pycache_dir)
         print()
         logging.info(f"{pycache_dir} removed.\n")
 
-def request_input(var_name):
-    """Prompt user for input interactively, handling empty inputs and interruptions."""
+def request_input(var_name: str) -> str:
+    """
+    Prompt the user for input interactively, handling empty values and interruptions.
+
+    If executed in a non-interactive environment, the function logs an error and exits.
+
+    Args:
+        var_name (str): The name of the required environment variable.
+
+    Raises:
+        SystemExit: If required input is missing in a non-interactive environment.
+        KeyboardInterrupt: If the user manually interrupts input.
+
+    Returns:
+        str: The user-provided input.
+
+    Example:
+        >>> request_input("API_KEY")
+        "my_secret_api_key"
+    """
+
     if not sys.stdin.isatty():
         print(f"ERROR: Required parameter '{var_name}' is missing and cannot be requested in a non-interactive environment.")
         exit(1)
@@ -114,9 +149,27 @@ def request_input(var_name):
         print("\nERROR: Input interrupted by user. Exiting cleanly.")
         exit(1)
 
-def main():
+def main() -> None:
     """
-    Main execution function, dynamically updating RUNTIME VARS from CLI arguments.
+    Main execution function for validating dependencies, setting up runtime configurations,
+    and handling missing environment variables.
+
+    This function:
+    - Ensures dependencies are installed.
+    - Loads system parameters from CLI arguments and configuration files.
+    - Removes stale Python bytecode files (`__pycache__`).
+    - Prompts the user for missing environment variables in an interactive mode.
+    - Logs system configurations for debugging.
+
+    Raises:
+        SystemExit: If required dependencies or parameters are missing in a non-interactive environment.
+
+    Returns:
+        None
+
+    Example:
+        >>> python scripts/devops-workflow.py
+        # Runs the validation process before execution.
     """
 
     # Register cleanup function at exit

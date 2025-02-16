@@ -5,57 +5,115 @@ File Path: ./lib/system_variables.py
 
 Description:
 
-System Variables and Configuration Paths
+System-Wide Configuration Paths and Variables
 
-This module defines key system-wide variables, file paths, and configuration locations
-that are referenced throughout the framework.
+This module defines system-wide constants and configuration file paths
+that serve as references throughout the framework.
 
-Features:
+Core Features:
 
-- Defines paths for essential configuration files (`.env`, `runtime-params.json`, etc.).
-- Establishes the project root directory for consistent file access.
-- Manages aggregated configuration sources for parameter merging.
-- Restricts log file quota to maintain storage efficiency.
+- **Standardized Configuration Paths**: Defines paths for `.env`, `runtime-params.json`, etc.
+- **Project Root Management**: Establishes a unified reference for directory traversal.
+- **Dynamic Configuration Aggregation**: Aggregates available configuration files.
+- **Log File Quota Management**: Restricts the number of stored logs for efficiency.
 
-This module ensures a structured and consistent reference for file paths and configurations.
+Primary Variables:
+
+- `project_root`: Base directory for resolving project files.
+- `env_filepath`: Location of the `.env` file for runtime parameters.
+- `runtime_params_filepath`: Stores dynamically generated runtime parameters.
+- `system_params_filepath`: Stores global system-wide configurations.
+- `project_params_filepath`: Stores project-level configurations.
+- `default_params_filepath`: Defines framework default parameters.
+- `system_params_listing`: Aggregates configuration sources dynamically.
+- `max_logfiles`: Restricts the number of stored logs (default: `5`).
+
+Expected Behavior:
+
+- Configuration paths should always resolve correctly, ensuring consistency.
+- `max_logfiles` should ideally be configurable via an environment variable.
+- System parameter files should be aggregated dynamically for flexibility.
 
 Dependencies:
 
-- pathlib
+- `pathlib` (for filesystem path handling)
 
 Usage:
 
-This module is imported where system-wide configuration file paths are needed.
+This module is imported wherever system-wide file path references are required.
 """
+
 
 from pathlib import Path
 
-## Project Root (path) for parent elements
+"""
+The root directory of the project.
+This is used to resolve paths for all configurations and logs dynamically.
+"""
 project_root = Path(__file__).resolve().parent.parent
+
+
+"""
+Directory path where all log files are stored.
+Logs are structured under `logs/<package-name>/<module-name>-<timestamp>.log`.
+"""
 project_logs = project_root / "logs"
+
+"""
+Directory path where all Python packages (`packages/`) are stored.
+"""
 project_packages = project_root / "packages"
 
-## Target .env file for the dotenv module (load_dotenv, dotenv_values)
+"""
+Path to the `.env` file containing runtime environment variables.
+Used by the `dotenv` package for loading environment configurations dynamically.
+"""
 env_filepath = project_root / ".env"
 
-## ./configs/runtime-params.json: Runtime Configurations
+"""
+Path to the `runtime-params.json` file.
+This file is dynamically generated at runtime by merging system-wide (`default-params.json`)
+and project-specific (`project-params.json`) parameters.
+"""
 runtime_params_filename = "runtime-params.json"
 runtime_params_filepath = project_root / "configs" / runtime_params_filename
 
-## ./configs/system-params.json: Global Configurations
+"""
+Path to the `system-params.json` file.
+This file stores global system-wide configurations.
+"""
 system_params_filename = "system-params.json"
 system_params_filepath = project_root / "configs" / system_params_filename
 
-## ./configs/project-params.json: Project Global Configurations
+"""
+Path to the `project-params.json` file.
+This file stores project-specific configurations, typically customized by the user.
+"""
 project_params_filename = "project-params.json"
 project_params_filepath = project_root / "configs" / project_params_filename
 
-## ./configs/default-params.json: Defaults Global Configurations
+"""
+Path to the `default-params.json` file.
+This file contains standardized, framework-wide default parameters.
+"""
 default_params_filename = "default-params.json"
 default_params_filepath = project_root / "configs" / default_params_filename
 
-## Aggregated Parameters Configuration files.
-system_params_listing = [ project_params_filepath, default_params_filepath ]
+"""
+List of JSON configuration files used for system parameter aggregation.
 
-## Restricting ./.logs/* files quota
+Includes:
+- `project-params.json`
+- `default-params.json`
+"""
+system_params_listing = [
+    project_params_filepath,
+    default_params_filepath
+]
+
+"""
+Maximum number of log files allowed per module.
+If the number of logs exceeds this limit, older logs are pruned automatically.
+Default: `5`
+"""
 max_logfiles = 5

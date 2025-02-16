@@ -1,17 +1,55 @@
 #!/usr/bin/env python3
 
+"""
+File Path: packages/appflow_tracer/lib/log_utils.py
+
+Description:
+
+Structured Logging Utilities
+
+This module provides structured logging functionality, enabling detailed
+logging to both console and log files. It supports logging levels,
+custom formats, and structured data output.
+
+Core Features:
+
+- **Structured Log Messages**: Formats logs in a consistent manner.
+- **Console and File Logging**: Sends logs to both console and files.
+- **Custom Log Levels**: Supports INFO, WARNING, ERROR, DEBUG, etc.
+- **ANSI Color Support**: Enables colored output for console logs.
+
+Primary Functions:
+
+- `log_message(message, category, json_data, serialize_json, configs, handler)`:
+  Handles structured logging and directs output to the appropriate destination.
+- `output_logfile(logger, message, json_data)`: Writes logs to a structured log file.
+- `output_console(message, category, json_data, configs)`: Displays formatted logs in the console.
+
+Expected Behavior:
+
+- Logs are written to both the console and log files based on configuration settings.
+- JSON data is formatted properly if included in log messages.
+- Log categories map to appropriate logging levels (INFO, DEBUG, ERROR, etc.).
+
+Dependencies:
+
+- `json`, `logging`, `datetime`
+- `CONFIGS` (global configuration dictionary, must be available)
+- `file_utils` (for log file management)
+
+Usage:
+
+To log a structured message:
+> log_message("This is a log entry", category="INFO", json_data={"key": "value"})
+
+To log a message with a warning level:
+> log_message("Something might be wrong", category="WARNING")
+"""
+
 import json  # If structured data is part of logging
 import logging
 
 from datetime import datetime  # If timestamps are used or manipulated
-
-"""
-Logging Utilities (log_utils.py)
-
-log_message(): Handles structured logging logic.
-output_logfile(): Manages writing log entries to log files.
-output_console(): Directs logging output to the console with formatting.
-"""
 
 # Determine the correct logging level
 log_levels = {
@@ -34,19 +72,21 @@ def log_message(
     handler: logging.Logger = None
 ) -> None:
     """
-    Logs a structured message to the appropriate logger and optionally outputs it to the console.
+    Log a structured message with optional JSON data to both console and log files.
 
-    This function supports various log levels, appends additional data in JSON format,
-    and ensures that all logs follow a consistent structured format. It also integrates
-    with the global configurations to determine logging behavior.
+    This function supports multiple log levels, formats messages in a structured manner,
+    and appends additional structured JSON data if provided. The behavior is influenced
+    by global configurations, such as whether logs should be written to a file or displayed
+    on the console.
 
     Args:
-        message (str): The message text to be logged.
-        category (str): The logging category (e.g., "INFO", "WARNING", "ERROR").
-        json_data (dict, optional): Additional structured data to log alongside the message.
-        serialize_json (bool, optional): If True, the `json_data` is serialized to a JSON string.
-        configs (dict, optional): A configuration dictionary. Defaults to the global `CONFIGS`.
-        handler (logging.Logger, optional): A specific logger instance to use. If None, defaults to the globally configured logger.
+        message (str): The main log message.
+        category (str, optional): The log level/category (e.g., "INFO", "WARNING", "ERROR").
+            Defaults to "INFO".
+        json_data (dict, optional): Additional structured JSON data to log.
+        serialize_json (bool, optional): If True, the `json_data` is serialized into a JSON string.
+        configs (dict, optional): Configuration dictionary. Defaults to global `CONFIGS` if not provided.
+        handler (logging.Logger, optional): The specific logger instance to use. Defaults to the global logger.
 
     Returns:
         None
@@ -84,16 +124,16 @@ def output_logfile(
     json_data: dict = None
 ) -> None:
     """
-    Writes a log message to the file associated with the given logger.
+    Write a structured log message to a log file.
 
-    The function appends the structured log message and any additional JSON
-    data to the log file, ensuring a consistent format and order. It does not
-    print anything to the console.
+    This function appends the formatted log message to a log file associated with the
+    given logger. If structured data (`json_data`) is provided, it is included in the
+    log entry.
 
     Args:
-        logger (logging.Logger): The logger instance used for writing the log.
-        message (str): The main log message text.
-        json_data (dict, optional): Additional structured data to include in the log entry.
+        logger (logging.Logger): The logger instance used for writing logs.
+        message (str): The log message text.
+        json_data (dict, optional): Additional structured JSON data for the log entry.
 
     Returns:
         None
@@ -117,17 +157,17 @@ def output_console(
     configs: dict = None
 ) -> None:
     """
-    Outputs a log message to the console with optional colored formatting.
+    Display a structured log message in the console with optional ANSI color formatting.
 
     This function formats the given message according to the specified logging category
-    and appends any JSON data provided. It uses the configurations to determine color
-    coding and ensures that console output is distinct from file-based logging.
+    and appends structured JSON data if provided. ANSI color codes are applied based on
+    the logging configuration.
 
     Args:
-        message (str): The message text to print.
+        message (str): The main message to display.
         category (str): The logging category (e.g., "INFO", "WARNING", "ERROR").
-        json_data (dict, optional): Additional structured data to print.
-        configs (dict, optional): A configuration dictionary for colors and formatting.
+        json_data (dict, optional): Additional structured JSON data for output.
+        configs (dict, optional): Configuration dictionary for colors and formatting.
 
     Returns:
         None

@@ -7,36 +7,38 @@ Description:
 
 Dependency Management System
 
-This module handles the installation and validation of project dependencies
-based on a structured JSON requirements file.
+This module manages project dependencies by loading a structured `requirements.json` file,
+validating installed packages, and installing any missing dependencies.
+
+It ensures the framework maintains all required dependencies for smooth execution.
 
 Features:
 
-- Loads dependencies from `requirements.json`.
-- Verifies if required packages and versions are installed.
-- Installs missing or outdated packages using `pip`.
-- Updates an `installed.json` file to track package status.
-- Logs installation and validation steps for debugging.
+- **Loads Dependencies**: Reads dependencies from `requirements.json`.
+- **Version Validation**: Verifies if required packages and versions are installed.
+- **Installation Handling**: Installs missing or outdated packages using `pip`.
+- **Tracking & Logging**: Updates `installed.json` to track package status.
+- **Logging Support**: Logs installation and validation steps for debugging.
 
-This module ensures the framework maintains all required dependencies for smooth execution.
+Expected Behavior:
+
+- If a package is missing, it is installed automatically.
+- If a package version is incorrect, an installation attempt is made.
+- Logs all dependency checks and installations for traceability.
 
 Dependencies:
 
-- sys
-- json
-- subprocess
-- importlib.metadata
-- argparse
-- logging
-- pathlib
+- `sys`, `json`, `subprocess`, `importlib.metadata`, `argparse`, `logging`, `pathlib`
+- `packages.appflow_tracer.tracing` (for logging support)
+- `lib.pkgconfig_loader`, `lib.system_variables` (for configuration management)
 
 Usage:
 
 To install dependencies from the default `requirements.json`:
-> python dependencies.py ;
+> python dependencies.py
 
 To specify a custom requirements file:
-> python dependencies.py -f /path/to/custom.json ;
+> python dependencies.py -f /path/to/custom.json
 """
 
 import sys
@@ -77,8 +79,28 @@ from packages.appflow_tracer.lib import (
     trace_utils
 )
 
-def load_requirements(requirements_file):
-    """Load dependencies from a JSON requirements file."""
+def load_requirements(requirements_file: str) -> list:
+    """
+    Load dependencies from a JSON requirements file.
+
+    Reads a structured JSON file that defines required dependencies, extracting
+    package names and version requirements.
+
+    Args:
+        requirements_file (str): The path to the JSON requirements file.
+
+    Raises:
+        FileNotFoundError: If the requirements file does not exist.
+        ValueError: If the JSON file is invalid or improperly structured.
+
+    Returns:
+        list: A list of dictionaries, each containing a package name and version details.
+
+    Example:
+        >>> load_requirements("requirements.json")
+        [{"package": "requests", "version": {"target": "2.28.1"}}]
+    """
+
     requirements_path = Path(requirements_file).resolve()
     if not requirements_path.exists():
         log_utils.log_message(f"ERROR: Requirements file not found at {requirements_path}", "error", configs=CONFIGS)
@@ -96,8 +118,31 @@ def load_requirements(requirements_file):
         log_utils.log_message(f"ERROR: Invalid JSON structure in '{requirements_path}'. Details: {e}", "error", configs=CONFIGS)
         raise ValueError(f"ERROR: Invalid JSON structure in '{requirements_path}'.\nDetails: {e}")
 
-def install_package(package, version_info):
-    """Install a specific package version using pip."""
+def install_package(
+    package: str,
+    version_info: dict
+) -> None:
+    """
+    Install a specific package version using pip.
+
+    This function attempts to install the specified package version using pip.
+    It ensures that missing or outdated packages are properly updated.
+
+    Args:
+        package (str): The name of the package to install.
+        version_info (dict): A dictionary containing the target version of the package.
+
+    Raises:
+        SystemExit: If the package installation fails.
+
+    Returns:
+        None
+
+    Example:
+        >>> install_package("requests", {"target": "2.28.1"})
+        Installing requests==2.28.1...
+    """
+
     version = version_info["target"]
     log_utils.log_message(f"Installing {package}=={version}...", configs=CONFIGS)
     try:
@@ -115,8 +160,24 @@ def install_package(package, version_info):
         log_utils.log_message(f"❌ ERROR: Failed to install {package}=={version}. Pip error: {e}", "error", configs=CONFIGS)
         sys.exit(1)
 
-def install_requirements(requirements_file):
-    """Install missing dependencies from a JSON requirements file."""
+def install_requirements(requirements_file: str) -> None:
+    """
+    Install missing dependencies from a JSON requirements file.
+
+    This function iterates through the dependencies listed in the requirements file,
+    checking if they are installed and installing missing or outdated packages.
+
+    Args:
+        requirements_file (str): The path to the JSON requirements file.
+
+    Returns:
+        None
+
+    Example:
+        >>> install_requirements("requirements.json")
+        Installing missing dependencies...
+    """
+
     dependencies = load_requirements(requirements_file)
 
     if not dependencies:
@@ -132,8 +193,28 @@ def install_requirements(requirements_file):
         else:
             install_package(package, version)
 
-def is_package_installed(package, version_info):
-    """Check if a specific package version is installed."""
+def is_package_installed(
+    package: str,
+    version_info: dict
+) -> bool:
+    """
+    Check if a specific package version is installed.
+
+    This function verifies whether the installed version of a package matches
+    the required target version.
+
+    Args:
+        package (str): The name of the package.
+        version_info (dict): A dictionary containing the target version.
+
+    Returns:
+        bool: True if the package is installed with the correct version, False otherwise.
+
+    Example:
+        >>> is_package_installed("requests", {"target": "2.28.1"})
+        True
+    """
+
     version = version_info.get("target", None)
     if not version:
         log_utils.log_message(f"⚠️ Skipping {package}: Missing 'target' version.", "warning", configs=CONFIGS)
@@ -150,8 +231,21 @@ def is_package_installed(package, version_info):
         log_utils.log_message(f"❌ {package} is NOT installed.", "error", configs=CONFIGS)
         return False
 
-def parse_arguments():
-    """Parse command-line arguments for specifying the requirements file."""
+def parse_arguments() -> argparse.Namespace:
+    """
+    Parse command-line arguments for specifying the requirements file.
+
+    This function enables the user to specify a custom requirements JSON file
+    using the `-f` or `--file` argument.
+
+    Returns:
+        argparse.Namespace: The parsed arguments object containing the selected requirements file.
+
+    Example:
+        >>> parse_arguments()
+        Namespace(requirements_file='requirements.json')
+    """
+
     parser = argparse.ArgumentParser(
         description="Install dependencies from a JSON file. Use -f to specify a custom JSON file."
     )
@@ -163,8 +257,28 @@ def parse_arguments():
     )
     return parser.parse_args()
 
-def update_installed_packages(requirements_file, config_filepath):
-    """Create or update the installed.json file with the local package setup."""
+def update_installed_packages(
+    requirements_file: str,
+    config_filepath: str
+) -> None:
+    """
+    Create or update the `installed.json` file with details of the currently installed packages.
+
+    This function compares installed package versions with required versions and
+    updates the `installed.json` file to track their status.
+
+    Args:
+        requirements_file (str): The path to the JSON requirements file.
+        config_filepath (str): The path where `installed.json` will be saved.
+
+    Returns:
+        None
+
+    Example:
+        >>> update_installed_packages("requirements.json", "installed.json")
+        Updating installed packages...
+    """
+
     dependencies = load_requirements(requirements_file)
     installed_data = []
 
@@ -203,8 +317,24 @@ def update_installed_packages(requirements_file, config_filepath):
 
 # ---------- Module operations:
 
-def main():
-    """Main function to parse arguments and run the installer."""
+def main() -> None:
+    """
+    Main function to parse arguments and run the dependency installation process.
+
+    This function:
+    - Parses command-line arguments.
+    - Loads the required dependencies.
+    - Installs missing dependencies.
+    - Updates the installed package tracking file.
+
+    Returns:
+        None
+
+    Example:
+        >>> python dependencies.py
+        Installing dependencies...
+    """
+
     # Ensure the variable exists globally
     global CONFIGS
 

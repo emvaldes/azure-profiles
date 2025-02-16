@@ -1,46 +1,77 @@
 #!/usr/bin/env python3
 
+"""
+File Path: packages/appflow_tracer/lib/serialize_utils.py
+
+Description:
+
+Serialization and String Sanitization Utilities
+
+This module provides helper functions for data serialization and
+code sanitization, ensuring JSON compatibility and clean parsing.
+
+Core Features:
+
+- **Safe Serialization**: Converts Python objects to JSON-friendly formats.
+- **String Sanitization**: Cleans and trims code strings while removing comments.
+
+Primary Functions:
+
+- `safe_serialize(data, verbose)`: Ensures serializable JSON output.
+- `sanitize_token_string(line)`: Removes inline comments from a code string.
+
+Expected Behavior:
+
+- `safe_serialize()` should gracefully handle non-serializable objects.
+- `sanitize_token_string()` should remove comments and preserve meaningful text.
+
+Dependencies:
+
+- `json`, `tokenize`, `StringIO` (for text processing)
+
+Usage:
+
+To safely serialize a Python object:
+> safe_serialize({"key": "value"})
+
+To remove comments from a line of code:
+> sanitize_token_string("some_code()  # this is a comment")
+"""
+
 import json
 import tokenize
 
 from io import StringIO
-
-"""
-Serialization Utilities (serialization_utils.py)
-
-safe_serialize(): Converts data into JSON-friendly formats.
-sanitize_token_string(): Cleans and normalizes code strings.
-"""
 
 def safe_serialize(
     data: any,
     verbose: bool = False
 ) -> str:
     """
-    Serializes data into JSON format, ensuring that it is human-readable and
-    handles non-serializable data gracefully.
+    Convert Python objects into a JSON-compatible serialized string.
 
-    This function attempts to serialize the input data to a JSON string. If
-    serialization fails, it falls back to converting the data into a string
-    representation. It also provides optional pretty-printing for better
-    readability.
+    This function ensures that data is properly serialized into a JSON string format.
+    If an object is not serializable, it gracefully converts it into a string.
+    Optionally supports pretty-printing for improved readability.
 
     Args:
-        data (any): The data to be serialized.
-        verbose (bool, optional): If True, the JSON will be formatted with
-            indentation for readability. Defaults to False.
+        data (any): The Python object to serialize.
+        verbose (bool, optional): If True, the JSON output is formatted with indentation.
+            Defaults to False.
 
     Returns:
-        str: The serialized JSON string, or a string representation of the
-        data if serialization fails.
+        str: A JSON-formatted string if serialization is successful, or a string representation
+        of the object if serialization fails.
 
     Example:
         >>> safe_serialize({"key": "value"})
         '{"key": "value"}'
+
         >>> safe_serialize({"key": "value"}, verbose=True)
         '{
             "key": "value"
         }'
+
         >>> safe_serialize(object())
         "[Unserializable data]"
     """
@@ -52,22 +83,23 @@ def safe_serialize(
 
 def sanitize_token_string(line: str) -> str:
     """
-    Removes trailing comments from a code line and trims whitespace.
+    Remove trailing comments and excess whitespace from a line of code.
 
-    This function is useful when parsing source code or configuration files.
-    It ensures that only the essential code or text remains, excluding comments
-    and extra spaces.
+    This function processes a given line of code and removes any inline comments,
+    ensuring only the essential code remains. Useful for parsing source code or
+    configuration files.
 
     Args:
-        line (str): A line of text that may include comments and extra spaces.
+        line (str): A single line of text that may contain comments and extra spaces.
 
     Returns:
-        str: A sanitized version of the input line, with comments and
-        whitespace removed.
+        str: The sanitized version of the input line, with comments and
+        unnecessary whitespace removed.
 
     Example:
         >>> sanitize_token_string("some_code()  # this is a comment")
         "some_code()"
+
         >>> sanitize_token_string("   another_line   ")
         "another_line"
     """

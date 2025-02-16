@@ -5,32 +5,38 @@ File Path: ./lib/system_params.py
 
 Description:
 
-System Parameters Manager
+System Parameter Management
 
-This module handles the management of system-wide parameters by:
-- Loading runtime parameters from JSON configuration files.
-- Merging environment variables with default and project-specific configurations.
-- Ensuring required parameters are validated and properly set at runtime.
+This module handles system-wide parameter management by loading runtime
+parameters from JSON configuration files and merging them with environment variables.
 
-Features:
+Core Features:
 
-- Loads parameters from `runtime-params.json`, `project-params.json`, and `default-params.json`.
-- Dynamically sets environment variables for system-wide configurations.
-- Ensures critical system parameters are properly initialized.
+- **Configuration Loading**: Reads parameters from `runtime-params.json`, `project-params.json`, and `default-params.json`.
+- **Environment Variable Management**: Dynamically sets system-wide environment variables.
+- **Validation and Error Handling**: Ensures required parameters are initialized before execution.
 
-This module ensures that the framework's environment is properly configured before execution.
+Primary Functions:
+
+- `load_json_config(filepath)`: Reads and validates JSON configuration files.
+- `get_runtime_variable(name, required)`: Retrieves an environment variable safely.
+- `configure_params()`: Merges and validates runtime parameters.
+
+Expected Behavior:
+
+- If a required environment variable is missing, an error is logged.
+- JSON files must be well-formed; otherwise, an error is raised.
+- All system parameters are loaded dynamically before execution.
 
 Dependencies:
 
-- json
-- os
-- logging
-- dotenv
+- `os`, `json`, `logging`, `dotenv`, `pathlib`
+- `lib.configure_params` (for JSON merging and validation)
 
 Usage:
 
 To load and initialize system parameters:
-> python system_params.py ;
+> python system_params.py
 """
 
 import sys
@@ -57,8 +63,24 @@ from system_variables import (
     default_params_filepath
 )
 
-def load_json_config(runtime_params_filepath):
-    """Loads environment variables from a JSON configuration file."""
+def load_json_config(runtime_params_filepath: Path) -> dict:
+    """
+    Load environment variables from a JSON configuration file.
+
+    Reads a JSON file and ensures its structure is valid before returning
+    the parsed contents.
+
+    Args:
+        runtime_params_filepath (Path): The file path of the JSON configuration file.
+
+    Raises:
+        ValueError: If the JSON file is empty or has an invalid structure.
+        RuntimeError: If the file cannot be read.
+
+    Returns:
+        dict: The parsed JSON data containing system parameters.
+    """
+
     try:
         with open(runtime_params_filepath, "r") as file:
             data = json.load(file)
@@ -70,8 +92,27 @@ def load_json_config(runtime_params_filepath):
     except Exception as e:
         raise RuntimeError(f"ERROR: Unable to read '{runtime_params_filepath}'. Details: {e}")
 
-def get_runtime_variable(name, required=False):
-    """Retrieve an environment variable safely, handling missing and empty values."""
+def get_runtime_variable(
+    name: str,
+    required: bool = False
+) -> str:
+    """
+    Retrieve an environment variable safely, handling missing or empty values.
+
+    This function fetches an environment variable and logs a warning if a required
+    variable is missing or empty.
+
+    Args:
+        name (str): The name of the environment variable to retrieve.
+        required (bool, optional): Whether the variable is mandatory. Defaults to False.
+
+    Raises:
+        RuntimeError: If there is an issue retrieving the environment variable.
+
+    Returns:
+        str: The value of the environment variable, or None if it is missing.
+    """
+
     try:
         value = os.getenv(name)
         if required and (value is None or value.strip() == ""):

@@ -6,45 +6,65 @@
 ./
 ├── .env
 ├── .gitignore
+├── .outputs/
+│   ├── output-console.log
+│   └── output-logfile.log
+├── .project/
+│   ├── chatgpt-requests.log
+│   ├── project-instructions.log
+│   └── project-objectives.log
 ├── LICENSE
 ├── README.md
 ├── configs/
-│   ├── default-params.json
-│   ├── project-params.json
-│   └── runtime-params.json
+│   ├── .env.header
+│   ├── default-params.json
+│   ├── project-params.json
+│   └── runtime-params.json
 ├── lib/
-│   ├── __init__.py
-│   ├── accesstoken_expiration.py
-│   ├── argument_parser.py
-│   ├── configure_params.py
-│   ├── manage_accesstoken.py
-│   ├── parsing_userinput.py
-│   ├── system_params.py
-│   ├── system_variables.py
-│   └── timezone_localoffset.py
-├── logs/
-│   ├── appflow_tracer/
-│   │   ├── tracing_<timestamp>.log
-│   │   └── tracing_<timestamp>.log
-│   └── requirements/
-│       └── dependencies_<timestamp>.log
+│   ├── __init__.py
+│   ├── accesstoken_expiration.py
+│   ├── argument_parser.py
+│   ├── configure_params.py
+│   ├── manage_accesstoken.py
+│   ├── parsing_userinput.py
+│   ├── pkgconfig_loader.py
+│   ├── system_params.py
+│   ├── system_variables.py
+│   └── timezone_localoffset.py
 ├── packages/
-│   ├── __init__.py
-│   ├── appflow_tracer/
-│   │   ├── __init__.py
-│   │   ├── __main__.py
-│   │   └── tracing.py
-│   └── requirements/
-│       ├── __init__.py
-│       ├── __main__.py
-│       ├── dependencies.py
-│       └── requirements.json
+│   ├── __init__.py
+│   ├── appflow_tracer/
+│   │   ├── LICENSE
+│   │   ├── README.md
+│   │   ├── __init__.py
+│   │   ├── __main__.py
+│   │   ├── lib/
+│   │   │   ├── __init__.py
+│   │   │   ├── file_utils.py
+│   │   │   ├── log_utils.py
+│   │   │   ├── serialize_utils.py
+│   │   │   └── trace_utils.py
+│   │   ├── pyproject.toml
+│   │   ├── setup.py
+│   │   ├── tracing.json
+│   │   ├── tracing.log
+│   │   └── tracing.py
+│   └── requirements/
+│       ├── __init__.py
+│       ├── __main__.py
+│       ├── dependencies.json
+│       ├── dependencies.log
+│       ├── dependencies.py
+│       ├── installed.json
+│       └── requirements.json
 ├── run.py
 └── scripts/
     ├── devops-workflow.log
-    └── devops-workflow.py*
+    ├── devops-workflow.py*
+    ├── testing.json
+    └── testing.py
 
-10 directories, 30 files
+10 directories, 50 files
 ```
 
 ## Overview

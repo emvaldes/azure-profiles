@@ -6,28 +6,41 @@ File Path: ./lib/configure_params.py
 Description:
 
 Configuration Parameters Manager
+
 This module is responsible for loading, validating, and managing configuration parameters.
 It integrates with the framework's parameter handling system, merging user-defined and default settings.
 
-Features:
+Core Features:
 
-- Loads parameters from JSON configuration files.
-- Validates required, optional, and default parameters.
-- Merges user-provided input with predefined configurations.
-- Ensures consistent parameter enforcement across the framework.
+- **JSON Configuration Loading**: Reads structured parameters from system configuration files.
+- **Runtime Parameter Management**: Dynamically integrates `.env` values into execution logic.
+- **Validation & Error Handling**: Ensures required configuration files exist and are correctly formatted.
+- **Automatic Environment Initialization**: Creates missing `.env` and `runtime-params.json` when necessary.
 
-This module plays a critical role in dynamically setting up execution environments based on user
-input and default framework settings.
+Primary Functions:
+
+- `load_json_sources(filepaths, mode)`: Loads and merges JSON configuration files.
+- `fetching_runtime_variables()`: Retrieves structured runtime parameters.
+- `initialize_env_file()`: Ensures `.env` exists and is valid.
+- `initialize_runtime_file()`: Ensures `runtime-params.json` is properly set up.
+- `populate_env_file()`: Writes environment variables dynamically.
+- `populate_runtime_file()`: Generates structured runtime parameters.
+
+Expected Behavior:
+
+- If a required configuration file is missing, an error is logged.
+- JSON parsing errors are handled gracefully to prevent execution failures.
+- `.env` is updated dynamically when runtime parameters are changed.
 
 Dependencies:
 
-- json
-- logging
+- `json`, `os`, `logging`, `dotenv`
+- `system_variables` (for directory paths and project settings)
 
 Usage:
 
 To process and validate configuration parameters:
-> python configure_params.py ;
+> python configure_params.py
 """
 
 import sys
@@ -55,11 +68,29 @@ env_file_header = "## Environment variables (auto-generated)\n\n"
 
 # logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
 
-def load_json_sources(filepaths: List[str], mode: str = "merge") -> Union[Dict, Tuple[Dict]]:
-    """Loads JSON configuration files based on the mode.
-    - 'merge': Merges all JSON files into a single dictionary.
-    - 'fetch': Returns JSON files as a tuple of separate dictionaries.
+def load_json_sources(
+    filepaths: List[str],
+    mode: str = "merge"
+) -> Union[Dict, Tuple[Dict]]:
     """
+    Loads JSON configuration files and merges them or returns them separately.
+
+    This function reads multiple JSON files and either merges them into a single dictionary
+    (`merge` mode) or returns them separately as a tuple of dictionaries (`fetch` mode).
+
+    Args:
+        filepaths (List[str]): A list of JSON file paths to load.
+        mode (str, optional): Determines the return format. Either "merge" (default) or "fetch".
+
+    Raises:
+        ValueError: If a JSON file is not structured as a dictionary.
+        ValueError: If the JSON structure is invalid.
+        RuntimeError: If there's an issue reading the file.
+
+    Returns:
+        Union[Dict, Tuple[Dict]]: Merged dictionary or a tuple of dictionaries.
+    """
+
     json_data = []
     merged_data = {}
     for filepath in filepaths:
@@ -113,8 +144,21 @@ def load_json_sources(filepaths: List[str], mode: str = "merge") -> Union[Dict, 
 #         logging.error(f"Error retrieving runtime variables: {e}")
 #         sys.exit(1)
 
-def fetching_runtime_variables():
-    """Retrieve a dictionary of all target_env values categorized by section."""
+def fetching_runtime_variables() -> Dict[str, Dict[str, Union[str, Dict[str, str]]]]:
+    """
+    Retrieve runtime variables categorized by section.
+
+    Loads structured system parameters and extracts `target_env` values categorized by section.
+
+    Raises:
+        TypeError: If `options` inside a section is not a dictionary.
+        SystemExit: If an error occurs during retrieval.
+
+    Returns:
+        Dict[str, Dict[str, Union[str, Dict[str, str]]]]:
+        A dictionary mapping section names to their titles and option key-value pairs.
+    """
+
     try:
         # expected_path = system_params_filepath.resolve()
         # logging.info(f"Looking for {system_params_filename} at: {expected_path}")
@@ -140,7 +184,15 @@ def fetching_runtime_variables():
         sys.exit(1)
 
 def initialize_env_file():
-    """Ensure .env file exists and contains valid content."""
+    """
+    Ensure the `.env` file exists and contains valid content.
+
+    If the file is missing or invalid, it will be recreated and populated.
+
+    Raises:
+        SystemExit: If the `.env` file cannot be populated.
+    """
+
     try:
         if not validate_env_file():
             logging.info(".env file is missing or invalid. Recreating and populating it.")
@@ -152,7 +204,15 @@ def initialize_env_file():
         sys.exit(1)
 
 def initialize_runtime_file():
-    """Ensure runtime-params file exists and contains valid content."""
+    """
+    Ensure the `runtime-params.json` file exists and contains valid content.
+
+    If the file is missing or invalid, it will be recreated and populated.
+
+    Raises:
+        SystemExit: If the `runtime-params.json` file cannot be populated.
+    """
+
     try:
         if not validate_runtime_file():
             logging.info(f'{runtime_params_filename} file is missing or invalid. Recreating and populating it.')
@@ -163,7 +223,19 @@ def initialize_runtime_file():
         logging.error(f"Failed to initialize {runtime_params_filename} file: {e}")
         sys.exit(1)
 
-def populate_env_file():
+def populate_env_file() -> bool:
+    """
+    Writes environment variables dynamically to the `.env` file.
+
+    Retrieves structured runtime parameters and formats them for `.env` storage.
+
+    Raises:
+        Exception: If there is an error during file population.
+
+    Returns:
+        bool: True if the `.env` file is successfully populated and validated, False otherwise.
+    """
+
     try:
         runtime_vars = fetching_runtime_variables()
         # print( f'RunTime Variables:\n{runtime_vars}' )
@@ -182,7 +254,22 @@ def populate_env_file():
         logging.error(f"Error populating .env file: {e}")
         return False
 
-def populate_runtime_file():
+def populate_runtime_file() -> bool:
+    """
+    Generates structured runtime parameters by merging system parameters with `.env` values.
+
+    Updates `runtime-params.json` by:
+    - Extracting runtime variables.
+    - Merging environment variables.
+    - Removing unnecessary titles.
+
+    Raises:
+        SystemExit: If the runtime parameters cannot be initialized.
+
+    Returns:
+        bool: True if `runtime-params.json` is successfully updated, False otherwise.
+    """
+
     try:
         runtime_vars = fetching_runtime_variables()
         # Load existing environment values
@@ -208,8 +295,17 @@ def populate_runtime_file():
         logging.critical(f"ERROR: Unable to initialize {runtime_params_filename} config file. Details: {e}")
         sys.exit(1)
 
-def validate_env_file():
-    """Ensure .env file exists and contains valid content."""
+def validate_env_file() -> bool:
+    """
+    Validate the existence and integrity of the `.env` file.
+
+    Ensures that the `.env` file exists and contains valid content. If the file is empty
+    or only contains a header, it is considered invalid.
+
+    Returns:
+        bool: True if the file exists and is valid, False otherwise.
+    """
+
     try:
         if not env_filepath.exists():
             logging.warning(".env file does not exist.")
@@ -225,8 +321,17 @@ def validate_env_file():
         logging.error(f"Error validating .env file: {e}")
         return False
 
-def validate_runtime_file():
-    """Ensure runtime-params file exists and contains valid content."""
+def validate_runtime_file() -> bool:
+    """
+    Validate the existence and integrity of the `runtime-params.json` file.
+
+    Ensures that the `runtime-params.json` file exists and contains valid content.
+    If the file is empty or contains an invalid structure, it is considered invalid.
+
+    Returns:
+        bool: True if the file exists and is valid, False otherwise.
+    """
+
     try:
         if not runtime_params_filepath.exists():
             logging.warning(f'{runtime_params_filename} file does not exist."')
@@ -242,8 +347,21 @@ def validate_runtime_file():
         logging.error(f"Error validating .env file: {e}")
         return False
 
-def main():
-    """Processes environment configurations by integrating .env with runtime-params.json"""
+def main() -> Tuple[Dict, Dict]:
+    """
+    Processes environment configurations by integrating `.env` with `runtime-params.json`.
+
+    This function:
+    - Ensures `.env` and `runtime-params.json` exist and are valid.
+    - Loads system parameters and runtime parameters.
+
+    Raises:
+        Exception: If an error occurs while processing environment configurations.
+
+    Returns:
+        Tuple[Dict, Dict]: A tuple containing system parameters and runtime parameters.
+    """
+
     try:
         initialize_env_file()
         initialize_runtime_file()

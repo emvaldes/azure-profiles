@@ -13,54 +13,30 @@ to both console and file. It captures function call details, manages structured 
 supports self-inspection when run directly, all without requiring changes to existing function behavior.
 
 Core Features:
-- Function Call Tracing: Captures function calls, arguments, and return values dynamically.
-- Structured Logging: Logs execution details in JSON format, supporting both console and file output.
-- Self-Inspection: When executed directly, logs its own execution flow for debugging purposes.
-- Automatic Log Management: Controls log file retention to prevent excessive storage use.
 
-Primary Functions:
-- `main()` – Entry point for self-executing the module for tracing.
-- `setup_logging(configs)` – Configures and initializes global logging.
+- **Function Call Tracing**: Captures function calls, arguments, and return values dynamically.
+- **Structured Logging**: Logs execution details in JSON format, supporting both console and file output.
+- **Self-Inspection**: When executed directly, logs its own execution flow for debugging purposes.
+- **Automatic Log Management**: Controls log file retention to prevent excessive storage use.
+
+Expected Behavior:
+
+- Logs execution details automatically when tracing is enabled.
+- Logs function calls with arguments and return values.
+- Logs are stored in a structured format for debugging and analysis.
 
 Dependencies:
-Python Standard Library:
-- `sys` → Interacts with runtime environment and manages import paths.
-- `inspect` → Enables function call tracking.
-- `datetime` → Handles timestamped logging.
-- `logging` → Manages structured log entries.
-- `builtins` → Intercepts standard `print()` for structured logging.
-- `json` → Serializes logs in structured JSON format.
-- `re` → Supports regular expressions for log sanitization.
-- `pathlib` → Manages file paths and log directories.
 
-Project Dependencies:
-
-- `file_utils`: Provides file handling utilities.
-    - `file_utils.is_project_file(filename)` – Determines if a file belongs to the project’s directory structure.
-    - `file_utils.manage_logfiles()` – Cleans up old log files to maintain storage limits.
-    - `file_utils.relative_path(filepath)` – Converts an absolute path to a project-relative path.
-    - `file_utils.remove_ansi_escape_codes(text)` – Strips ANSI codes from strings.
-
-- `log_utils`: Manages structured logging.
-    - `log_utils.log_message(message, category, json_data, ...)` – Logs messages with structured output.
-    - `log_utils.output_console(message, category, json_data, configs)` – Prints structured logs to the console.
-    - `log_utils.output_logfile(logger, message, json_data)` – Writes log entries to a log file.
-
-- `serialize_utils`: Handles serialization tasks.
-    - `serialize_utils.safe_serialize(data, verbose)` – Safely serializes data into JSON format.
-    - `serialize_utils.sanitize_token_string(line)` – Cleans up and formats source code strings.
-
-- `trace_utils`: Contains tracing logic.
-    - `trace_utils.start_tracing(configs)` – Initiates tracing for function calls and events.
-    - `trace_utils.trace_all(configs)` – Main tracing logic to monitor call and return events.
-
-- `lib.system_variables` → Defines project-wide configuration paths.
-- `lib.pkgconfig_loader` → Loads and applies log-tracing configurations.
+- `sys`, `json`, `inspect`, `datetime`, `logging`, `builtins`, `pathlib`
+- `packages.appflow_tracer.lib.file_utils` (for log file handling)
+- `packages.appflow_tracer.lib.log_utils` (for structured logging)
+- `packages.appflow_tracer.lib.trace_utils` (for tracing logic)
+- `lib.system_variables`, `lib.pkgconfig_loader` (for configuration handling)
 
 Usage:
 
 To enable function call tracing and log execution details:
-> python tracing.py ;
+> python tracing.py
 """
 
 import sys
@@ -103,7 +79,6 @@ from lib import (
 
 # ---------- Module functions:
 
-# def setup_logging(configs: Optional[dict] = None) -> Union[bool, dict]:
 def setup_logging(
     configs: Optional[dict] = None,
     logname_override: Optional[str] = None
@@ -111,20 +86,21 @@ def setup_logging(
     """
     Configures and initializes the global logging system.
 
-    This function sets up the logging environment, creating log files and
-    adding handlers for both file-based and console-based logging. If no
-    configuration is provided, it uses a default set of configurations to
-    ensure proper logging behavior.
+    This function sets up the logging environment, creating log files and adding handlers
+    for both file-based and console-based logging. It ensures proper logging behavior
+    even when no configuration is provided.
 
     Args:
-        configs (dict, optional): A dictionary of logging configurations.
-            If None, the global configurations will be used.
-        logname_override (str, optional): A custom name to use as the base for the log file.
-            If not provided, it will be derived from the calling script's name.
+        configs (dict, optional): A dictionary containing logging configurations.
+            If None, the default global configurations are used.
+        logname_override (str, optional): A custom name for the log file.
+            If None, the log file name is derived from the calling script.
+
+    Raises:
+        ValueError: If the provided logging configurations are not in a dictionary format.
 
     Returns:
-        dict: The effective configuration dictionary after applying any
-        defaults or user-provided values.
+        dict: The effective logging configuration after applying defaults.
 
     Example:
         >>> setup_logging()
@@ -137,6 +113,7 @@ def setup_logging(
             ...
         }
     """
+
 
     # Ensure the variable exists globally
     global LOGGING, CONFIGS, logger
@@ -262,14 +239,32 @@ def setup_logging(
     return CONFIGS
 
 class PrintCapture(logging.StreamHandler):
-    """ Custom logging handler that captures print() and logs it while displaying in the console. """
+    """
+    Custom logging handler that captures print() statements and logs them
+    while ensuring they are displayed in the console.
+
+    This ensures that print statements are properly logged without affecting
+    real-time console output.
+    """
+
+    def emit(self, record):
+        log_entry = self.format(record)
+        sys.__stdout__.write(log_entry + "\n")  # Write to actual stdout
+        sys.__stdout__.flush()  # Ensure immediate flushing
+
     def emit(self, record):
         log_entry = self.format(record)
         sys.__stdout__.write(log_entry + "\n")  # Write to actual stdout
         sys.__stdout__.flush()  # Ensure immediate flushing
 
 class ANSIFileHandler(logging.FileHandler):
-    """Custom FileHandler that removes ANSI codes and filters out logging system entries."""
+    """
+    Custom FileHandler that removes ANSI codes from log output
+    and filters out logs from the internal Python logging module.
+
+    This prevents unnecessary ANSI escape codes from appearing in log files
+    and ensures only relevant logs are recorded.
+    """
     def emit(self, record):
         # Ensure only Python's internal logging system is ignored
         if "logging/__init__.py" in record.pathname:
@@ -288,13 +283,12 @@ def main():
     """
     Entry point for running the tracing module as a standalone program.
 
-    When executed directly, this function sets up the logging environment,
-    manages old log files, and optionally starts the tracing system. This
-    is useful for self-inspection and verifying that all components of the
-    module work correctly in isolation.
+    This function initializes the logging environment, manages log files, and
+    optionally starts the tracing system when executed directly. It helps with
+    self-inspection and ensures the module operates correctly in isolation.
 
-    Args:
-        None
+    Raises:
+        Exception: If logging setup fails or an unexpected error occurs.
 
     Returns:
         None

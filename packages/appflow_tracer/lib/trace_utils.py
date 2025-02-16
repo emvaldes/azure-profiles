@@ -1,5 +1,51 @@
 #!/usr/bin/env python3
 
+"""
+File Path: packages/appflow_tracer/lib/trace_utils.py
+
+Description:
+
+Tracing Utilities for Function Call Monitoring
+
+This module provides dynamic function call tracing and structured logging
+for debugging and execution analysis within the framework.
+
+It intercepts function calls and return events, logs execution flow, and
+ensures structured output for debugging. Designed for real-time function
+tracking within the project's scope.
+
+Core Features:
+
+- **Function Call Tracing**: Intercepts function calls, arguments, and return values.
+- **Execution Flow Logging**: Logs tracing events to the console and structured logs.
+- **Project Scope Enforcement**: Ensures tracing only applies to project-specific files.
+- **Selective Filtering**: Excludes system functions and logging utilities from tracing.
+
+Primary Functions:
+
+- `start_tracing(configs)`: Initializes tracing with the given configuration.
+- `trace_all(configs)`: Generates a trace function for `sys.settrace()`.
+- `trace_events(frame, event, arg)`: Handles individual tracing events.
+
+Expected Behavior:
+
+- Tracing activates only when enabled in the configuration.
+- Calls, returns, and execution paths are logged dynamically.
+- Non-project files are excluded from tracing.
+
+Dependencies:
+
+- `sys`, `json`, `inspect`, `logging`
+- `log_utils` (for structured logging)
+- `file_utils` (for project file validation)
+- `serialize_utils` (for safe data serialization)
+
+Usage:
+
+To enable tracing and track function calls:
+> python trace_utils.py
+"""
+
 import sys
 import json
 
@@ -25,16 +71,17 @@ trace_events(): A helper sub-function that handles individual trace events.
 
 def start_tracing(configs: dict = None) -> None:
     """
-    Starts the tracing system to monitor function calls and events.
+    Initialize the tracing system to monitor function calls and execution flow.
 
-    This function initializes the tracing mechanism, enabling detailed tracking
-    of function calls, returns, and other events within the codebase. If a
-    tracing configuration is not provided, it uses the default global
-    configuration.
+    This function enables tracing by setting a trace function that logs function calls,
+    returns, and execution events. It ensures tracing is only enabled if properly configured.
 
     Args:
         configs (dict, optional): A dictionary containing tracing configurations.
-        If None, the global configurations will be used.
+            If None, the global configurations are used.
+
+    Raises:
+        RuntimeError: If tracing fails to initialize due to missing configurations.
 
     Returns:
         None
@@ -66,17 +113,16 @@ def start_tracing(configs: dict = None) -> None:
 
 def trace_all(configs: dict) -> Callable:
     """
-    Generates a tracing function based on the provided configuration.
+    Generate a tracing function based on the provided configuration.
 
-    The returned function, when used as a trace function, logs information
-    about calls, returns, and events within the codebase. It ensures that
-    only files and modules within the project scope are traced.
+    This function returns a callable function that, when set as the system trace function,
+    logs function calls, returns, and events within the project scope.
 
     Args:
         configs (dict): The configuration dictionary that controls tracing behavior.
 
     Returns:
-        function: A trace function that can be used with `sys.settrace()`.
+        Callable: A trace function that can be used with `sys.settrace()`.
 
     Example:
         >>> sys.settrace(trace_all(configs))
@@ -98,17 +144,19 @@ def trace_all(configs: dict) -> Callable:
         arg: object
     ) -> None:
         """
-        Core function to handle events during tracing.
+        Handle and log individual function calls, returns, and execution events.
 
-        This function is triggered on every Python event (e.g., function call, return) when tracing
-        is enabled. It inspects the current frame, determines the event type, and logs the appropriate
-        details. The goal is to capture function calls, their arguments, return values, and ensure that
-        all traced information belongs to files within the project.
+        This function is triggered on every Python event (e.g., function call, return)
+        when tracing is enabled. It inspects the current frame, determines the event type,
+        and logs relevant details. Tracing is limited to project-specific files.
 
         Args:
-            frame (inspect.FrameType): The current frame at the point of the event.
+            frame (FrameType): The current execution frame at the time of the event.
             event (str): The type of event (e.g., "call", "return").
-            arg (object): The argument associated with the event (e.g., the return value).
+            arg (object): The argument associated with the event (e.g., return value).
+
+        Raises:
+            Exception: If an error occurs during tracing.
 
         Returns:
             None
@@ -117,6 +165,7 @@ def trace_all(configs: dict) -> Callable:
             >>> trace_events(frame, "call", None)
             # Logs function call details if the file is within the project.
         """
+
 
         # print(f"\nTracing activated in {__name__}\n")
 
