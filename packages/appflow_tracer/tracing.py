@@ -221,6 +221,9 @@ def setup_logging(
         except NameError:
             return False
 
+    # Manage log files before starting new tracing session
+    file_utils.manage_logfiles(CONFIGS)
+
     return CONFIGS
 
 class PrintCapture(logging.StreamHandler):
@@ -288,9 +291,6 @@ def main():
     # Ensure logging is set up globally before anything else
     CONFIGS = setup_logging()
     # print( f'CONFIGS: {json.dumps(CONFIGS, indent=2)}' )
-
-    # Manage log files before starting new tracing session
-    file_utils.manage_logfiles(CONFIGS)
 
 # Automatically start tracing when executed directly
 if __name__ == "__main__":
