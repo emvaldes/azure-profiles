@@ -1,0 +1,23 @@
+{
+  "colors": {
+    "IMPORT": "\u001b[94m",
+    "CALL": "\u001b[92m",
+    "RETURN": "\u001b[93m",
+    "RESET": "\u001b[0m"
+  },
+  "logging": {
+    "enable": true,
+    "max_logfiles": 5,
+    "package_name": "appflow_tracer",
+    "module_name": "tracing",
+    "logs_dirname": "logs/appflow_tracer",
+    "log_filename": "logs/appflow_tracer/tracing.log"
+  },
+  "tracing": {
+    "enable": true
+  },
+  "stats": {
+    "created": "2025-02-16T05:50:10.635351",
+    "updated": "2025-02-16T06:01:21.114076"
+  }
+}

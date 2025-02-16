@@ -121,20 +121,9 @@ def setup_logging(
     try:
         if not LOGGING:  # Check if logging has already been initialized
             LOGGING = True  # Mark logging as initialized
-            # print(f'\n----------> Initializing Setup Logging ... \n')
+            # print(f'\nInitializing Setup Logging ... \n')
     except NameError:
         return False
-
-    # def handle_warning(message, category, filename, lineno, file=None, line=None):
-    #     warnings_logpath = project_logs / "warnings.log"
-    #
-    #     # Redirect all warnings to the logging system
-    #     warnings.simplefilter("always", category=RuntimeWarning)
-    #     warnings.formatwarning = lambda msg, *args, **kwargs: str(msg) + "\n"
-    #     logging.basicConfig(filename=str(warnings_logpath), level=logging.INFO)
-    #     logging.info(f"{category.__name__}: {message} (in {filename}:{lineno})")
-    #
-    # warnings.showwarning = handle_warning
 
     if logname_override:
         log_filename = logname_override
@@ -180,13 +169,10 @@ def setup_logging(
     #     # If we couldn’t determine the caller file, fallback to a default
     #     log_filename = f"default"
 
-    # print(f'Absolute Path: {absolute_path}')
     # Determining configs parameter
     if configs:
-        # print(f'\nInheriting log-configs: {log_filename}')
         CONFIGS = configs
     else:
-        # print(f'\nInitializing log-configs: {log_filename}')
         CONFIGS = pkgconfig.setup_configs(
             absolute_path=Path(absolute_path),
             logname_override=log_filename
@@ -194,8 +180,7 @@ def setup_logging(
 
     if not isinstance(CONFIGS, dict):
         raise ValueError("Configs must be a dictionary")
-
-    print( f'CONFIGS: {json.dumps(CONFIGS, indent=2)}' )
+    # print( f'CONFIGS: {json.dumps(CONFIGS, indent=2)}' )
 
     logfile = CONFIGS["logging"].get("log_filename", False)
     logger = logging.getLogger(f"{CONFIGS['logging']['package_name']}.{CONFIGS['logging']['module_name']}")
@@ -218,7 +203,7 @@ def setup_logging(
         # console_handler.setFormatter(formatter)
         # console_handler.setLevel(logging.DEBUG)
 
-    # Redirect print() statements to logger
+    # Redirect print function statements to logger
     builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args))
     # if CONFIGS["logging"].get("enable", False):
     #     builtins.print = lambda *args, **kwargs: sys.__stdout__.write(" ".join(str(arg) for arg in args) + "\n")
@@ -232,7 +217,7 @@ def setup_logging(
         try:
             # start_tracing(CONFIGS)
             trace_utils.start_tracing(CONFIGS)
-            print("🔍 \nTracing system initialized.\n")
+            # log_utils.log_message("🔍 \nTracing system initialized.\n", "INFO", configs=CONFIGS)
         except NameError:
             return False
 
@@ -240,7 +225,7 @@ def setup_logging(
 
 class PrintCapture(logging.StreamHandler):
     """
-    Custom logging handler that captures print() statements and logs them
+    Custom logging handler that captures print statements and logs them
     while ensuring they are displayed in the console.
 
     This ensures that print statements are properly logged without affecting
@@ -302,25 +287,21 @@ def main():
 
     # Ensure logging is set up globally before anything else
     CONFIGS = setup_logging()
-    print( f'CONFIGS: {json.dumps(CONFIGS, indent=2)}' )
-
-    print(f'Tracing Logger (main): {logger}')
+    # print( f'CONFIGS: {json.dumps(CONFIGS, indent=2)}' )
 
     # Manage log files before starting new tracing session
     file_utils.manage_logfiles(CONFIGS)
 
-    # Debug: Read and display log content to verify logging works
-    try:
-        log_file = CONFIGS["logging"].get("log_filename", False)
-        print( f'\nReading Log-file: {log_file}' )
-        with open(log_file, "r") as file:
-            # print("\n📄 Log file content:")
-            print(file.read())
-    except Exception as e:
-        print(f"⚠️ Unable to read log file: {e}")
-
 # Automatically start tracing when executed directly
 if __name__ == "__main__":
-    # CONFIGS = setup_logging()
-    # print(f'Tracing Logger (__main__): {logger}')
     main()
+
+# # Debug: Read and display log content to verify logging works
+# try:
+#     log_file = CONFIGS["logging"].get("log_filename", False)
+#     print( f'\nReading Log-file: {log_file}' )
+#     with open(log_file, "r") as file:
+#         # print("\n📄 Log file content:")
+#         print(file.read())
+# except Exception as e:
+#     print(f"⚠️ Unable to read log file: {e}")

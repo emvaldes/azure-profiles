@@ -11,13 +11,13 @@
     "package_name": "scripts",
     "module_name": "testing",
     "logs_dirname": "logs/scripts",
-    "log_filename": "logs/scripts/testing_20250215211641.log"
+    "log_filename": "logs/scripts/testing.log"
   },
   "tracing": {
     "enable": true
   },
   "stats": {
-    "created": "2025-02-15T23:53:40.518634",
-    "updated": "2025-02-16T04:16:41.135823"
+    "created": "2025-02-16T05:51:55.035575",
+    "updated": "2025-02-16T05:51:55.036029"
   }
 }

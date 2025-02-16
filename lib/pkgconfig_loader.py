@@ -207,7 +207,7 @@ def setup_configs(absolute_path: Path, logname_override: str = None) -> dict:
     package_name = module_name.parent
     module_name = module_name.stem
 
-    print(f'Package Name: {package_name}\nModule Name: {module_name}')
+    # print(f'Package Name: {package_name}\nModule Name: {module_name}')
 
     target_filename = absolute_path.stem
     # Determine expected configuration file path (stored in the package)
@@ -219,7 +219,7 @@ def setup_configs(absolute_path: Path, logname_override: str = None) -> dict:
         config_file.parent.mkdir(parents=True, exist_ok=True)
         # Create the file if it does not exist
         config_file.touch(exist_ok=True)
-        print(f"Config File '{config_file}' created successfully.")
+        # print(f"Config File '{config_file}' created successfully.")
 
     config = None  # Default state if the file doesn't exist or is invalid
 
@@ -230,7 +230,7 @@ def setup_configs(absolute_path: Path, logname_override: str = None) -> dict:
                 content = f.read().strip()  # Read the content and strip whitespace
                 # Check if the file is empty
                 if not content:
-                    print(f"⚠️ {config_file} is empty. Regenerating...")
+                    # print(f"⚠️ {config_file} is empty. Regenerating...")
                     config = None
                 else:
                     try:
@@ -238,12 +238,12 @@ def setup_configs(absolute_path: Path, logname_override: str = None) -> dict:
                         config = json.loads(content)
                         # Check if the structure is correct
                         if not isinstance(config, dict) or "logging" not in config:
-                            print(f"⚠️ {config_file} JSON structure is invalid. Regenerating...")
+                            # print(f"⚠️ {config_file} JSON structure is invalid. Regenerating...")
                             config = None
                         # else:
                         #     needs_update = True  # The file is valid and we just need to update the logging section
                     except json.JSONDecodeError:
-                        print(f"⚠️ {config_file} is not valid JSON. Regenerating...")
+                        # print(f"⚠️ {config_file} is not valid JSON. Regenerating...")
                         config = None
         except (OSError, IOError) as e:
             print(f"⚠️ Unable to read {config_file}: {e}")
@@ -262,7 +262,7 @@ def setup_configs(absolute_path: Path, logname_override: str = None) -> dict:
         "package_name": str(package_name),
         "module_name": str(module_name),
         "logs_dirname": str(logs_dirname.relative_to(project_root)),  # Relative path
-        "log_filename": str(f'{target_logfile}_{timestamp}.log')  # Relative path
+        "log_filename": str(f'{target_logfile}.log')      # Relative path
     })
     # print(json.dumps(config, indent=4))
 
@@ -272,10 +272,13 @@ def setup_configs(absolute_path: Path, logname_override: str = None) -> dict:
     with open(config_file, "w") as f:
         json.dump(config, f, indent=2)
     # print(f"Configuration updated: {config_file}")
+
+    # Config -> Logging -> Log Filename (current log-file)
+    config["logging"]["log_filename"] = str(f'{target_logfile}_{timestamp}.log')
     # print(json.dumps(config, indent=4))
 
     return config
 
 if __name__ == "__main__":
     config = setup_configs()
-    print(json.dumps(config, indent=4))  # Print config for debugging
+    # print(json.dumps(config, indent=4))  # Print config for debugging
