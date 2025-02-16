@@ -274,18 +274,26 @@ def trace_all(configs: dict) -> Callable:
                 # Print the type of the return value and inspect its structure
                 arg_type = type(arg).__name__
                 # If it's an argparse.Namespace or other complex object, print its full structure
+                # Check if it's a complex object (e.g., argparse.Namespace)
                 if hasattr(arg, "__dict__"):
                     return_value = vars(arg)  # Convert Namespace or similar object to a dictionary
+                elif arg is None:  # ✅ Correct way to check for NoneType
+                    return_value = None
+                elif isinstance(arg, bool):  # ✅ Ensures booleans remain as True/False
+                    return_value = arg  # Keep as boolean
+                    # print(f'Return Value (Boolean): {return_value}')
+                else:
+                    return_value = arg  # Keep original
 
                 message  = f"[{category}] {return_filename}[{return_lineno}] ( {return_line} ) "
-                message += f"-> {category} VALUE (Type: {arg_type}):"
-                # Log the return with more scope
-                # message = f"\n[RETURN] {return_filename}[{return_lineno}] ( {return_line} ) -> RETURN VALUE:",
-                #           "RETURN", json_data=serialize_utils.safe_serialize(arg), configs=CONFIGS)
+                if return_value in [None, "null", ""] or isinstance(return_value, bool):
+                    message += f"-> {arg_type}: {return_value}"
+                else:
+                    message += f"-> {arg_type}:"
 
-                # if return_value not in [None, "null", ""]:
-                if message.strip():
-                    log_utils.log_message(message, category, json_data=return_value, configs=configs)
+                # Stripping message (data)
+                message = message.strip()
+                log_utils.log_message(message, category, json_data=return_value, configs=configs)
 
             # except Exception:
             #     pass  # Ignore frames that cannot be inspected

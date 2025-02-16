@@ -339,7 +339,7 @@ def main() -> None:
     global CONFIGS
 
     CONFIGS = tracing.setup_logging()
-    print( f'CONFIGS: {json.dumps(CONFIGS, indent=2)}' )
+    # print( f'CONFIGS: {json.dumps(CONFIGS, indent=2)}' )
 
     packages = environment.project_root / "packages" / CONFIGS["logging"].get("package_name")
     config_filepath = packages / "installed.json"
