@@ -114,7 +114,6 @@ def setup_logging(
         }
     """
 
-
     # Ensure the variable exists globally
     global LOGGING, CONFIGS, logger
 
@@ -216,7 +215,10 @@ def setup_logging(
     if CONFIGS["tracing"].get("enable", True):
         try:
             # start_tracing(CONFIGS)
-            trace_utils.start_tracing(CONFIGS)
+            trace_utils.start_tracing(
+                logger=logger,
+                configs=CONFIGS
+            )
             # log_utils.log_message("🔍 \nTracing system initialized.\n", "INFO", configs=CONFIGS)
         except NameError:
             return False

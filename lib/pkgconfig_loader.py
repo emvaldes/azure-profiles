@@ -56,7 +56,8 @@ from system_variables import (
     project_root,
     project_logs,
     project_packages,
-    max_logfiles
+    max_logfiles,
+    category
 )
 
 # Generate unique timestamp for log filename (avoiding collisions)
@@ -124,10 +125,15 @@ def package_configs(overrides: dict = None) -> dict:
 
         config = {
             "colors": {
-                "IMPORT": "\033[94m",  # Blue
-                "CALL": "\033[92m",    # Green
-                "RETURN": "\033[93m",  # Yellow
-                "RESET": "\033[0m"     # Reset to default
+                category.call.id     : category.call.color,     # Green
+                category.ret.id      : category.ret.color,      # Yellow
+                category.imp.id      : category.imp.color,      # Blue
+                category.debug.id    : category.debug.color,    # Cyan
+                category.info.id     : category.info.color,     # White
+                category.warning.id  : category.warning.color,  # Red
+                category.error.id    : category.error.color,    # Bright Red
+                category.critical.id : category.critical.color, # Red Background
+                category.reset.id    : category.reset.color     # Reset to default
             },
             "logging": {
                 "enable": True,

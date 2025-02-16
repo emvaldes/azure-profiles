@@ -1,8 +1,13 @@
 {
   "colors": {
-    "IMPORT": "\u001b[94m",
     "CALL": "\u001b[92m",
     "RETURN": "\u001b[93m",
+    "IMPORT": "\u001b[94m",
+    "DEBUG": "\u001b[96m",
+    "INFO": "\u001b[97m",
+    "WARNING": "\u001b[91m",
+    "ERROR": "\u001b[31m",
+    "CRITICAL": "\u001b[41m",
     "RESET": "\u001b[0m"
   },
   "logging": {
@@ -17,7 +22,7 @@
     "enable": true
   },
   "stats": {
-    "created": "2025-02-16T05:51:55.035575",
-    "updated": "2025-02-16T05:51:55.036029"
+    "created": "2025-02-16T21:33:17.743140",
+    "updated": "2025-02-16T21:33:17.743747"
   }
 }

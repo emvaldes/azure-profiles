@@ -52,7 +52,12 @@ from pathlib import Path
 from lib.system_variables import (
     project_root,
     project_logs,
-    max_logfiles
+    max_logfiles,
+    category
+)
+
+from . import (
+    log_utils
 )
 
 def is_project_file(filename: str) -> bool:
@@ -76,11 +81,11 @@ def is_project_file(filename: str) -> bool:
     """
 
     if not filename:
-        # print("is_project_file received None or empty filename.")
+        # log_utils.log_message("is_project_file received None or empty filename.", category.info.id)
         return False
     try:
         filename_path = Path(filename).resolve()
-        # print("Resolved filename_path:", filename_path)
+        # log_utils.log_message("Resolved filename_path: {filename_path}", category.info.id)
         return project_root in filename_path.parents
     except (TypeError, ValueError):
         # Handle None or unexpected inputs gracefully
@@ -122,9 +127,9 @@ def manage_logfiles(configs: dict = None) -> None:
                 for log_file in logs_to_remove:
                     try:
                         log_file.unlink()
-                        print(f"🗑️ Deleted old log: {log_file}")
+                        log_utils.log_message(f"🗑️ Deleted old log: {log_file.as_posix()}", category.warning.id)
                     except Exception as e:
-                        print(f"⚠️ Error deleting {log_file}: {e}")
+                        print(f"⚠️ Error deleting {log_file.as_posix()}: {e}", category.error.id)
 
 def relative_path(filepath: str) -> str:
     """

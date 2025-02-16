@@ -28,6 +28,21 @@ Primary Variables:
 - `system_params_listing`: Aggregates configuration sources dynamically.
 - `max_logfiles`: Restricts the number of stored logs (default: `5`).
 
+- `category` (SimpleNamespace): Predefined logging categories for structured logging.
+    - `category.call.id`     ("CALL"): Function calls.
+    - `category.ret.id`      ("RETURN"): Function return values.
+    - `category.imp.id`      ("IMPORT"): Module imports.
+    - `category.debug.id`    ("DEBUG"): Debugging messages.
+    - `category.info.id`     ("INFO"): Informational messages.
+    - `category.warning.id`  ("WARNING"): Warnings.
+    - `category.error.id`    ("ERROR"): Error messages.
+    - `category.critical.id` ("CRITICAL"): Critical system failures.
+
+    Purpose:
+    - Provides a structured way to reference log categories using dot-notation.
+    - Reduces hardcoded strings in logging calls for consistency.
+    - Improves readability and maintainability of log messages.
+
 Expected Behavior:
 
 - Configuration paths should always resolve correctly, ensuring consistency.
@@ -37,12 +52,17 @@ Expected Behavior:
 Dependencies:
 
 - `pathlib` (for filesystem path handling)
+- `types.SimpleNamespace` (for structured category labels)
 
 Usage:
 
-This module is imported wherever system-wide file path references are required.
+Note: This module is imported wherever system-wide file path references are required.
+
+from lib.system_variables import category, project_root
+log_utils.log_message("This is a test", category.info.id)
 """
 
+from types import SimpleNamespace as simple
 
 from pathlib import Path
 
@@ -117,3 +137,18 @@ If the number of logs exceeds this limit, older logs are pruned automatically.
 Default: `5`
 """
 max_logfiles = 5
+
+"""
+Predefined logging categories for structured logging.
+"""
+category = simple(
+    call     = simple(id="CALL",     color="\033[92m"),  # Green
+    ret      = simple(id="RETURN",   color="\033[93m"),  # Yellow
+    imp      = simple(id="IMPORT",   color="\033[94m"),  # Blue
+    debug    = simple(id="DEBUG",    color="\033[96m"),  # Cyan
+    info     = simple(id="INFO",     color="\033[97m"),  # White
+    warning  = simple(id="WARNING",  color="\033[91m"),  # Red
+    error    = simple(id="ERROR",    color="\033[31m"),  # Bright Red
+    critical = simple(id="CRITICAL", color="\033[41m"),  # Red Background
+    reset    = simple(id="RESET",    color="\033[0m")    # Reset to default
+)

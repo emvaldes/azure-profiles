@@ -3,6 +3,7 @@
 ## Project Structure
 
 ```console
+$ ctree ;
 ./
 ├── .env
 ├── .gitignore
@@ -46,14 +47,15 @@
 │   │   │   └── trace_utils.py
 │   │   ├── pyproject.toml
 │   │   ├── setup.py
+│   │   ├── tracer.console
+│   │   ├── tracing.console
 │   │   ├── tracing.json
-│   │   ├── tracing.log
 │   │   └── tracing.py
 │   └── requirements/
 │       ├── __init__.py
 │       ├── __main__.py
+│       ├── dependencies.console
 │       ├── dependencies.json
-│       ├── dependencies.log
 │       ├── dependencies.py
 │       ├── installed.json
 │       └── requirements.json
@@ -61,10 +63,12 @@
 └── scripts/
     ├── devops-workflow.log
     ├── devops-workflow.py*
+    ├── testing.console
     ├── testing.json
     └── testing.py
 
-10 directories, 50 files
+10 directories, 52 files
+devops: python (python *$%=) $
 ```
 
 ## Overview

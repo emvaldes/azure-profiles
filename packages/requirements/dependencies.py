@@ -79,6 +79,11 @@ from packages.appflow_tracer.lib import (
     trace_utils
 )
 
+# Import category from system_variables
+from lib.system_variables import (
+    category
+)
+
 def load_requirements(requirements_file: str) -> list:
     """
     Load dependencies from a JSON requirements file.
@@ -103,7 +108,7 @@ def load_requirements(requirements_file: str) -> list:
 
     requirements_path = Path(requirements_file).resolve()
     if not requirements_path.exists():
-        log_utils.log_message(f"ERROR: Requirements file not found at {requirements_path}", "error", configs=CONFIGS)
+        log_utils.log_message(f"Requirements file not found at {requirements_path}", category.error.id, configs=CONFIGS)
         raise FileNotFoundError(f"ERROR: Requirements file not found at {requirements_path}")
 
     try:
@@ -115,7 +120,7 @@ def load_requirements(requirements_file: str) -> list:
             ]
             return dependencies
     except json.JSONDecodeError as e:
-        log_utils.log_message(f"ERROR: Invalid JSON structure in '{requirements_path}'. Details: {e}", "error", configs=CONFIGS)
+        log_utils.log_message(f"Invalid JSON structure in '{requirements_path}'. Details: {e}", category.error.id, configs=CONFIGS)
         raise ValueError(f"ERROR: Invalid JSON structure in '{requirements_path}'.\nDetails: {e}")
 
 def install_package(
@@ -157,7 +162,7 @@ def install_package(
         ])
         log_utils.log_message(f"Successfully installed {package}=={version}", configs=CONFIGS)
     except subprocess.CalledProcessError as e:
-        log_utils.log_message(f"❌ ERROR: Failed to install {package}=={version}. Pip error: {e}", "error", configs=CONFIGS)
+        log_utils.log_message(f"Failed to install {package}=={version}. Pip error: {e}", category.error.id, configs=CONFIGS)
         sys.exit(1)
 
 def install_requirements(requirements_file: str) -> None:
@@ -181,7 +186,7 @@ def install_requirements(requirements_file: str) -> None:
     dependencies = load_requirements(requirements_file)
 
     if not dependencies:
-        log_utils.log_message("⚠ No dependencies found in requirements.json", "warning", configs=CONFIGS)
+        log_utils.log_message("⚠ No dependencies found in requirements.json", category.warning.id, configs=CONFIGS)
         return
 
     for dep in dependencies:
@@ -217,7 +222,7 @@ def is_package_installed(
 
     version = version_info.get("target", None)
     if not version:
-        log_utils.log_message(f"⚠️ Skipping {package}: Missing 'target' version.", "warning", configs=CONFIGS)
+        log_utils.log_message(f"⚠️ Skipping {package}: Missing 'target' version.", category.warning.id, configs=CONFIGS)
         return False
     try:
         installed_version = importlib.metadata.version(package)
@@ -225,10 +230,10 @@ def is_package_installed(
             log_utils.log_message(f"{package}=={version} is already installed.", configs=CONFIGS)
             return True
         else:
-            log_utils.log_message(f"⚠️ {package} installed, but version {installed_version} != {version} (expected).", "warning", configs=CONFIGS)
+            log_utils.log_message(f"⚠️ {package} installed, but version {installed_version} != {version} (expected).", category.warning.id, configs=CONFIGS)
             return False
     except importlib.metadata.PackageNotFoundError:
-        log_utils.log_message(f"❌ {package} is NOT installed.", "error", configs=CONFIGS)
+        log_utils.log_message(f"{package} is NOT installed.", category.error.id, configs=CONFIGS)
         return False
 
 def parse_arguments() -> argparse.Namespace:

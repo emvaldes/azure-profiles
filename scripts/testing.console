@@ -1,0 +1,145 @@
+$ python ./scripts/testing.py 
+
+[CALL] packages/appflow_tracer/tracing ( file_utils.manage_logfiles(CONFIGS) )
+[CALL] packages/appflow_tracer/tracing (setup_logging)[227] -> packages/appflow_tracer/lib/file_utils (manage_logfiles)[94]
+{
+  "configs": {
+    "colors": {
+      "CALL": "\u001b[92m",
+      "RETURN": "\u001b[93m",
+      "IMPORT": "\u001b[94m",
+      "DEBUG": "\u001b[96m",
+      "INFO": "\u001b[97m",
+      "WARNING": "\u001b[91m",
+      "ERROR": "\u001b[31m",
+      "CRITICAL": "\u001b[41m",
+      "RESET": "\u001b[0m"
+    },
+    "logging": {
+      "enable": true,
+      "max_logfiles": 5,
+      "package_name": "scripts",
+      "module_name": "testing",
+      "logs_dirname": "logs/scripts",
+      "log_filename": "logs/scripts/testing_20250216143317.log"
+    },
+    "tracing": {
+      "enable": true
+    },
+    "stats": {
+      "created": "2025-02-16T21:33:17.743140",
+      "updated": "2025-02-16T21:33:17.743747"
+    }
+  }
+}
+
+[CALL] packages/appflow_tracer/lib/file_utils ( log_files = sorted( )
+[CALL] packages/appflow_tracer/lib/file_utils (manage_logfiles)[120] -> packages/appflow_tracer/lib/file_utils (<lambda>)[122]
+{
+  "f": "/Users/emvaldes/.repos/azure/workspaces/azure-profiles/python/logs/requirements/dependencies_20250216142925.log"
+}
+[RETURN] packages/appflow_tracer/lib/file_utils[122] ( key=lambda f: f.stat().st_mtime ) -> float:
+1739741368.1868045
+
+[CALL] packages/appflow_tracer/lib/file_utils ( log_files = sorted( )
+[CALL] packages/appflow_tracer/lib/file_utils (manage_logfiles)[120] -> packages/appflow_tracer/lib/file_utils (<lambda>)[122]
+{
+  "f": "/Users/emvaldes/.repos/azure/workspaces/azure-profiles/python/logs/scripts/testing_20250216143317.log"
+}
+[RETURN] packages/appflow_tracer/lib/file_utils[122] ( key=lambda f: f.stat().st_mtime ) -> float:
+1739741597.7787712
+[RETURN] packages/appflow_tracer/lib/file_utils[118] ( for log_subdir in logs_basedir.iterdir(): ) -> NoneType: None
+
+[CALL] scripts/testing ( print(f'CONFIGS: {json.dumps(CONFIGS, indent=2)}') )
+[CALL] scripts/testing (main)[79] -> packages/appflow_tracer/tracing (<lambda>)[206]
+
+[CALL] packages/appflow_tracer/tracing ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) )
+[CALL] packages/appflow_tracer/tracing (<lambda>)[206] -> packages/appflow_tracer/tracing (<genexpr>)[206]
+{
+  ".0": "<tuple_iterator object at 0x10af93ee0>"
+}
+[RETURN] packages/appflow_tracer/tracing[206] ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) ) -> str:
+CONFIGS: {
+  "colors": {
+    "CALL": "\u001b[92m",
+    "RETURN": "\u001b[93m",
+    "IMPORT": "\u001b[94m",
+    "DEBUG": "\u001b[96m",
+    "INFO": "\u001b[97m",
+    "WARNING": "\u001b[91m",
+    "ERROR": "\u001b[31m",
+    "CRITICAL": "\u001b[41m",
+    "RESET": "\u001b[0m"
+  },
+  "logging": {
+    "enable": true,
+    "max_logfiles": 5,
+    "package_name": "scripts",
+    "module_name": "testing",
+    "logs_dirname": "logs/scripts",
+    "log_filename": "logs/scripts/testing_20250216143317.log"
+  },
+  "tracing": {
+    "enable": true
+  },
+  "stats": {
+    "created": "2025-02-16T21:33:17.743140",
+    "updated": "2025-02-16T21:33:17.743747"
+  }
+}
+
+[CALL] packages/appflow_tracer/tracing ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) )
+[CALL] packages/appflow_tracer/tracing (<lambda>)[206] -> packages/appflow_tracer/tracing (<genexpr>)[206]
+{
+  ".0": "<tuple_iterator object at 0x10af93ee0>"
+}
+[RETURN] packages/appflow_tracer/tracing[206] ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) ) -> NoneType: None
+CONFIGS: {
+  "colors": {
+    "CALL": "\u001b[92m",
+    "RETURN": "\u001b[93m",
+    "IMPORT": "\u001b[94m",
+    "DEBUG": "\u001b[96m",
+    "INFO": "\u001b[97m",
+    "WARNING": "\u001b[91m",
+    "ERROR": "\u001b[31m",
+    "CRITICAL": "\u001b[41m",
+    "RESET": "\u001b[0m"
+  },
+  "logging": {
+    "enable": true,
+    "max_logfiles": 5,
+    "package_name": "scripts",
+    "module_name": "testing",
+    "logs_dirname": "logs/scripts",
+    "log_filename": "logs/scripts/testing_20250216143317.log"
+  },
+  "tracing": {
+    "enable": true
+  },
+  "stats": {
+    "created": "2025-02-16T21:33:17.743140",
+    "updated": "2025-02-16T21:33:17.743747"
+  }
+}
+[RETURN] packages/appflow_tracer/tracing[206] ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) ) -> NoneType: None
+
+[CALL] scripts/testing ( print("I am a stand-alone script minding my own business") )
+[CALL] scripts/testing (main)[81] -> packages/appflow_tracer/tracing (<lambda>)[206]
+
+[CALL] packages/appflow_tracer/tracing ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) )
+[CALL] packages/appflow_tracer/tracing (<lambda>)[206] -> packages/appflow_tracer/tracing (<genexpr>)[206]
+{
+  ".0": "<tuple_iterator object at 0x10b0af190>"
+}
+[RETURN] packages/appflow_tracer/tracing[206] ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) ) -> str:
+I am a stand-alone script minding my own business
+
+[CALL] packages/appflow_tracer/tracing ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) )
+[CALL] packages/appflow_tracer/tracing (<lambda>)[206] -> packages/appflow_tracer/tracing (<genexpr>)[206]
+{
+  ".0": "<tuple_iterator object at 0x10b0af190>"
+}
+[RETURN] packages/appflow_tracer/tracing[206] ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) ) -> NoneType: None
+I am a stand-alone script minding my own business
+[RETURN] packages/appflow_tracer/tracing[206] ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) ) -> NoneType: None
