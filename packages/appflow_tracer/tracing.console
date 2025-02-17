@@ -2,7 +2,7 @@ $ python -m packages.appflow_tracer.tracing ;
 <frozen runpy>:128: RuntimeWarning: 'packages.appflow_tracer.tracing' found in sys.modules after import of package 'packages.appflow_tracer', but prior to execution of 'packages.appflow_tracer.tracing'; this may result in unpredictable behaviour
 
 [CALL] packages/appflow_tracer/tracing ( file_utils.manage_logfiles(CONFIGS) )
-[CALL] packages/appflow_tracer/tracing (setup_logging)[227] -> packages/appflow_tracer/lib/file_utils (manage_logfiles)[94]
+[CALL] packages/appflow_tracer/tracing (setup_logging)[225] -> packages/appflow_tracer/lib/file_utils (manage_logfiles)[94]
 {
   "configs": {
     "colors": {
@@ -22,47 +22,31 @@ $ python -m packages.appflow_tracer.tracing ;
       "package_name": "appflow_tracer",
       "module_name": "tracing",
       "logs_dirname": "logs/appflow_tracer",
-      "log_filename": "logs/appflow_tracer/tracing_20250216143328.log"
+      "log_filename": "logs/appflow_tracer/tracing_20250216201307.log"
     },
     "tracing": {
       "enable": true
     },
     "stats": {
       "created": "2025-02-16T21:33:25.469996",
-      "updated": "2025-02-16T21:33:28.150532"
+      "updated": "2025-02-17T03:13:07.321023"
     }
   }
 }
 
 [CALL] packages/appflow_tracer/lib/file_utils ( log_files = sorted( )
-[CALL] packages/appflow_tracer/lib/file_utils (manage_logfiles)[120] -> packages/appflow_tracer/lib/file_utils (<lambda>)[122]
+[CALL] packages/appflow_tracer/lib/file_utils (manage_logfiles)[133] -> packages/appflow_tracer/lib/file_utils (<lambda>)[135]
 {
-  "f": "/Users/emvaldes/.repos/azure/workspaces/azure-profiles/python/logs/appflow_tracer/tracing_20250216143328.log"
+  "f": "/Users/emvaldes/.repos/azure/workspaces/azure-profiles/python/logs/appflow_tracer/tracing_20250216201307.log"
 }
-[RETURN] packages/appflow_tracer/lib/file_utils[122] ( key=lambda f: f.stat().st_mtime ) -> float:
-1739741608.1777487
+[RETURN] packages/appflow_tracer/lib/file_utils[135] ( key=lambda f: f.stat().st_mtime ) -> float:
+1739761987.3472369
 
 [CALL] packages/appflow_tracer/lib/file_utils ( log_files = sorted( )
-[CALL] packages/appflow_tracer/lib/file_utils (manage_logfiles)[120] -> packages/appflow_tracer/lib/file_utils (<lambda>)[122]
+[CALL] packages/appflow_tracer/lib/file_utils (manage_logfiles)[133] -> packages/appflow_tracer/lib/file_utils (<lambda>)[135]
 {
-  "f": "/Users/emvaldes/.repos/azure/workspaces/azure-profiles/python/logs/appflow_tracer/tracing_20250216143325.log"
+  "f": "/Users/emvaldes/.repos/azure/workspaces/azure-profiles/python/logs/requirements/dependencies_20250216201159.log"
 }
-[RETURN] packages/appflow_tracer/lib/file_utils[122] ( key=lambda f: f.stat().st_mtime ) -> float:
-1739741605.512635
-
-[CALL] packages/appflow_tracer/lib/file_utils ( log_files = sorted( )
-[CALL] packages/appflow_tracer/lib/file_utils (manage_logfiles)[120] -> packages/appflow_tracer/lib/file_utils (<lambda>)[122]
-{
-  "f": "/Users/emvaldes/.repos/azure/workspaces/azure-profiles/python/logs/requirements/dependencies_20250216142925.log"
-}
-[RETURN] packages/appflow_tracer/lib/file_utils[122] ( key=lambda f: f.stat().st_mtime ) -> float:
-1739741368.1868045
-
-[CALL] packages/appflow_tracer/lib/file_utils ( log_files = sorted( )
-[CALL] packages/appflow_tracer/lib/file_utils (manage_logfiles)[120] -> packages/appflow_tracer/lib/file_utils (<lambda>)[122]
-{
-  "f": "/Users/emvaldes/.repos/azure/workspaces/azure-profiles/python/logs/scripts/testing_20250216143317.log"
-}
-[RETURN] packages/appflow_tracer/lib/file_utils[122] ( key=lambda f: f.stat().st_mtime ) -> float:
-1739741597.795909
-[RETURN] packages/appflow_tracer/lib/file_utils[118] ( for log_subdir in logs_basedir.iterdir(): ) -> NoneType: None
+[RETURN] packages/appflow_tracer/lib/file_utils[135] ( key=lambda f: f.stat().st_mtime ) -> float:
+1739761923.300857
+[RETURN] packages/appflow_tracer/lib/file_utils[147] ( return deleted_logs ) -> list:

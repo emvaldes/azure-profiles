@@ -113,7 +113,6 @@ def log_message(
     # If json_data exists, append it to the message
     if json_data:
         if serialize_json:
-            # json_data = safe_serialize(json_data, verbose=serialize_json)
             json_data = json.dumps(json_data, separators=(",", ":"), ensure_ascii=False)
 
     if configs["logging"].get("enable", False) and not configs["tracing"].get("enable", False):

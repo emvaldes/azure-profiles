@@ -340,7 +340,22 @@ def return_events(
         return_filename = file_utils.relative_path(filename)
         return_lineno = frame.f_lineno
         return_type = type(arg).__name__
-        return_value = serialize_utils.safe_serialize(arg)  # Ensure JSON serializability
+
+        # Inspecting return_value (dict)
+        # {
+        #     "success": bool,
+        #     "serialized": data,
+        #     "type": type
+        # }
+        # return_value = serialize_utils.safe_serialize(arg)  # Ensure JSON serializability
+        serialized_result = serialize_utils.safe_serialize(
+            data=arg,
+            configs=configs
+        )
+        if serialized_result["success"]:
+            return_value = serialized_result["serialized"]  # Use the properly serialized string
+        else:
+            return_value = f"[Unserializable: {serialized_result['type']}] Error: {serialized_result.get('error', 'Unknown')}"
         # message  = f"\n[RETURN] {return_filename}[{return_lineno}] "
         # message += f"-> RETURN VALUE (Type: {return_type}): {return_value}"
         # , "RETURN", configs=configs)
