@@ -53,6 +53,7 @@ from lib.system_variables import (
     project_root,
     project_logs,
     max_logfiles,
+    default_indent,
     category
 )
 
@@ -143,6 +144,7 @@ def manage_logfiles(configs: dict = None) -> None:
                         deleted_logs.append(log_file.as_posix())
                         log_utils.log_message(f"🗑️ Deleted old log: {log_file.as_posix()}", category.warning.id)
                     except Exception as e:
+                        print( f'CONFIGS: {json.dumps(configs, indent=default_indent)}' )
                         print(f"⚠️ Error deleting {log_file.as_posix()}: {e}", category.error.id)
     return deleted_logs
 

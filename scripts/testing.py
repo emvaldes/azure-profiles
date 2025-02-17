@@ -45,6 +45,10 @@ project_root = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(project_root))
 
 from packages.appflow_tracer import tracing
+from lib.system_variables import (
+    project_root,
+    default_indent
+)
 
 def main() -> None:
     """
@@ -76,7 +80,7 @@ def main() -> None:
     global LOGGING, CONFIGS, logger  # Ensure CONFIGS is globally accessible
 
     CONFIGS = tracing.setup_logging()
-    print(f'CONFIGS: {json.dumps(CONFIGS, indent=2)}')
+    print(f'CONFIGS: {json.dumps(CONFIGS, indent=default_indent)}')
 
     print("I am a stand-alone script minding my own business")
 

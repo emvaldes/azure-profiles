@@ -1,28 +1,36 @@
 {
-  "colors": {
-    "CALL": "\u001b[92m",
-    "RETURN": "\u001b[93m",
-    "IMPORT": "\u001b[94m",
-    "DEBUG": "\u001b[96m",
-    "INFO": "\u001b[97m",
-    "WARNING": "\u001b[91m",
-    "ERROR": "\u001b[31m",
-    "CRITICAL": "\u001b[41m",
-    "RESET": "\u001b[0m"
-  },
-  "logging": {
-    "enable": true,
-    "max_logfiles": 5,
-    "package_name": "appflow_tracer",
-    "module_name": "tracing",
-    "logs_dirname": "logs/appflow_tracer",
-    "log_filename": "logs/appflow_tracer/tracing.log"
-  },
-  "tracing": {
-    "enable": true
-  },
-  "stats": {
-    "created": "2025-02-16T21:33:25.469996",
-    "updated": "2025-02-17T16:13:36.696401"
-  }
+    "colors": {
+        "CALL": "\u001b[92m",
+        "RETURN": "\u001b[93m",
+        "IMPORT": "\u001b[94m",
+        "DEBUG": "\u001b[96m",
+        "INFO": "\u001b[97m",
+        "WARNING": "\u001b[91m",
+        "ERROR": "\u001b[31m",
+        "CRITICAL": "\u001b[41m",
+        "RESET": "\u001b[0m"
+    },
+    "logging": {
+        "enable": true,
+        "max_logfiles": 5,
+        "package_name": "appflow_tracer",
+        "module_name": "tracing",
+        "logs_dirname": "logs/appflow_tracer",
+        "log_filename": "logs/appflow_tracer/tracing.log"
+    },
+    "tracing": {
+        "enable": true,
+        "json": {
+            "compressed": true
+        }
+    },
+    "events": {
+        "call": false,
+        "return": false,
+        "import": false
+    },
+    "stats": {
+        "created": "2025-02-17T20:44:19.305440",
+        "updated": "2025-02-17T20:47:55.796080"
+    }
 }

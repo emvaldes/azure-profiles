@@ -66,7 +66,7 @@ $ python ./scripts/testing.py
 1739762028.0544078
 [RETURN] packages/appflow_tracer/lib/file_utils[147] ( return deleted_logs ) -> list:
 
-[CALL] scripts/testing ( print(f'CONFIGS: {json.dumps(CONFIGS, indent=2)}') )
+[CALL] scripts/testing ( print(f'CONFIGS: {json.dumps(CONFIGS, indent=4)}') )
 [CALL] scripts/testing (main)[79] -> packages/appflow_tracer/tracing (<lambda>)[204]
 
 [CALL] packages/appflow_tracer/tracing ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) )

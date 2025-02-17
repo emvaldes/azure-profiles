@@ -54,7 +54,10 @@ ROOT_DIR = Path(__file__).resolve().parents[4]  # Adjust based on folder depth
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))  # Add root directory to sys.path
 
-from lib.system_variables import category
+from lib.system_variables import (
+    default_indent,
+    category
+)
 from packages.appflow_tracer.tracing import setup_logging
 
 from packages.appflow_tracer.lib.log_utils import (
@@ -135,5 +138,5 @@ def test_output_console() -> None:
         mock_print.assert_called()
 
         # Ensure JSON formatting is respected
-        json_output = json.dumps({"alert": "true"}, indent=2, ensure_ascii=False)
+        json_output = json.dumps({"alert": "true"}, indent=default_indent, ensure_ascii=False)
         mock_print.assert_any_call(json_output)

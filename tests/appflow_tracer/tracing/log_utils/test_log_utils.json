@@ -1,28 +1,36 @@
 {
-  "colors": {
-    "CALL": "\u001b[92m",
-    "RETURN": "\u001b[93m",
-    "IMPORT": "\u001b[94m",
-    "DEBUG": "\u001b[96m",
-    "INFO": "\u001b[97m",
-    "WARNING": "\u001b[91m",
-    "ERROR": "\u001b[31m",
-    "CRITICAL": "\u001b[41m",
-    "RESET": "\u001b[0m"
-  },
-  "logging": {
-    "enable": true,
-    "max_logfiles": 5,
-    "package_name": "tests/appflow_tracer/tracing/log_utils",
-    "module_name": "test_log_utils",
-    "logs_dirname": "logs/tests/appflow_tracer/tracing/log_utils",
-    "log_filename": "logs/tests/appflow_tracer/tracing/log_utils/test_log_utils.log"
-  },
-  "tracing": {
-    "enable": true
-  },
-  "stats": {
-    "created": "2025-02-17T03:01:38.244599",
-    "updated": "2025-02-17T16:14:29.492837"
-  }
+    "colors": {
+        "CALL": "\u001b[92m",
+        "RETURN": "\u001b[93m",
+        "IMPORT": "\u001b[94m",
+        "DEBUG": "\u001b[96m",
+        "INFO": "\u001b[97m",
+        "WARNING": "\u001b[91m",
+        "ERROR": "\u001b[31m",
+        "CRITICAL": "\u001b[41m",
+        "RESET": "\u001b[0m"
+    },
+    "logging": {
+        "enable": true,
+        "max_logfiles": 5,
+        "package_name": "tests/appflow_tracer/tracing/log_utils",
+        "module_name": "test_log_utils",
+        "logs_dirname": "logs/tests/appflow_tracer/tracing/log_utils",
+        "log_filename": "logs/tests/appflow_tracer/tracing/log_utils/test_log_utils.log"
+    },
+    "tracing": {
+        "enable": true,
+        "json": {
+            "compressed": true
+        }
+    },
+    "events": {
+        "call": false,
+        "return": false,
+        "import": false
+    },
+    "stats": {
+        "created": "2025-02-17T20:45:03.703159",
+        "updated": "2025-02-17T20:47:02.233397"
+    }
 }

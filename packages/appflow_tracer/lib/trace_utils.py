@@ -117,7 +117,7 @@ def start_tracing(
         # sys.settrace(lambda frame, event, arg: trace_all(configs)(frame, event, arg))
         sys.settrace(lambda frame, event, arg: trace_func(frame, event, arg))
     # message = f'Start Tracing invoked!'
-    # log_utils.log_message(message, category.call.id, configs=configs)
+    # log_utils.log_message(message, category.calls.id, configs=configs)
 
 def trace_all(
     logger: logging.Logger,
@@ -212,7 +212,7 @@ def trace_all(
         # print( f'Event: {event}' )
         # print( f'Arg: {arg}' )
 
-        if event == category.call.id.lower():
+        if event == category.calls.id.lower():
             call_events(
                 logger=logger,
                 frame=frame,
@@ -221,7 +221,7 @@ def trace_all(
                 configs=configs
             )
 
-        elif event == category.ret.id.lower():
+        elif event == category.returns.id.lower():
             return_events(
                 logger=logger,
                 frame=frame,
@@ -262,20 +262,21 @@ def call_events(
 
     try:
 
-        log_category = category.call.id
+        log_category = category.calls.id
+        print_event = configs["events"].get(category.calls.id.lower(), False)
         message = ""  # Initialize message early
 
         caller_frame = frame.f_back  # Get caller frame
-
         if caller_frame:
+
             caller_info = inspect.getframeinfo(caller_frame)
             caller_filename = file_utils.relative_path(caller_info.filename)  # Convert absolute path to relative
             invoking_line = caller_info.code_context[0] if caller_info.code_context else "Unknown"
             invoking_line = serialize_utils.sanitize_token_string(invoking_line)
             # {file_utils.relative_path(filename)} ({frame.f_code.co_name})[{frame.f_code.co_firstlineno}]"
 
-            message = f"\n[{log_category}] {caller_filename} ( {invoking_line} )"
-            if message.strip():
+            message = f"\n[{log_category}] {caller_filename} ( {invoking_line} )".strip()
+            if print_event:
                 log_utils.log_message(message, log_category, configs=configs)
 
             if caller_frame.f_code.co_name == "<module>":
@@ -283,8 +284,8 @@ def call_events(
                 caller_module = caller_filename if "/" not in caller_filename else caller_filename.split("/")[-1]
                 message  = f"[{log_category}] {caller_module}[{caller_lineno}] ( {invoking_line} ) "
                 message += f"-> {file_utils.relative_path(filename)} ({frame.f_code.co_name})[{frame.f_code.co_firstlineno}]"
-                if message.strip():
-                    log_utils.log_message(message, log_category, configs=configs)
+                if print_event:
+                    log_utils.log_message(message.strip(), log_category, configs=configs)
 
             else:
                 caller_co_name = caller_frame.f_code.co_name
@@ -298,8 +299,8 @@ def call_events(
                     arg_list = json.loads(json.dumps({arg: arg_values.locals[arg] for arg in arg_values.args}, default=str))
                 except (TypeError, ValueError):
                     arg_list = "[Unserializable data]"
-                if message.strip():
-                    log_utils.log_message(message, log_category, json_data=arg_list, configs=configs)
+                if print_event:
+                    log_utils.log_message(message.strip(), log_category, json_data=arg_list, configs=configs)
 
     except Exception as e:
         logger.error(f"Error in trace_all: {e}")
@@ -332,7 +333,8 @@ def return_events(
 
     try:
 
-        log_category = category.ret.id
+        log_category = category.returns.id
+        print_event = configs["events"].get(category.returns.id.lower(), False)
         message = ""  # Initialize message early
 
         return_filename = file_utils.relative_path(filename)
@@ -392,9 +394,8 @@ def return_events(
         else:
             message += f"-> {arg_type}:"
 
-        # Stripping message (data)
-        message = message.strip()
-        log_utils.log_message(message, log_category, json_data=return_value, configs=configs)
+        if print_event:
+            log_utils.log_message(message.strip(), log_category, json_data=return_value, configs=configs)
 
     # except Exception:
     #     pass  # Ignore frames that cannot be inspected

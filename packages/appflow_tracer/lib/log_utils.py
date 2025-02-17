@@ -54,14 +54,15 @@ from datetime import datetime
 
 # Import category from system_variables
 from lib.system_variables import (
+    default_indent,
     category
 )
 
 # Determine the correct logging level dynamically
 log_levels = {
-    category.call.id:     logging.INFO,
-    category.ret.id:      logging.DEBUG,
-    category.imp.id:      logging.WARNING,
+    category.calls.id:    logging.INFO,
+    category.returns.id:  logging.DEBUG,
+    category.imports.id:  logging.WARNING,
     category.debug.id:    logging.DEBUG,
     category.info.id:     logging.INFO,
     category.warning.id:  logging.WARNING,
@@ -194,9 +195,14 @@ def output_console(
     console_message = f"{color}{message}{configs['colors']['RESET']}"
     print(console_message)  # Print colored message
     if json_data:
-        if isinstance(json_data, str):
-            # Print strings as-is (no JSON formatting)
-            print(json_data)
-        else:
-            # Pretty-print JSON while keeping Unicode characters
-            print(json.dumps(json_data, indent=2, ensure_ascii=False))
+        compressed = configs["tracing"]["json"].get("compressed", None)
+        if compressed is not None:
+            if isinstance(json_data, str):
+                # Print strings as-is (no JSON formatting)
+                print(json_data)
+            else:
+                if compressed:
+                    print(json.dumps(json_data, separators=(",", ":"), ensure_ascii=False))
+                else:
+                    # Pretty-print JSON while keeping Unicode characters
+                    print(json.dumps(json_data, indent=default_indent, ensure_ascii=False))

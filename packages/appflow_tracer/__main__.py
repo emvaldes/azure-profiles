@@ -26,4 +26,3 @@ from .tracing import setup_logging
 if __name__ == "__main__":
     CONFIGS = setup_logging()
     # print("Logging system initialized via standalone execution.")
-    # print( f'CONFIGS: {json.dumps(CONFIGS, indent=2)}' )

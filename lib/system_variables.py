@@ -29,9 +29,9 @@ Primary Variables:
 - `max_logfiles`: Restricts the number of stored logs (default: `5`).
 
 - `category` (SimpleNamespace): Predefined logging categories for structured logging.
-    - `category.call.id`     ("CALL"): Function calls.
-    - `category.ret.id`      ("RETURN"): Function return values.
-    - `category.imp.id`      ("IMPORT"): Module imports.
+    - `category.calls.id`    ("CALL"): Function calls.
+    - `category.returns.id`  ("RETURN"): Function return values.
+    - `category.imports.id`  ("IMPORT"): Module imports.
     - `category.debug.id`    ("DEBUG"): Debugging messages.
     - `category.info.id`     ("INFO"): Informational messages.
     - `category.warning.id`  ("WARNING"): Warnings.
@@ -139,12 +139,17 @@ Default: `5`
 max_logfiles = 5
 
 """
+Default JSON indentation (formatting)
+"""
+default_indent = 4
+
+"""
 Predefined logging categories for structured logging.
 """
 category = simple(
-    call     = simple(id="CALL",     color="\033[92m"),  # Green
-    ret      = simple(id="RETURN",   color="\033[93m"),  # Yellow
-    imp      = simple(id="IMPORT",   color="\033[94m"),  # Blue
+    calls    = simple(id="CALL",     color="\033[92m"),  # Green
+    returns  = simple(id="RETURN",   color="\033[93m"),  # Yellow
+    imports  = simple(id="IMPORT",   color="\033[94m"),  # Blue
     debug    = simple(id="DEBUG",    color="\033[96m"),  # Cyan
     info     = simple(id="INFO",     color="\033[97m"),  # White
     warning  = simple(id="WARNING",  color="\033[91m"),  # Red

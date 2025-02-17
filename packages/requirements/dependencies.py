@@ -81,6 +81,7 @@ from packages.appflow_tracer.lib import (
 
 # Import category from system_variables
 from lib.system_variables import (
+    default_indent,
     category
 )
 
@@ -110,7 +111,6 @@ def load_requirements(requirements_file: str) -> list:
     if not requirements_path.exists():
         log_utils.log_message(f"Requirements file not found at {requirements_path}", category.error.id, configs=CONFIGS)
         raise FileNotFoundError(f"ERROR: Requirements file not found at {requirements_path}")
-
     try:
         with open(requirements_path, "r") as f:
             data = json.load(f)
@@ -123,10 +123,7 @@ def load_requirements(requirements_file: str) -> list:
         log_utils.log_message(f"Invalid JSON structure in '{requirements_path}'. Details: {e}", category.error.id, configs=CONFIGS)
         raise ValueError(f"ERROR: Invalid JSON structure in '{requirements_path}'.\nDetails: {e}")
 
-def install_package(
-    package: str,
-    version_info: dict
-) -> None:
+def install_package(package: str, version_info: dict) -> None:
     """
     Install a specific package version using pip.
 
@@ -198,10 +195,7 @@ def install_requirements(requirements_file: str) -> None:
         else:
             install_package(package, version)
 
-def is_package_installed(
-    package: str,
-    version_info: dict
-) -> bool:
+def __is_package_installed(package: str, version_info: dict) -> bool:
     """
     Check if a specific package version is installed.
 
@@ -266,6 +260,51 @@ def is_package_installed(
         log_utils.log_message(f"❌ {package} is NOT installed via pip.", category.error.id, configs=CONFIGS)
         return False
 
+def is_package_installed(package: str, version_info: dict) -> bool:
+    """
+    Check if a specific package version is installed via Pip or Brew.
+
+    This function verifies whether the installed version of a package matches
+    the required target version.
+
+    Args:
+        package (str): The name of the package.
+        version_info (dict): A dictionary containing the target version.
+
+    Returns:
+        bool: True if the package is installed with the correct version, False otherwise.
+    """
+    version = version_info.get("target")
+    if not version:
+        log_utils.log_message(f"⚠️ Skipping {package}: Missing 'target' version.", category.warning.id, configs=CONFIGS)
+        return False
+
+    brew_version = None
+    if sys.platform == "darwin":
+        try:
+            result = subprocess.run(["brew", "list", "--versions", package], capture_output=True, text=True, check=True)
+            brew_version = result.stdout.strip().split()[-1] if result.stdout else None
+            if brew_version == version:
+                log_utils.log_message(f"✅ {package}=={brew_version} detected via Brew.", configs=CONFIGS)
+                return True
+            elif brew_version:
+                log_utils.log_message(f"⚠️ {package} installed via Brew, but version {brew_version} != {version} (expected).", category.warning.id, configs=CONFIGS)
+        except subprocess.CalledProcessError:
+            pass  # Brew check failed, continue with Pip check
+
+    try:
+        installed_version = importlib.metadata.version(package)
+        if installed_version == version:
+            log_utils.log_message(f"✅ {package}=={installed_version} is installed (Pip detected).", configs=CONFIGS)
+            return True
+        else:
+            log_utils.log_message(f"⚠️ {package} installed, but version {installed_version} != {version} (expected).", category.warning.id, configs=CONFIGS)
+            return False
+    except importlib.metadata.PackageNotFoundError:
+        if not brew_version:
+            log_utils.log_message(f"❌ {package} is NOT installed via Pip or Brew.", category.error.id, configs=CONFIGS)
+        return False
+
 def parse_arguments() -> argparse.Namespace:
     """
     Parse command-line arguments for specifying the requirements file.
@@ -292,10 +331,7 @@ def parse_arguments() -> argparse.Namespace:
     )
     return parser.parse_args()
 
-def update_installed_packages(
-    requirements_file: str,
-    config_filepath: str
-) -> None:
+def update_installed_packages(requirements_file: str, config_filepath: str) -> None:
     """
     Create or update the `installed.json` file with details of the currently installed packages.
 
@@ -374,7 +410,7 @@ def main() -> None:
     global CONFIGS
 
     CONFIGS = tracing.setup_logging()
-    # print( f'CONFIGS: {json.dumps(CONFIGS, indent=2)}' )
+    # print( f'CONFIGS: {json.dumps(CONFIGS, indent=default_indent)}' )
 
     packages = environment.project_root / "packages" / CONFIGS["logging"].get("package_name")
     config_filepath = packages / "installed.json"

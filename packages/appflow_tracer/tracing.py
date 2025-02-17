@@ -63,7 +63,8 @@ if str(LIB_DIR) not in sys.path:
 # Import system_variables from lib.system_variables
 from lib.system_variables import (
     project_root,
-    project_logs
+    project_logs,
+    default_indent
 )
 
 # Import trace_utils from lib.*_utils
@@ -177,7 +178,7 @@ def setup_logging(
 
     if not isinstance(CONFIGS, dict):
         raise ValueError("Configs must be a dictionary")
-    # print( f'CONFIGS: {json.dumps(CONFIGS, indent=2)}' )
+    # print( f'CONFIGS: {json.dumps(CONFIGS, indent=default_indent)}' )
 
     logfile = CONFIGS["logging"].get("log_filename", False)
     logger = logging.getLogger(f"{CONFIGS['logging']['package_name']}.{CONFIGS['logging']['module_name']}")
@@ -290,7 +291,7 @@ def main():
 
     # Ensure logging is set up globally before anything else
     CONFIGS = setup_logging()
-    # print( f'CONFIGS: {json.dumps(CONFIGS, indent=2)}' )
+    # print( f'CONFIGS: {json.dumps(CONFIGS, indent=default_indent)}' )
 
 # Automatically start tracing when executed directly
 if __name__ == "__main__":

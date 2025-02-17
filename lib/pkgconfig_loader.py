@@ -57,6 +57,7 @@ from system_variables import (
     project_logs,
     project_packages,
     max_logfiles,
+    default_indent,
     category
 )
 
@@ -125,15 +126,15 @@ def package_configs(overrides: dict = None) -> dict:
 
         config = {
             "colors": {
-                category.call.id     : category.call.color,     # Green
-                category.ret.id      : category.ret.color,      # Yellow
-                category.imp.id      : category.imp.color,      # Blue
-                category.debug.id    : category.debug.color,    # Cyan
-                category.info.id     : category.info.color,     # White
-                category.warning.id  : category.warning.color,  # Red
-                category.error.id    : category.error.color,    # Bright Red
-                category.critical.id : category.critical.color, # Red Background
-                category.reset.id    : category.reset.color     # Reset to default
+                category.calls.id    : category.calls.color,     # Green
+                category.returns.id  : category.returns.color,   # Yellow
+                category.imports.id  : category.imports.color,   # Blue
+                category.debug.id    : category.debug.color,     # Cyan
+                category.info.id     : category.info.color,      # White
+                category.warning.id  : category.warning.color,   # Red
+                category.error.id    : category.error.color,     # Bright Red
+                category.critical.id : category.critical.color,  # Red Background
+                category.reset.id    : category.reset.color      # Reset to default
             },
             "logging": {
                 "enable": True,
@@ -144,7 +145,15 @@ def package_configs(overrides: dict = None) -> dict:
                 "log_filename": None
             },
             "tracing": {
-                "enable": True
+                "enable": True,
+                "json": {
+                    "compressed": True
+                }
+            },
+            "events": {
+                category.calls.id.lower(): True,
+                category.returns.id.lower(): True,
+                category.imports.id.lower(): True
             },
             "stats": {
                 "created": datetime.utcnow().isoformat(),
@@ -162,7 +171,7 @@ def package_configs(overrides: dict = None) -> dict:
         # Generate log file path
         config["logging"]["log_filename"] = str(config_logfile(config))  # Generate the log file path
         # print( f'Config Type:   {type( config )}' )
-        print( f'Config Object: {json.dumps(config, indent=2)}' )
+        print( f'Config Object: {json.dumps(config, indent=default_indent)}' )
 
         return config
 
@@ -276,7 +285,7 @@ def setup_configs(absolute_path: Path, logname_override: str = None) -> dict:
     config["stats"]["updated"] = datetime.utcnow().isoformat()
     # Save the modified configuration to disk in the correct package location
     with open(config_file, "w") as f:
-        json.dump(config, f, indent=2)
+        json.dump(config, f, indent=default_indent)
     # print(f"Configuration updated: {config_file}")
 
     # Config -> Logging -> Log Filename (current log-file)

@@ -1,28 +1,36 @@
 {
-  "colors": {
-    "CALL": "\u001b[92m",
-    "RETURN": "\u001b[93m",
-    "IMPORT": "\u001b[94m",
-    "DEBUG": "\u001b[96m",
-    "INFO": "\u001b[97m",
-    "WARNING": "\u001b[91m",
-    "ERROR": "\u001b[31m",
-    "CRITICAL": "\u001b[41m",
-    "RESET": "\u001b[0m"
-  },
-  "logging": {
-    "enable": true,
-    "max_logfiles": 5,
-    "package_name": "scripts",
-    "module_name": "testing",
-    "logs_dirname": "logs/scripts",
-    "log_filename": "logs/scripts/testing.log"
-  },
-  "tracing": {
-    "enable": true
-  },
-  "stats": {
-    "created": "2025-02-16T21:33:17.743140",
-    "updated": "2025-02-17T16:14:07.057215"
-  }
+    "colors": {
+        "CALL": "\u001b[92m",
+        "RETURN": "\u001b[93m",
+        "IMPORT": "\u001b[94m",
+        "DEBUG": "\u001b[96m",
+        "INFO": "\u001b[97m",
+        "WARNING": "\u001b[91m",
+        "ERROR": "\u001b[31m",
+        "CRITICAL": "\u001b[41m",
+        "RESET": "\u001b[0m"
+    },
+    "logging": {
+        "enable": true,
+        "max_logfiles": 5,
+        "package_name": "scripts",
+        "module_name": "testing",
+        "logs_dirname": "logs/scripts",
+        "log_filename": "logs/scripts/testing.log"
+    },
+    "tracing": {
+        "enable": true,
+        "json": {
+            "compressed": true
+        }
+    },
+    "events": {
+        "call": true,
+        "return": true,
+        "import": true
+    },
+    "stats": {
+        "created": "2025-02-17T20:51:48.239118",
+        "updated": "2025-02-17T20:51:48.239585"
+    }
 }
