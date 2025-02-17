@@ -162,7 +162,7 @@ def package_configs(overrides: dict = None) -> dict:
         # Generate log file path
         config["logging"]["log_filename"] = str(config_logfile(config))  # Generate the log file path
         # print( f'Config Type:   {type( config )}' )
-        # print( f'Config Object: {json.dumps(config, indent=2)}' )
+        print( f'Config Object: {json.dumps(config, indent=2)}' )
 
         return config
 

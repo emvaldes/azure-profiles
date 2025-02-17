@@ -33,15 +33,17 @@ file_utils.manage_logfiles()
 
 # Import and expose key submodules
 from . import (
-    log_utils,
     file_utils,
+    log_utils,
     trace_utils,
-    serialize_utils
+    serialize_utils,
+    trace_utils
 )
 
 __all__ = [
-    "log_utils",
     "file_utils",
+    "log_utils",
     "trace_utils",
-    "serialize_utils"
+    "serialize_utils",
+    "trace_utils"
 ]

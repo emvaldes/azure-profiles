@@ -126,20 +126,18 @@ def setup_logging(
 
     if logname_override:
         log_filename = logname_override
+# else:
+    # Inspect the stack to find the caller’s module name or file
+    caller_frame = inspect.stack()[1]
+    # Determine the caller's module or file
+    caller_module = inspect.getmodule(caller_frame[0])
+
+    if caller_module and caller_module.__file__:
+        # Extract the script/module name without extension
+        log_filename = Path(caller_module.__file__).stem
     else:
-        # If no override, determine the caller’s name
-
-        # Inspect the stack to find the caller’s module name or file
-        caller_frame = inspect.stack()[1]
-        # Determine the caller's module or file
-        caller_module = inspect.getmodule(caller_frame[0])
-
-        if caller_module and caller_module.__file__:
-            # Extract the script/module name without extension
-            log_filename = Path(caller_module.__file__).stem
-        else:
-            # Fallback if the name can’t be determined
-            log_filename = "unknown"
+        # Fallback if the name can’t be determined
+        log_filename = "unknown"
 
     # Handle the case where __main__ is used
     if log_filename == "__main__":

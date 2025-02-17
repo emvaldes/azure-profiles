@@ -1,0 +1,22 @@
+devops: python (python *$%=) $ pytest -v ./tests/appflow_tracer/tracing/log_utils/test_log_utils.py ;
+====================================================================================== test session starts =======================================================================================
+platform darwin -- Python 3.13.2, pytest-8.3.4, pluggy-1.5.0 -- /usr/local/Cellar/pytest/8.3.4/libexec/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/emvaldes/.repos/azure/workspaces/azure-profiles/python
+collected 3 items
+
+tests/appflow_tracer/tracing/log_utils/test_log_utils.py::test_log_message PASSED                                                                                                          [ 33%]
+tests/appflow_tracer/tracing/log_utils/test_log_utils.py::test_output_logfile PASSED                                                                                                       [ 66%]
+tests/appflow_tracer/tracing/log_utils/test_log_utils.py::test_output_console PASSED                                                                                                       [100%]
+
+======================================================================================== warnings summary ========================================================================================
+lib/pkgconfig_loader.py:150
+  /Users/emvaldes/.repos/azure/workspaces/azure-profiles/python/lib/pkgconfig_loader.py:150: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    "created": datetime.utcnow().isoformat(),
+
+lib/pkgconfig_loader.py:276
+  /Users/emvaldes/.repos/azure/workspaces/azure-profiles/python/lib/pkgconfig_loader.py:276: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    config["stats"]["updated"] = datetime.utcnow().isoformat()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+================================================================================= 3 passed, 2 warnings in 1.24s ==================================================================================

@@ -13,16 +13,16 @@
   "logging": {
     "enable": true,
     "max_logfiles": 5,
-    "package_name": "scripts",
-    "module_name": "testing",
-    "logs_dirname": "logs/scripts",
-    "log_filename": "logs/scripts/testing.log"
+    "package_name": "tests/appflow_tracer/lib/file_utils",
+    "module_name": "test_file_utils",
+    "logs_dirname": "logs/tests/appflow_tracer/lib/file_utils",
+    "log_filename": "logs/tests/appflow_tracer/lib/file_utils/test_file_utils.log"
   },
   "tracing": {
     "enable": true
   },
   "stats": {
-    "created": "2025-02-16T21:33:17.743140",
-    "updated": "2025-02-16T23:56:06.690438"
+    "created": "2025-02-17T02:41:47.262309",
+    "updated": "2025-02-17T02:41:57.144330"
   }
 }

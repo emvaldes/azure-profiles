@@ -31,17 +31,17 @@ from .tracing import (
 )
 
 from .lib import (
-    log_utils,
     file_utils,
-    trace_utils,
-    serialize_utils
+    log_utils,
+    serialize_utils,
+    trace_utils
 )
 
 # Explicitly define available functions
 __all__ = [
     "setup_logging",
-    "log_utils",
     "file_utils",
-    "trace_utils",
-    "serialize_utils"
+    "log_utils",
+    "serialize_utils",
+    "trace_utils"
 ]

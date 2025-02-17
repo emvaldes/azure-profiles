@@ -95,26 +95,39 @@ def manage_logfiles(configs: dict = None) -> None:
     """
     Manage log file storage by removing old logs if the number exceeds a configured limit.
 
-    This function ensures the log directory does not grow indefinitely by checking
-    the current number of log files and deleting the oldest ones if the total count
-    exceeds the allowed limit.
+    This function prevents log directories from growing indefinitely by:
+    - Checking the current number of log files in each log subdirectory.
+    - Deleting the oldest logs **only if** the total count exceeds the allowed limit.
+    - Returning a list of successfully deleted log files.
 
-    Args:
-        configs (dict, optional): Configuration dictionary that specifies the `max_logfiles` limit.
+    ## Args:
+        configs (dict, optional): Configuration dictionary that specifies:
+            - `"max_logfiles"`: Maximum number of log files to retain.
             Defaults to `None`, in which case the global `max_logfiles` setting is used.
 
-    Raises:
+    ## Returns:
+        list: A list of deleted log file paths.
+
+    ## Raises:
         OSError: If an error occurs while attempting to delete log files.
 
-    Returns:
-        None
+    ## Behavior:
+    - **Logs are only deleted if the number of log files exceeds `max_logfiles`.**
+    - **The function automatically determines which logs to remove, prioritizing the oldest.**
+    - **If no logs exceed the threshold, no deletions occur, and an empty list is returned.**
 
-    Example:
-        >>> manage_logfiles(configs=CONFIGS)
-        # Deletes old logs if the count exceeds the configured limit.
+    ## Example:
+        >>> deleted_logs = manage_logfiles(CONFIGS)
+        >>> print(deleted_logs)  # List of removed log files, if any
+
+    ## Logging:
+    - Each deleted log file is recorded using `log_utils.log_message()`.
+    - Errors during deletion are logged as warnings.
+
     """
 
     logs_basedir = Path(project_logs)
+    deleted_logs = []
     for log_subdir in logs_basedir.iterdir():
         if log_subdir.is_dir():  # Ensure it's a directory
             log_files = sorted(
@@ -127,9 +140,11 @@ def manage_logfiles(configs: dict = None) -> None:
                 for log_file in logs_to_remove:
                     try:
                         log_file.unlink()
+                        deleted_logs.append(log_file.as_posix())
                         log_utils.log_message(f"🗑️ Deleted old log: {log_file.as_posix()}", category.warning.id)
                     except Exception as e:
                         print(f"⚠️ Error deleting {log_file.as_posix()}: {e}", category.error.id)
+    return deleted_logs
 
 def relative_path(filepath: str) -> str:
     """

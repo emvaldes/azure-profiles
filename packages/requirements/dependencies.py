@@ -207,6 +207,8 @@ def is_package_installed(
 
     This function verifies whether the installed version of a package matches
     the required target version.
+    First, attempts to retrieve the version via CLI if available.
+    If CLI check fails, checks via importlib.metadata.version().
 
     Args:
         package (str): The name of the package.
@@ -224,16 +226,44 @@ def is_package_installed(
     if not version:
         log_utils.log_message(f"⚠️ Skipping {package}: Missing 'target' version.", category.warning.id, configs=CONFIGS)
         return False
+    # Attempt to get the package version via CLI
+
+    # try:
+    #     installed_version = importlib.metadata.version(package)
+    #     if installed_version == version:
+    #         log_utils.log_message(f"{package}=={version} is already installed.", configs=CONFIGS)
+    #         return True
+    #     else:
+    #         log_utils.log_message(f"⚠️ {package} installed, but version {installed_version} != {version} (expected).", category.warning.id, configs=CONFIGS)
+    #         return False
+    # except importlib.metadata.PackageNotFoundError:
+    #     log_utils.log_message(f"{package} is NOT installed.", category.error.id, configs=CONFIGS)
+    #     return False
+
+# Attempt to get the package version via CLI
+    try:
+        result = subprocess.run([package, "--version"], capture_output=True, text=True, check=True)
+        cli_version = result.stdout.split()[-1]
+        if cli_version == version:
+            log_utils.log_message(f"✅ {package}=={cli_version} detected via CLI.", configs=CONFIGS)
+            return True
+        else:
+            log_utils.log_message(f"⚠️ {package} installed, but version {cli_version} != {version} (expected).", category.warning.id, configs=CONFIGS)
+            return False
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        pass  # Fallback to importlib.metadata check
+
+    # Check if installed via pip
     try:
         installed_version = importlib.metadata.version(package)
         if installed_version == version:
-            log_utils.log_message(f"{package}=={version} is already installed.", configs=CONFIGS)
+            log_utils.log_message(f"{package}=={version} is already installed (pip detected).", configs=CONFIGS)
             return True
         else:
             log_utils.log_message(f"⚠️ {package} installed, but version {installed_version} != {version} (expected).", category.warning.id, configs=CONFIGS)
             return False
     except importlib.metadata.PackageNotFoundError:
-        log_utils.log_message(f"{package} is NOT installed.", category.error.id, configs=CONFIGS)
+        log_utils.log_message(f"❌ {package} is NOT installed via pip.", category.error.id, configs=CONFIGS)
         return False
 
 def parse_arguments() -> argparse.Namespace:

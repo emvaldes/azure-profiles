@@ -151,8 +151,12 @@ def output_logfile(
     """
 
     logfile_message = f'{log_category}: {message}'
+
+    # if json_data:
+    #     logfile_message += f"\n{json_data}"
     if json_data:
-        logfile_message += f"\n{json_data}"
+        logfile_message += "\n" + json.dumps(json_data, separators=(',', ':'))  # Ensure proper JSON formatting
+
     # Disabling the removal of ANSI escape codes allowing end-users to see the original output experience.
     # message = file_utils.remove_ansi_escape_codes(message)
     logger.info(logfile_message)  # Write to log file
