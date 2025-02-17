@@ -6,23 +6,23 @@ Test Module: test_log_utils.py
 This module contains unit tests for the `log_utils.py` module in `appflow_tracer.lib`.
 It ensures that logging functions operate correctly, including:
 
-- Structured log message handling
-- File-based log output
-- Console-based log output with ANSI formatting
+- **Structured log message handling** for files and console.
+- **File-based log output** validation ensuring correct JSON formatting.
+- **ANSI-formatted console output** for colored log messages.
 
 ## Use Cases:
 1. **Validate structured logging via `log_message()`**
    - Ensures `log_message()` correctly routes logs to files and console based on configuration.
-   - Verifies that JSON-formatted logs are serialized properly.
+   - Verifies that JSON-formatted logs are properly serialized and categorized.
 
 2. **Ensure `output_logfile()` correctly writes logs to file**
    - Simulates log file output and verifies the expected format.
    - Ensures log messages are categorized correctly (INFO, WARNING, ERROR, etc.).
-   - Validates that JSON metadata is properly included.
+   - Validates that JSON metadata is properly included in log files.
 
 3. **Test `output_console()` for formatted console logging**
-   - Verifies that log messages are displayed in the console with proper ANSI colors.
-   - Ensures structured log data is correctly formatted in the console output.
+   - Ensures ANSI color formatting is applied to console logs when enabled.
+   - Validates structured log messages are properly displayed with metadata.
 
 ## Improvements Implemented:
 - `log_message()` now properly **differentiates between log levels** and handles structured data.
@@ -31,7 +31,7 @@ It ensures that logging functions operate correctly, including:
 
 ## Expected Behavior:
 - **Log messages are routed properly** to files or console depending on configuration.
-- **Structured JSON data is properly serialized** and included in logs.
+- **Structured JSON data is correctly serialized** and included in logs.
 - **ANSI color formatting is applied to console logs** where applicable.
 
 Author: Eduardo Valdes
@@ -69,14 +69,20 @@ CONFIGS["logging"]["enable"] = False  # Disable logging for test isolation
 CONFIGS["tracing"]["enable"] = False  # Disable tracing to prevent unintended prints
 
 @pytest.fixture
-def mock_logger():
+def mock_logger() -> MagicMock:
     """Creates a mock logger for testing."""
     logger = MagicMock(spec=logging.Logger)
     return logger
 
 # Test log_message function
-def test_log_message(mock_logger):
-    """Test that log_message correctly logs messages based on configuration."""
+def test_log_message(mock_logger) -> None:
+    """Test that `log_message()` correctly logs messages based on configuration.
+
+    Tests:
+    - Ensures messages are routed to the correct logging destinations (file/console).
+    - Verifies that JSON metadata is included in logs when provided.
+    - Checks that log level categorization is correctly applied.
+    """
     with patch("packages.appflow_tracer.lib.log_utils.output_logfile") as mock_output_logfile, \
          patch("packages.appflow_tracer.lib.log_utils.output_console") as mock_output_console:
 
@@ -94,8 +100,14 @@ def test_log_message(mock_logger):
             mock_output_console.assert_called_once()
 
 # Test output_logfile function
-def test_output_logfile(mock_logger):
-    """Test that output_logfile writes correctly formatted messages to a log file."""
+def test_output_logfile(mock_logger) -> None:
+    """Test that `output_logfile()` writes correctly formatted messages to a log file.
+
+    Tests:
+    - Ensures log messages are structured correctly when written to a file.
+    - Verifies JSON metadata is preserved and formatted properly.
+    - Validates that INFO, WARNING, and ERROR log levels are categorized correctly.
+    """
     with patch.object(mock_logger, "info") as mock_logger_info:
         output_logfile(mock_logger, "Log file test message", category.info.id, {"extra": "data"})
 
@@ -108,8 +120,14 @@ def test_output_logfile(mock_logger):
         assert json.loads(actual_json) == json.loads(expected_json)
 
 # Test output_console function
-def test_output_console():
-    """Test that output_console correctly prints formatted messages with ANSI colors."""
+def test_output_console() -> None:
+    """Test that `output_console()` correctly prints formatted messages with ANSI colors.
+
+    Tests:
+    - Verifies that log messages appear with the correct ANSI color codes when enabled.
+    - Checks that structured JSON data is properly displayed in the console.
+    - Ensures console output is formatted for readability.
+    """
     with patch("builtins.print") as mock_print:
         output_console("Console log test", category.warning.id, {"alert": "true"}, CONFIGS)
 

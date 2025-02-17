@@ -4,6 +4,7 @@
 
 ```console
 $ ctree ;
+
 ./
 ├── .env
 ├── .gitignore
@@ -14,6 +15,15 @@ $ ctree ;
 │   ├── chatgpt-requests.log
 │   ├── project-instructions.log
 │   └── project-objectives.log
+├── .pytest_cache/
+│   ├── .gitignore
+│   ├── CACHEDIR.TAG
+│   ├── README.md
+│   └── v/
+│       └── cache/
+│           ├── lastfailed
+│           ├── nodeids
+│           └── stepwise
 ├── LICENSE
 ├── README.md
 ├── configs/
@@ -52,6 +62,7 @@ $ ctree ;
 │   │   ├── tracing.json
 │   │   └── tracing.py
 │   └── requirements/
+│       ├── README.md
 │       ├── __init__.py
 │       ├── __main__.py
 │       ├── dependencies.console
@@ -60,15 +71,42 @@ $ ctree ;
 │       ├── installed.json
 │       └── requirements.json
 ├── run.py
-└── scripts/
-    ├── devops-workflow.log
-    ├── devops-workflow.py*
-    ├── testing.console
-    ├── testing.json
-    └── testing.py
+├── scripts/
+│   ├── devops-workflow.log
+│   ├── devops-workflow.py*
+│   ├── testing.console
+│   ├── testing.json
+│   └── testing.py
+└── tests/
+    ├── __init__.py
+    └── appflow_tracer/
+        ├── __init__.py
+        ├── test_appflow_tracer.output
+        └── tracing/
+            ├── __init__.py
+            ├── file_utils/
+            │   ├── __init__.py
+            │   ├── test_file_utils.json
+            │   ├── test_file_utils.output
+            │   └── test_file_utils.py
+            ├── log_utils/
+            │   ├── __init__.py
+            │   ├── test_log_utils.json
+            │   ├── test_log_utils.output
+            │   └── test_log_utils.py
+            ├── serialize_utils/
+            │   ├── test_serialize_utils.json
+            │   ├── test_serialize_utils.output
+            │   └── test_serialize_utils.py
+            ├── test_tracing.json
+            ├── test_tracing.output
+            ├── test_tracing.py
+            └── trace_utils/
+                ├── test_trace_utils.json
+                ├── test_trace_utils.output
+                └── test_trace_utils.py
 
-10 directories, 52 files
-devops: python (python *$%=) $
+20 directories, 80 files
 ```
 
 ## Overview

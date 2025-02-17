@@ -304,7 +304,6 @@ def call_events(
     except Exception as e:
         logger.error(f"Error in trace_all: {e}")
 
-
 def return_events(
     logger: logging.Logger,
     frame: FrameType,
@@ -330,7 +329,6 @@ def return_events(
     Returns:
         None
     """
-
 
     try:
 

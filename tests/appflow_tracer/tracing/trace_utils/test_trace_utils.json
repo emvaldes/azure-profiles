@@ -13,16 +13,16 @@
   "logging": {
     "enable": true,
     "max_logfiles": 5,
-    "package_name": "tests/appflow_tracer/tracing/serialize_utils",
-    "module_name": "test_serialize_utils",
-    "logs_dirname": "logs/tests/appflow_tracer/tracing/serialize_utils",
-    "log_filename": "logs/tests/appflow_tracer/tracing/serialize_utils/test_serialize_utils.log"
+    "package_name": "tests/appflow_tracer/tracing/trace_utils",
+    "module_name": "test_trace_utils",
+    "logs_dirname": "logs/tests/appflow_tracer/tracing/trace_utils",
+    "log_filename": "logs/tests/appflow_tracer/tracing/trace_utils/test_trace_utils.log"
   },
   "tracing": {
     "enable": true
   },
   "stats": {
-    "created": "2025-02-17T06:01:42.114271",
-    "updated": "2025-02-17T16:02:38.437068"
+    "created": "2025-02-17T06:53:12.019597",
+    "updated": "2025-02-17T16:02:40.723124"
   }
 }

@@ -6,28 +6,34 @@ Test Module: test_serialize_utils.py
 This module contains unit tests for the `serialize_utils.py` module in `appflow_tracer.lib`.
 It ensures that serialization and string sanitization functions operate correctly, including:
 
-- Safe JSON serialization
-- String sanitization for code parsing
+- **Safe JSON serialization** for various Python data types.
+- **Handling of non-serializable objects** by providing fallback representations.
+- **String sanitization** to strip inline comments from code strings.
 
 ## Use Cases:
 1. **Validate JSON serialization with `safe_serialize()`**
    - Ensures standard Python objects serialize correctly to JSON.
-   - Handles non-serializable objects gracefully.
+   - Handles **primitive types**, **lists**, and **dictionaries** without modification.
+   - Converts **non-serializable objects** into structured error responses.
    - Verifies `verbose=True` outputs formatted JSON.
 
 2. **Ensure `sanitize_token_string()` removes inline comments**
-   - Strips comments from code strings while preserving meaningful text.
-   - Handles different edge cases, including empty strings and special characters.
+   - Strips comments while preserving meaningful code.
+   - Handles various edge cases, including:
+     - **Full-line comments**
+     - **Trailing inline comments**
+     - **Empty or whitespace-only inputs**
+     - **Special character handling**
 
 ## Improvements Implemented:
-- `safe_serialize()` now **handles non-serializable objects** without crashing.
+- `safe_serialize()` now **detects and reports non-serializable objects** without crashing.
 - `sanitize_token_string()` **properly removes comments** without affecting valid code.
-- The test **isolates serialization behavior** to prevent interference from logging/tracing.
+- Tests are **isolated from logging/tracing** by disabling these features in `CONFIGS`.
 
 ## Expected Behavior:
 - **Valid JSON is returned for serializable objects**.
-- **Non-serializable objects return fallback representations**.
-- **Inline comments are removed while preserving valid code**.
+- **Non-serializable objects return structured fallback representations**.
+- **Inline comments are removed while preserving valid code structure**.
 
 Author: Eduardo Valdes
 Date: 2025/01/01
@@ -59,8 +65,15 @@ CONFIGS["logging"]["enable"] = False  # Disable logging for test isolation
 CONFIGS["tracing"]["enable"] = False  # Disable tracing to prevent unintended prints
 
 # Test safe_serialize function
-def test_safe_serialize():
-    """Ensure `safe_serialize()` correctly converts objects to JSON strings with metadata."""
+def test_safe_serialize() -> None:
+    """Ensure `safe_serialize()` correctly converts objects to JSON strings with metadata.
+
+    Tests:
+    - Serializing standard data types (dicts, lists, numbers).
+    - Handling `verbose=True` for formatted JSON output.
+    - Processing **non-serializable objects** and returning structured fallback data.
+    - Ensuring **error messages are included** for failed serializations.
+    """
 
     # Test valid JSON serialization
     result = safe_serialize({"key": "value"}, configs=CONFIGS)
@@ -87,8 +100,17 @@ def test_safe_serialize():
     assert result_unserializable["type"] == "object"
 
 # Test sanitize_token_string function
-def test_sanitize_token_string():
-    """Ensure `sanitize_token_string()` removes comments while keeping code intact."""
+def test_sanitize_token_string() -> None:
+    """Ensure `sanitize_token_string()` removes comments while keeping code intact.
+
+    Tests:
+    - Removes inline comments while keeping valid code.
+    - Strips full-line comments.
+    - Handles edge cases:
+      - Empty strings
+      - Whitespace-only inputs
+      - Special characters before `#`
+    """
     assert sanitize_token_string("some_code()  # this is a comment") == "some_code()"
     assert sanitize_token_string("   another_line   ") == "another_line"
     assert sanitize_token_string("print(123)  # inline comment") == "print(123)"

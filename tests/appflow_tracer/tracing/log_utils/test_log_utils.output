@@ -1,4 +1,4 @@
-devops: python (python *$%=) $ pytest -v ./tests/appflow_tracer/tracing/log_utils/test_log_utils.py ;
+$ pytest -v ./tests/appflow_tracer/tracing/log_utils/test_log_utils.py ;
 ====================================================================================== test session starts =======================================================================================
 platform darwin -- Python 3.13.2, pytest-8.3.4, pluggy-1.5.0 -- /usr/local/Cellar/pytest/8.3.4/libexec/bin/python
 cachedir: .pytest_cache
