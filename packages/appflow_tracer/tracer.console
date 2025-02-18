@@ -1,59 +1,49 @@
 $ python -m packages.appflow_tracer ;
-
 [CALL] packages/appflow_tracer/tracing ( file_utils.manage_logfiles(CONFIGS) )
-[CALL] packages/appflow_tracer/tracing (setup_logging)[225] -> packages/appflow_tracer/lib/file_utils (manage_logfiles)[94]
+[CALL] packages/appflow_tracer/tracing (setup_logging)[219] -> packages/appflow_tracer/lib/file_utils (manage_logfiles)[96]
 {
-  "configs": {
-    "colors": {
-      "CALL": "\u001b[92m",
-      "RETURN": "\u001b[93m",
-      "IMPORT": "\u001b[94m",
-      "DEBUG": "\u001b[96m",
-      "INFO": "\u001b[97m",
-      "WARNING": "\u001b[91m",
-      "ERROR": "\u001b[31m",
-      "CRITICAL": "\u001b[41m",
-      "RESET": "\u001b[0m"
-    },
-    "logging": {
-      "enable": true,
-      "max_logfiles": 5,
-      "package_name": "appflow_tracer",
-      "module_name": "tracing",
-      "logs_dirname": "logs/appflow_tracer",
-      "log_filename": "logs/appflow_tracer/tracing_20250216201319.log"
-    },
-    "tracing": {
-      "enable": true
-    },
-    "stats": {
-      "created": "2025-02-16T21:33:25.469996",
-      "updated": "2025-02-17T03:13:19.690759"
+    "configs": {
+        "colors": {
+            "CALL": "\u001b[92m",
+            "RETURN": "\u001b[93m",
+            "IMPORT": "\u001b[94m",
+            "DEBUG": "\u001b[96m",
+            "INFO": "\u001b[97m",
+            "WARNING": "\u001b[91m",
+            "ERROR": "\u001b[31m",
+            "CRITICAL": "\u001b[41m",
+            "RESET": "\u001b[0m"
+        },
+        "logging": {
+            "enable": true,
+            "max_logfiles": 5,
+            "package_name": "appflow_tracer",
+            "module_name": "tracing",
+            "logs_dirname": "logs/appflow_tracer",
+            "log_filename": "logs/appflow_tracer/tracing_20250217215540.log"
+        },
+        "tracing": {
+            "enable": true,
+            "json": {
+                "compressed": false
+            }
+        },
+        "events": {
+            "call": true,
+            "return": true,
+            "import": false
+        },
+        "stats": {
+            "created": "2025-02-18T04:36:09.546924",
+            "updated": "2025-02-18T04:55:40.210155+00:00"
+        }
     }
-  }
 }
-
 [CALL] packages/appflow_tracer/lib/file_utils ( log_files = sorted( )
-[CALL] packages/appflow_tracer/lib/file_utils (manage_logfiles)[133] -> packages/appflow_tracer/lib/file_utils (<lambda>)[135]
+[CALL] packages/appflow_tracer/lib/file_utils (manage_logfiles)[135] -> packages/appflow_tracer/lib/file_utils (<lambda>)[137]
 {
-  "f": "/Users/emvaldes/.repos/azure/workspaces/azure-profiles/python/logs/appflow_tracer/tracing_20250216201307.log"
+    "f": "logs/appflow_tracer/tracing_20250217215540.log"
 }
-[RETURN] packages/appflow_tracer/lib/file_utils[135] ( key=lambda f: f.stat().st_mtime ) -> float:
-1739761987.3575764
-
-[CALL] packages/appflow_tracer/lib/file_utils ( log_files = sorted( )
-[CALL] packages/appflow_tracer/lib/file_utils (manage_logfiles)[133] -> packages/appflow_tracer/lib/file_utils (<lambda>)[135]
-{
-  "f": "/Users/emvaldes/.repos/azure/workspaces/azure-profiles/python/logs/appflow_tracer/tracing_20250216201319.log"
-}
-[RETURN] packages/appflow_tracer/lib/file_utils[135] ( key=lambda f: f.stat().st_mtime ) -> float:
-1739761999.7181456
-
-[CALL] packages/appflow_tracer/lib/file_utils ( log_files = sorted( )
-[CALL] packages/appflow_tracer/lib/file_utils (manage_logfiles)[133] -> packages/appflow_tracer/lib/file_utils (<lambda>)[135]
-{
-  "f": "/Users/emvaldes/.repos/azure/workspaces/azure-profiles/python/logs/requirements/dependencies_20250216201159.log"
-}
-[RETURN] packages/appflow_tracer/lib/file_utils[135] ( key=lambda f: f.stat().st_mtime ) -> float:
-1739761923.300857
-[RETURN] packages/appflow_tracer/lib/file_utils[147] ( return deleted_logs ) -> list:
+[RETURN] packages/appflow_tracer/lib/file_utils[137] ( key=lambda f:f.stat().st_mtime ) -> float:
+1739854540.2370992
+[RETURN] packages/appflow_tracer/lib/file_utils[152] ( return deleted_logs ) -> list:

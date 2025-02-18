@@ -1,1123 +1,264 @@
 $ python -m packages.requirements.dependencies ;
-
 [CALL] packages/appflow_tracer/tracing ( file_utils.manage_logfiles(CONFIGS) )
-[CALL] packages/appflow_tracer/tracing (setup_logging)[225] -> packages/appflow_tracer/lib/file_utils (manage_logfiles)[94]
-{
-  "configs": {
-    "colors": {
-      "CALL": "\u001b[92m",
-      "RETURN": "\u001b[93m",
-      "IMPORT": "\u001b[94m",
-      "DEBUG": "\u001b[96m",
-      "INFO": "\u001b[97m",
-      "WARNING": "\u001b[91m",
-      "ERROR": "\u001b[31m",
-      "CRITICAL": "\u001b[41m",
-      "RESET": "\u001b[0m"
-    },
-    "logging": {
-      "enable": true,
-      "max_logfiles": 5,
-      "package_name": "requirements",
-      "module_name": "dependencies",
-      "logs_dirname": "logs/requirements",
-      "log_filename": "logs/requirements/dependencies_20250216201159.log"
-    },
-    "tracing": {
-      "enable": true
-    },
-    "stats": {
-      "created": "2025-02-16T21:29:04.207636",
-      "updated": "2025-02-17T03:11:59.896687"
-    }
-  }
-}
-
+[CALL] packages/appflow_tracer/tracing (setup_logging)[219] -> packages/appflow_tracer/lib/file_utils (manage_logfiles)[96]
+{"configs":{"colors":{"CALL":"\u001b[92m","RETURN":"\u001b[93m","IMPORT":"\u001b[94m","DEBUG":"\u001b[96m","INFO":"\u001b[97m","WARNING":"\u001b[91m","ERROR":"\u001b[31m","CRITICAL":"\u001b[41m","RESET":"\u001b[0m"},"logging":{"enable":true,"max_logfiles":5,"package_name":"requirements","module_name":"dependencies","logs_dirname":"logs/requirements","log_filename":"logs/requirements/dependencies_20250217215737.log"},"tracing":{"enable":true,"json":{"compressed":true}},"events":{"call":true,"return":true,"import":false},"stats":{"created":"2025-02-18T04:35:16.304272","updated":"2025-02-18T04:57:37.143239+00:00"}}}
 [CALL] packages/appflow_tracer/lib/file_utils ( log_files = sorted( )
-[CALL] packages/appflow_tracer/lib/file_utils (manage_logfiles)[133] -> packages/appflow_tracer/lib/file_utils (<lambda>)[135]
-{
-  "f": "/Users/emvaldes/.repos/azure/workspaces/azure-profiles/python/logs/requirements/dependencies_20250216201159.log"
-}
-[RETURN] packages/appflow_tracer/lib/file_utils[135] ( key=lambda f: f.stat().st_mtime ) -> float:
-1739761919.9266708
-[RETURN] packages/appflow_tracer/lib/file_utils[147] ( return deleted_logs ) -> list:
-
-[CALL] packages/requirements/dependencies ( args = parse_arguments() )
-[CALL] packages/requirements/dependencies (main)[382] -> packages/requirements/dependencies (parse_arguments)[269]
-[RETURN] packages/requirements/dependencies[293] ( return parser.parse_args() ) -> Namespace:
-{
-  "requirements_file": "./packages/requirements/requirements.json"
-}
-
-[CALL] packages/requirements/dependencies ( log_utils.log_message("🔍 Starting dependency installation process...", configs=CONFIGS) )
-[CALL] packages/requirements/dependencies (main)[383] -> packages/appflow_tracer/lib/log_utils (log_message)[72]
-{
-  "message": "🔍 Starting dependency installation process...",
-  "log_category": "INFO",
-  "json_data": null,
-  "serialize_json": false,
-  "configs": {
-    "colors": {
-      "CALL": "\u001b[92m",
-      "RETURN": "\u001b[93m",
-      "IMPORT": "\u001b[94m",
-      "DEBUG": "\u001b[96m",
-      "INFO": "\u001b[97m",
-      "WARNING": "\u001b[91m",
-      "ERROR": "\u001b[31m",
-      "CRITICAL": "\u001b[41m",
-      "RESET": "\u001b[0m"
-    },
-    "logging": {
-      "enable": true,
-      "max_logfiles": 5,
-      "package_name": "requirements",
-      "module_name": "dependencies",
-      "logs_dirname": "logs/requirements",
-      "log_filename": "logs/requirements/dependencies_20250216201159.log"
-    },
-    "tracing": {
-      "enable": true
-    },
-    "stats": {
-      "created": "2025-02-16T21:29:04.207636",
-      "updated": "2025-02-17T03:11:59.896687"
-    }
-  },
-  "handler": null
-}
-
-[CALL] packages/appflow_tracer/lib/log_utils ( output_console(message, log_category, json_data or False, configs)  # Write to console )
-[CALL] packages/appflow_tracer/lib/log_utils (log_message)[125] -> packages/appflow_tracer/lib/log_utils (output_console)[164]
-{
-  "message": "🔍 Starting dependency installation process...",
-  "log_category": "INFO",
-  "json_data": false,
-  "configs": {
-    "colors": {
-      "CALL": "\u001b[92m",
-      "RETURN": "\u001b[93m",
-      "IMPORT": "\u001b[94m",
-      "DEBUG": "\u001b[96m",
-      "INFO": "\u001b[97m",
-      "WARNING": "\u001b[91m",
-      "ERROR": "\u001b[31m",
-      "CRITICAL": "\u001b[41m",
-      "RESET": "\u001b[0m"
-    },
-    "logging": {
-      "enable": true,
-      "max_logfiles": 5,
-      "package_name": "requirements",
-      "module_name": "dependencies",
-      "logs_dirname": "logs/requirements",
-      "log_filename": "logs/requirements/dependencies_20250216201159.log"
-    },
-    "tracing": {
-      "enable": true
-    },
-    "stats": {
-      "created": "2025-02-16T21:29:04.207636",
-      "updated": "2025-02-17T03:11:59.896687"
-    }
-  }
-}
-
-[CALL] packages/appflow_tracer/lib/log_utils ( print(console_message)  # Print colored message )
-[CALL] packages/appflow_tracer/lib/log_utils (output_console)[196] -> packages/appflow_tracer/tracing (<lambda>)[204]
-
-[CALL] packages/appflow_tracer/tracing ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) )
-[CALL] packages/appflow_tracer/tracing (<lambda>)[204] -> packages/appflow_tracer/tracing (<genexpr>)[204]
-{
-  ".0": "<tuple_iterator object at 0x104c5b610>"
-}
-[RETURN] packages/appflow_tracer/tracing[204] ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) ) -> str:
+[CALL] packages/appflow_tracer/lib/file_utils (manage_logfiles)[135] -> packages/appflow_tracer/lib/file_utils (<lambda>)[137]
+{"f":"logs/requirements/dependencies_20250217215737.log"}
+[RETURN] packages/appflow_tracer/lib/file_utils[137] ( key=lambda f:f.stat().st_mtime ) -> float:
+1739854657.1710138
+[RETURN] packages/appflow_tracer/lib/file_utils[152] ( return deleted_logs ) -> list:
+[CALL] packages/requirements/dependencies ( args=parse_arguments() )
+[CALL] packages/requirements/dependencies (main)[405] -> packages/requirements/dependencies (parse_arguments)[288]
+[RETURN] packages/requirements/dependencies[312] ( return parser.parse_args() ) -> Namespace:
+{"requirements_file":"./packages/requirements/requirements.json"}
+[CALL] packages/requirements/dependencies ( log_utils.log_message("🔍 Starting dependency installation process...",configs=CONFIGS) )
+[CALL] packages/requirements/dependencies (main)[406] -> packages/appflow_tracer/lib/log_utils (log_message)[75]
+{"message":"🔍 Starting dependency installation process...","log_category":"INFO","json_data":null,"serialize_json":false,"configs":{"colors":{"CALL":"\u001b[92m","RETURN":"\u001b[93m","IMPORT":"\u001b[94m","DEBUG":"\u001b[96m","INFO":"\u001b[97m","WARNING":"\u001b[91m","ERROR":"\u001b[31m","CRITICAL":"\u001b[41m","RESET":"\u001b[0m"},"logging":{"enable":true,"max_logfiles":5,"package_name":"requirements","module_name":"dependencies","logs_dirname":"logs/requirements","log_filename":"logs/requirements/dependencies_20250217215737.log"},"tracing":{"enable":true,"json":{"compressed":true}},"events":{"call":true,"return":true,"import":false},"stats":{"created":"2025-02-18T04:35:16.304272","updated":"2025-02-18T04:57:37.143239+00:00"}},"handler":null}
+[CALL] packages/appflow_tracer/lib/log_utils ( output_console(message,log_category,json_data or False,configs) )
+[CALL] packages/appflow_tracer/lib/log_utils (log_message)[128] -> packages/appflow_tracer/lib/log_utils (output_console)[167]
+{"message":"🔍 Starting dependency installation process...","log_category":"INFO","json_data":false,"configs":{"colors":{"CALL":"\u001b[92m","RETURN":"\u001b[93m","IMPORT":"\u001b[94m","DEBUG":"\u001b[96m","INFO":"\u001b[97m","WARNING":"\u001b[91m","ERROR":"\u001b[31m","CRITICAL":"\u001b[41m","RESET":"\u001b[0m"},"logging":{"enable":true,"max_logfiles":5,"package_name":"requirements","module_name":"dependencies","logs_dirname":"logs/requirements","log_filename":"logs/requirements/dependencies_20250217215737.log"},"tracing":{"enable":true,"json":{"compressed":true}},"events":{"call":true,"return":true,"import":false},"stats":{"created":"2025-02-18T04:35:16.304272","updated":"2025-02-18T04:57:37.143239+00:00"}}}
+[CALL] packages/appflow_tracer/lib/log_utils ( print(console_message) )
+[CALL] packages/appflow_tracer/lib/log_utils (output_console)[199] -> packages/appflow_tracer/tracing (<lambda>)[201]
+[CALL] packages/appflow_tracer/tracing ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) )
+[CALL] packages/appflow_tracer/tracing (<lambda>)[201] -> packages/appflow_tracer/tracing (<genexpr>)[201]
+{".0":"<tuple_iterator object at 0x107e3b9d0>"}
+[RETURN] packages/appflow_tracer/tracing[201] ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) ) -> str:
 🔍 Starting dependency installation process...
-
-[CALL] packages/appflow_tracer/tracing ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) )
-[CALL] packages/appflow_tracer/tracing (<lambda>)[204] -> packages/appflow_tracer/tracing (<genexpr>)[204]
-{
-  ".0": "<tuple_iterator object at 0x104c5b610>"
-}
-[RETURN] packages/appflow_tracer/tracing[204] ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) ) -> NoneType: None
+[CALL] packages/appflow_tracer/tracing ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) )
+[CALL] packages/appflow_tracer/tracing (<lambda>)[201] -> packages/appflow_tracer/tracing (<genexpr>)[201]
+{".0":"<tuple_iterator object at 0x107e3b9d0>"}
+[RETURN] packages/appflow_tracer/tracing[201] ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) ) -> NoneType: None
 🔍 Starting dependency installation process...
-[RETURN] packages/appflow_tracer/tracing[204] ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) ) -> NoneType: None
-[RETURN] packages/appflow_tracer/lib/log_utils[197] ( if json_data: ) -> NoneType: None
-[RETURN] packages/appflow_tracer/lib/log_utils[125] ( output_console(message, log_category, json_data or False, configs)  # Write to console ) -> NoneType: None
-
-[CALL] packages/requirements/dependencies ( install_requirements(args.requirements_file) )
-[CALL] packages/requirements/dependencies (main)[384] -> packages/requirements/dependencies (install_requirements)[168]
-{
-  "requirements_file": "./packages/requirements/requirements.json"
-}
-
-[CALL] packages/requirements/dependencies ( dependencies = load_requirements(requirements_file) )
-[CALL] packages/requirements/dependencies (install_requirements)[186] -> packages/requirements/dependencies (load_requirements)[87]
-{
-  "requirements_file": "./packages/requirements/requirements.json"
-}
-[RETURN] packages/requirements/dependencies[115] ( with open(requirements_path, "r") as f: ) -> list:
-[
-  {
-    "package": "azure-identity",
-    "version": {
-      "target": "1.15.0",
-      "status": false
-    }
-  },
-  {
-    "package": "azure-mgmt-resource",
-    "version": {
-      "target": "23.0.1",
-      "status": false
-    }
-  },
-  {
-    "package": "pytz",
-    "version": {
-      "target": "2025.1",
-      "status": false
-    }
-  },
-  {
-    "package": "python-dotenv",
-    "version": {
-      "target": "1.0.1",
-      "status": false
-    }
-  },
-  {
-    "package": "setuptools",
-    "version": {
-      "target": "75.8.0",
-      "status": false
-    }
-  },
-  {
-    "package": "pytest",
-    "version": {
-      "target": "8.3.4",
-      "status": false
-    }
-  }
-]
-
-[CALL] packages/requirements/dependencies ( if is_package_installed(package, version): )
-[CALL] packages/requirements/dependencies (install_requirements)[196] -> packages/requirements/dependencies (is_package_installed)[201]
-{
-  "package": "azure-identity",
-  "version_info": {
-    "target": "1.15.0",
-    "status": false
-  }
-}
-
-[CALL] packages/requirements/dependencies ( log_utils.log_message(f"{package}=={version} is already installed (pip detected).", configs=CONFIGS) )
-[CALL] packages/requirements/dependencies (is_package_installed)[260] -> packages/appflow_tracer/lib/log_utils (log_message)[72]
-{
-  "message": "azure-identity==1.15.0 is already installed (pip detected).",
-  "log_category": "INFO",
-  "json_data": null,
-  "serialize_json": false,
-  "configs": {
-    "colors": {
-      "CALL": "\u001b[92m",
-      "RETURN": "\u001b[93m",
-      "IMPORT": "\u001b[94m",
-      "DEBUG": "\u001b[96m",
-      "INFO": "\u001b[97m",
-      "WARNING": "\u001b[91m",
-      "ERROR": "\u001b[31m",
-      "CRITICAL": "\u001b[41m",
-      "RESET": "\u001b[0m"
-    },
-    "logging": {
-      "enable": true,
-      "max_logfiles": 5,
-      "package_name": "requirements",
-      "module_name": "dependencies",
-      "logs_dirname": "logs/requirements",
-      "log_filename": "logs/requirements/dependencies_20250216201159.log"
-    },
-    "tracing": {
-      "enable": true
-    },
-    "stats": {
-      "created": "2025-02-16T21:29:04.207636",
-      "updated": "2025-02-17T03:11:59.896687"
-    }
-  },
-  "handler": null
-}
-
-[CALL] packages/appflow_tracer/lib/log_utils ( output_console(message, log_category, json_data or False, configs)  # Write to console )
-[CALL] packages/appflow_tracer/lib/log_utils (log_message)[125] -> packages/appflow_tracer/lib/log_utils (output_console)[164]
-{
-  "message": "azure-identity==1.15.0 is already installed (pip detected).",
-  "log_category": "INFO",
-  "json_data": false,
-  "configs": {
-    "colors": {
-      "CALL": "\u001b[92m",
-      "RETURN": "\u001b[93m",
-      "IMPORT": "\u001b[94m",
-      "DEBUG": "\u001b[96m",
-      "INFO": "\u001b[97m",
-      "WARNING": "\u001b[91m",
-      "ERROR": "\u001b[31m",
-      "CRITICAL": "\u001b[41m",
-      "RESET": "\u001b[0m"
-    },
-    "logging": {
-      "enable": true,
-      "max_logfiles": 5,
-      "package_name": "requirements",
-      "module_name": "dependencies",
-      "logs_dirname": "logs/requirements",
-      "log_filename": "logs/requirements/dependencies_20250216201159.log"
-    },
-    "tracing": {
-      "enable": true
-    },
-    "stats": {
-      "created": "2025-02-16T21:29:04.207636",
-      "updated": "2025-02-17T03:11:59.896687"
-    }
-  }
-}
-
-[CALL] packages/appflow_tracer/lib/log_utils ( print(console_message)  # Print colored message )
-[CALL] packages/appflow_tracer/lib/log_utils (output_console)[196] -> packages/appflow_tracer/tracing (<lambda>)[204]
-
-[CALL] packages/appflow_tracer/tracing ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) )
-[CALL] packages/appflow_tracer/tracing (<lambda>)[204] -> packages/appflow_tracer/tracing (<genexpr>)[204]
-{
-  ".0": "<tuple_iterator object at 0x104edb790>"
-}
-[RETURN] packages/appflow_tracer/tracing[204] ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) ) -> str:
-azure-identity==1.15.0 is already installed (pip detected).
-
-[CALL] packages/appflow_tracer/tracing ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) )
-[CALL] packages/appflow_tracer/tracing (<lambda>)[204] -> packages/appflow_tracer/tracing (<genexpr>)[204]
-{
-  ".0": "<tuple_iterator object at 0x104edb790>"
-}
-[RETURN] packages/appflow_tracer/tracing[204] ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) ) -> NoneType: None
-azure-identity==1.15.0 is already installed (pip detected).
-[RETURN] packages/appflow_tracer/tracing[204] ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) ) -> NoneType: None
-[RETURN] packages/appflow_tracer/lib/log_utils[197] ( if json_data: ) -> NoneType: None
-[RETURN] packages/appflow_tracer/lib/log_utils[125] ( output_console(message, log_category, json_data or False, configs)  # Write to console ) -> NoneType: None
-[RETURN] packages/requirements/dependencies[261] ( return True ) -> bool: True
+[RETURN] packages/appflow_tracer/tracing[201] ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) ) -> NoneType: None
+[RETURN] packages/appflow_tracer/lib/log_utils[200] ( if json_data: ) -> NoneType: None
+[RETURN] packages/appflow_tracer/lib/log_utils[128] ( output_console(message,log_category,json_data or False,configs) ) -> NoneType: None
+[CALL] packages/requirements/dependencies ( install_requirements( )
+[CALL] packages/requirements/dependencies (main)[407] -> packages/requirements/dependencies (install_requirements)[193]
+{"requirements_file":"./packages/requirements/requirements.json","configs":{"colors":{"CALL":"\u001b[92m","RETURN":"\u001b[93m","IMPORT":"\u001b[94m","DEBUG":"\u001b[96m","INFO":"\u001b[97m","WARNING":"\u001b[91m","ERROR":"\u001b[31m","CRITICAL":"\u001b[41m","RESET":"\u001b[0m"},"logging":{"enable":true,"max_logfiles":5,"package_name":"requirements","module_name":"dependencies","logs_dirname":"logs/requirements","log_filename":"logs/requirements/dependencies_20250217215737.log"},"tracing":{"enable":true,"json":{"compressed":true}},"events":{"call":true,"return":true,"import":false},"stats":{"created":"2025-02-18T04:35:16.304272","updated":"2025-02-18T04:57:37.143239+00:00"}}}
+[CALL] packages/requirements/dependencies ( dependencies = load_requirements( )
+[CALL] packages/requirements/dependencies (install_requirements)[217] -> packages/requirements/dependencies (load_requirements)[88]
+{"requirements_file":"./packages/requirements/requirements.json","configs":{"colors":{"CALL":"\u001b[92m","RETURN":"\u001b[93m","IMPORT":"\u001b[94m","DEBUG":"\u001b[96m","INFO":"\u001b[97m","WARNING":"\u001b[91m","ERROR":"\u001b[31m","CRITICAL":"\u001b[41m","RESET":"\u001b[0m"},"logging":{"enable":true,"max_logfiles":5,"package_name":"requirements","module_name":"dependencies","logs_dirname":"logs/requirements","log_filename":"logs/requirements/dependencies_20250217215737.log"},"tracing":{"enable":true,"json":{"compressed":true}},"events":{"call":true,"return":true,"import":false},"stats":{"created":"2025-02-18T04:35:16.304272","updated":"2025-02-18T04:57:37.143239+00:00"}}}
+[RETURN] packages/requirements/dependencies[122] ( with open(requirements_path,"r")as f: ) -> list:
+[{"package":"azure-identity","version":{"target":"1.15.0","status":false}},{"package":"azure-mgmt-resource","version":{"target":"23.0.1","status":false}},{"package":"pytz","version":{"target":"2025.1","status":false}},{"package":"python-dotenv","version":{"target":"1.0.1","status":false}},{"package":"setuptools","version":{"target":"75.8.0","status":false}},{"package":"pytest","version":{"target":"8.3.4","status":false}}]
+[CALL] packages/requirements/dependencies ( if is_package_installed( )
+[CALL] packages/requirements/dependencies (install_requirements)[228] -> packages/requirements/dependencies (is_package_installed)[241]
+{"package":"azure-identity","version_info":{"target":"1.15.0","status":false},"configs":{"colors":{"CALL":"\u001b[92m","RETURN":"\u001b[93m","IMPORT":"\u001b[94m","DEBUG":"\u001b[96m","INFO":"\u001b[97m","WARNING":"\u001b[91m","ERROR":"\u001b[31m","CRITICAL":"\u001b[41m","RESET":"\u001b[0m"},"logging":{"enable":true,"max_logfiles":5,"package_name":"requirements","module_name":"dependencies","logs_dirname":"logs/requirements","log_filename":"logs/requirements/dependencies_20250217215737.log"},"tracing":{"enable":true,"json":{"compressed":true}},"events":{"call":true,"return":true,"import":false},"stats":{"created":"2025-02-18T04:35:16.304272","updated":"2025-02-18T04:57:37.143239+00:00"}}}
+[CALL] packages/requirements/dependencies ( log_utils.log_message(f"✅ {package}=={installed_version} is installed (Pip detected).",configs=configs) )
+[CALL] packages/requirements/dependencies (is_package_installed)[278] -> packages/appflow_tracer/lib/log_utils (log_message)[75]
+{"message":"✅ azure-identity==1.15.0 is installed (Pip detected).","log_category":"INFO","json_data":null,"serialize_json":false,"configs":{"colors":{"CALL":"\u001b[92m","RETURN":"\u001b[93m","IMPORT":"\u001b[94m","DEBUG":"\u001b[96m","INFO":"\u001b[97m","WARNING":"\u001b[91m","ERROR":"\u001b[31m","CRITICAL":"\u001b[41m","RESET":"\u001b[0m"},"logging":{"enable":true,"max_logfiles":5,"package_name":"requirements","module_name":"dependencies","logs_dirname":"logs/requirements","log_filename":"logs/requirements/dependencies_20250217215737.log"},"tracing":{"enable":true,"json":{"compressed":true}},"events":{"call":true,"return":true,"import":false},"stats":{"created":"2025-02-18T04:35:16.304272","updated":"2025-02-18T04:57:37.143239+00:00"}},"handler":null}
+[CALL] packages/appflow_tracer/lib/log_utils ( output_console(message,log_category,json_data or False,configs) )
+[CALL] packages/appflow_tracer/lib/log_utils (log_message)[128] -> packages/appflow_tracer/lib/log_utils (output_console)[167]
+{"message":"✅ azure-identity==1.15.0 is installed (Pip detected).","log_category":"INFO","json_data":false,"configs":{"colors":{"CALL":"\u001b[92m","RETURN":"\u001b[93m","IMPORT":"\u001b[94m","DEBUG":"\u001b[96m","INFO":"\u001b[97m","WARNING":"\u001b[91m","ERROR":"\u001b[31m","CRITICAL":"\u001b[41m","RESET":"\u001b[0m"},"logging":{"enable":true,"max_logfiles":5,"package_name":"requirements","module_name":"dependencies","logs_dirname":"logs/requirements","log_filename":"logs/requirements/dependencies_20250217215737.log"},"tracing":{"enable":true,"json":{"compressed":true}},"events":{"call":true,"return":true,"import":false},"stats":{"created":"2025-02-18T04:35:16.304272","updated":"2025-02-18T04:57:37.143239+00:00"}}}
+[CALL] packages/appflow_tracer/lib/log_utils ( print(console_message) )
+[CALL] packages/appflow_tracer/lib/log_utils (output_console)[199] -> packages/appflow_tracer/tracing (<lambda>)[201]
+[CALL] packages/appflow_tracer/tracing ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) )
+[CALL] packages/appflow_tracer/tracing (<lambda>)[201] -> packages/appflow_tracer/tracing (<genexpr>)[201]
+{".0":"<tuple_iterator object at 0x107fa27a0>"}
+[RETURN] packages/appflow_tracer/tracing[201] ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) ) -> str:
+✅ azure-identity==1.15.0 is installed (Pip detected).
+[CALL] packages/appflow_tracer/tracing ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) )
+[CALL] packages/appflow_tracer/tracing (<lambda>)[201] -> packages/appflow_tracer/tracing (<genexpr>)[201]
+{".0":"<tuple_iterator object at 0x107fa27a0>"}
+[RETURN] packages/appflow_tracer/tracing[201] ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) ) -> NoneType: None
+✅ azure-identity==1.15.0 is installed (Pip detected).
+[RETURN] packages/appflow_tracer/tracing[201] ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) ) -> NoneType: None
+[RETURN] packages/appflow_tracer/lib/log_utils[200] ( if json_data: ) -> NoneType: None
+[RETURN] packages/appflow_tracer/lib/log_utils[128] ( output_console(message,log_category,json_data or False,configs) ) -> NoneType: None
+[RETURN] packages/requirements/dependencies[279] ( return True ) -> bool: True
 true
-
-[CALL] packages/requirements/dependencies ( if is_package_installed(package, version): )
-[CALL] packages/requirements/dependencies (install_requirements)[196] -> packages/requirements/dependencies (is_package_installed)[201]
-{
-  "package": "azure-mgmt-resource",
-  "version_info": {
-    "target": "23.0.1",
-    "status": false
-  }
-}
-
-[CALL] packages/requirements/dependencies ( log_utils.log_message(f"{package}=={version} is already installed (pip detected).", configs=CONFIGS) )
-[CALL] packages/requirements/dependencies (is_package_installed)[260] -> packages/appflow_tracer/lib/log_utils (log_message)[72]
-{
-  "message": "azure-mgmt-resource==23.0.1 is already installed (pip detected).",
-  "log_category": "INFO",
-  "json_data": null,
-  "serialize_json": false,
-  "configs": {
-    "colors": {
-      "CALL": "\u001b[92m",
-      "RETURN": "\u001b[93m",
-      "IMPORT": "\u001b[94m",
-      "DEBUG": "\u001b[96m",
-      "INFO": "\u001b[97m",
-      "WARNING": "\u001b[91m",
-      "ERROR": "\u001b[31m",
-      "CRITICAL": "\u001b[41m",
-      "RESET": "\u001b[0m"
-    },
-    "logging": {
-      "enable": true,
-      "max_logfiles": 5,
-      "package_name": "requirements",
-      "module_name": "dependencies",
-      "logs_dirname": "logs/requirements",
-      "log_filename": "logs/requirements/dependencies_20250216201159.log"
-    },
-    "tracing": {
-      "enable": true
-    },
-    "stats": {
-      "created": "2025-02-16T21:29:04.207636",
-      "updated": "2025-02-17T03:11:59.896687"
-    }
-  },
-  "handler": null
-}
-
-[CALL] packages/appflow_tracer/lib/log_utils ( output_console(message, log_category, json_data or False, configs)  # Write to console )
-[CALL] packages/appflow_tracer/lib/log_utils (log_message)[125] -> packages/appflow_tracer/lib/log_utils (output_console)[164]
-{
-  "message": "azure-mgmt-resource==23.0.1 is already installed (pip detected).",
-  "log_category": "INFO",
-  "json_data": false,
-  "configs": {
-    "colors": {
-      "CALL": "\u001b[92m",
-      "RETURN": "\u001b[93m",
-      "IMPORT": "\u001b[94m",
-      "DEBUG": "\u001b[96m",
-      "INFO": "\u001b[97m",
-      "WARNING": "\u001b[91m",
-      "ERROR": "\u001b[31m",
-      "CRITICAL": "\u001b[41m",
-      "RESET": "\u001b[0m"
-    },
-    "logging": {
-      "enable": true,
-      "max_logfiles": 5,
-      "package_name": "requirements",
-      "module_name": "dependencies",
-      "logs_dirname": "logs/requirements",
-      "log_filename": "logs/requirements/dependencies_20250216201159.log"
-    },
-    "tracing": {
-      "enable": true
-    },
-    "stats": {
-      "created": "2025-02-16T21:29:04.207636",
-      "updated": "2025-02-17T03:11:59.896687"
-    }
-  }
-}
-
-[CALL] packages/appflow_tracer/lib/log_utils ( print(console_message)  # Print colored message )
-[CALL] packages/appflow_tracer/lib/log_utils (output_console)[196] -> packages/appflow_tracer/tracing (<lambda>)[204]
-
-[CALL] packages/appflow_tracer/tracing ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) )
-[CALL] packages/appflow_tracer/tracing (<lambda>)[204] -> packages/appflow_tracer/tracing (<genexpr>)[204]
-{
-  ".0": "<tuple_iterator object at 0x104eccee0>"
-}
-[RETURN] packages/appflow_tracer/tracing[204] ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) ) -> str:
-azure-mgmt-resource==23.0.1 is already installed (pip detected).
-
-[CALL] packages/appflow_tracer/tracing ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) )
-[CALL] packages/appflow_tracer/tracing (<lambda>)[204] -> packages/appflow_tracer/tracing (<genexpr>)[204]
-{
-  ".0": "<tuple_iterator object at 0x104eccee0>"
-}
-[RETURN] packages/appflow_tracer/tracing[204] ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) ) -> NoneType: None
-azure-mgmt-resource==23.0.1 is already installed (pip detected).
-[RETURN] packages/appflow_tracer/tracing[204] ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) ) -> NoneType: None
-[RETURN] packages/appflow_tracer/lib/log_utils[197] ( if json_data: ) -> NoneType: None
-[RETURN] packages/appflow_tracer/lib/log_utils[125] ( output_console(message, log_category, json_data or False, configs)  # Write to console ) -> NoneType: None
-[RETURN] packages/requirements/dependencies[261] ( return True ) -> bool: True
+[CALL] packages/requirements/dependencies ( if is_package_installed( )
+[CALL] packages/requirements/dependencies (install_requirements)[228] -> packages/requirements/dependencies (is_package_installed)[241]
+{"package":"azure-mgmt-resource","version_info":{"target":"23.0.1","status":false},"configs":{"colors":{"CALL":"\u001b[92m","RETURN":"\u001b[93m","IMPORT":"\u001b[94m","DEBUG":"\u001b[96m","INFO":"\u001b[97m","WARNING":"\u001b[91m","ERROR":"\u001b[31m","CRITICAL":"\u001b[41m","RESET":"\u001b[0m"},"logging":{"enable":true,"max_logfiles":5,"package_name":"requirements","module_name":"dependencies","logs_dirname":"logs/requirements","log_filename":"logs/requirements/dependencies_20250217215737.log"},"tracing":{"enable":true,"json":{"compressed":true}},"events":{"call":true,"return":true,"import":false},"stats":{"created":"2025-02-18T04:35:16.304272","updated":"2025-02-18T04:57:37.143239+00:00"}}}
+[CALL] packages/requirements/dependencies ( log_utils.log_message(f"✅ {package}=={installed_version} is installed (Pip detected).",configs=configs) )
+[CALL] packages/requirements/dependencies (is_package_installed)[278] -> packages/appflow_tracer/lib/log_utils (log_message)[75]
+{"message":"✅ azure-mgmt-resource==23.0.1 is installed (Pip detected).","log_category":"INFO","json_data":null,"serialize_json":false,"configs":{"colors":{"CALL":"\u001b[92m","RETURN":"\u001b[93m","IMPORT":"\u001b[94m","DEBUG":"\u001b[96m","INFO":"\u001b[97m","WARNING":"\u001b[91m","ERROR":"\u001b[31m","CRITICAL":"\u001b[41m","RESET":"\u001b[0m"},"logging":{"enable":true,"max_logfiles":5,"package_name":"requirements","module_name":"dependencies","logs_dirname":"logs/requirements","log_filename":"logs/requirements/dependencies_20250217215737.log"},"tracing":{"enable":true,"json":{"compressed":true}},"events":{"call":true,"return":true,"import":false},"stats":{"created":"2025-02-18T04:35:16.304272","updated":"2025-02-18T04:57:37.143239+00:00"}},"handler":null}
+[CALL] packages/appflow_tracer/lib/log_utils ( output_console(message,log_category,json_data or False,configs) )
+[CALL] packages/appflow_tracer/lib/log_utils (log_message)[128] -> packages/appflow_tracer/lib/log_utils (output_console)[167]
+{"message":"✅ azure-mgmt-resource==23.0.1 is installed (Pip detected).","log_category":"INFO","json_data":false,"configs":{"colors":{"CALL":"\u001b[92m","RETURN":"\u001b[93m","IMPORT":"\u001b[94m","DEBUG":"\u001b[96m","INFO":"\u001b[97m","WARNING":"\u001b[91m","ERROR":"\u001b[31m","CRITICAL":"\u001b[41m","RESET":"\u001b[0m"},"logging":{"enable":true,"max_logfiles":5,"package_name":"requirements","module_name":"dependencies","logs_dirname":"logs/requirements","log_filename":"logs/requirements/dependencies_20250217215737.log"},"tracing":{"enable":true,"json":{"compressed":true}},"events":{"call":true,"return":true,"import":false},"stats":{"created":"2025-02-18T04:35:16.304272","updated":"2025-02-18T04:57:37.143239+00:00"}}}
+[CALL] packages/appflow_tracer/lib/log_utils ( print(console_message) )
+[CALL] packages/appflow_tracer/lib/log_utils (output_console)[199] -> packages/appflow_tracer/tracing (<lambda>)[201]
+[CALL] packages/appflow_tracer/tracing ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) )
+[CALL] packages/appflow_tracer/tracing (<lambda>)[201] -> packages/appflow_tracer/tracing (<genexpr>)[201]
+{".0":"<tuple_iterator object at 0x1073a3be0>"}
+[RETURN] packages/appflow_tracer/tracing[201] ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) ) -> str:
+✅ azure-mgmt-resource==23.0.1 is installed (Pip detected).
+[CALL] packages/appflow_tracer/tracing ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) )
+[CALL] packages/appflow_tracer/tracing (<lambda>)[201] -> packages/appflow_tracer/tracing (<genexpr>)[201]
+{".0":"<tuple_iterator object at 0x1073a3be0>"}
+[RETURN] packages/appflow_tracer/tracing[201] ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) ) -> NoneType: None
+✅ azure-mgmt-resource==23.0.1 is installed (Pip detected).
+[RETURN] packages/appflow_tracer/tracing[201] ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) ) -> NoneType: None
+[RETURN] packages/appflow_tracer/lib/log_utils[200] ( if json_data: ) -> NoneType: None
+[RETURN] packages/appflow_tracer/lib/log_utils[128] ( output_console(message,log_category,json_data or False,configs) ) -> NoneType: None
+[RETURN] packages/requirements/dependencies[279] ( return True ) -> bool: True
 true
-
-[CALL] packages/requirements/dependencies ( if is_package_installed(package, version): )
-[CALL] packages/requirements/dependencies (install_requirements)[196] -> packages/requirements/dependencies (is_package_installed)[201]
-{
-  "package": "pytz",
-  "version_info": {
-    "target": "2025.1",
-    "status": false
-  }
-}
-
-[CALL] packages/requirements/dependencies ( log_utils.log_message(f"{package}=={version} is already installed (pip detected).", configs=CONFIGS) )
-[CALL] packages/requirements/dependencies (is_package_installed)[260] -> packages/appflow_tracer/lib/log_utils (log_message)[72]
-{
-  "message": "pytz==2025.1 is already installed (pip detected).",
-  "log_category": "INFO",
-  "json_data": null,
-  "serialize_json": false,
-  "configs": {
-    "colors": {
-      "CALL": "\u001b[92m",
-      "RETURN": "\u001b[93m",
-      "IMPORT": "\u001b[94m",
-      "DEBUG": "\u001b[96m",
-      "INFO": "\u001b[97m",
-      "WARNING": "\u001b[91m",
-      "ERROR": "\u001b[31m",
-      "CRITICAL": "\u001b[41m",
-      "RESET": "\u001b[0m"
-    },
-    "logging": {
-      "enable": true,
-      "max_logfiles": 5,
-      "package_name": "requirements",
-      "module_name": "dependencies",
-      "logs_dirname": "logs/requirements",
-      "log_filename": "logs/requirements/dependencies_20250216201159.log"
-    },
-    "tracing": {
-      "enable": true
-    },
-    "stats": {
-      "created": "2025-02-16T21:29:04.207636",
-      "updated": "2025-02-17T03:11:59.896687"
-    }
-  },
-  "handler": null
-}
-
-[CALL] packages/appflow_tracer/lib/log_utils ( output_console(message, log_category, json_data or False, configs)  # Write to console )
-[CALL] packages/appflow_tracer/lib/log_utils (log_message)[125] -> packages/appflow_tracer/lib/log_utils (output_console)[164]
-{
-  "message": "pytz==2025.1 is already installed (pip detected).",
-  "log_category": "INFO",
-  "json_data": false,
-  "configs": {
-    "colors": {
-      "CALL": "\u001b[92m",
-      "RETURN": "\u001b[93m",
-      "IMPORT": "\u001b[94m",
-      "DEBUG": "\u001b[96m",
-      "INFO": "\u001b[97m",
-      "WARNING": "\u001b[91m",
-      "ERROR": "\u001b[31m",
-      "CRITICAL": "\u001b[41m",
-      "RESET": "\u001b[0m"
-    },
-    "logging": {
-      "enable": true,
-      "max_logfiles": 5,
-      "package_name": "requirements",
-      "module_name": "dependencies",
-      "logs_dirname": "logs/requirements",
-      "log_filename": "logs/requirements/dependencies_20250216201159.log"
-    },
-    "tracing": {
-      "enable": true
-    },
-    "stats": {
-      "created": "2025-02-16T21:29:04.207636",
-      "updated": "2025-02-17T03:11:59.896687"
-    }
-  }
-}
-
-[CALL] packages/appflow_tracer/lib/log_utils ( print(console_message)  # Print colored message )
-[CALL] packages/appflow_tracer/lib/log_utils (output_console)[196] -> packages/appflow_tracer/tracing (<lambda>)[204]
-
-[CALL] packages/appflow_tracer/tracing ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) )
-[CALL] packages/appflow_tracer/tracing (<lambda>)[204] -> packages/appflow_tracer/tracing (<genexpr>)[204]
-{
-  ".0": "<tuple_iterator object at 0x104d6ada0>"
-}
-[RETURN] packages/appflow_tracer/tracing[204] ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) ) -> str:
-pytz==2025.1 is already installed (pip detected).
-
-[CALL] packages/appflow_tracer/tracing ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) )
-[CALL] packages/appflow_tracer/tracing (<lambda>)[204] -> packages/appflow_tracer/tracing (<genexpr>)[204]
-{
-  ".0": "<tuple_iterator object at 0x104d6ada0>"
-}
-[RETURN] packages/appflow_tracer/tracing[204] ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) ) -> NoneType: None
-pytz==2025.1 is already installed (pip detected).
-[RETURN] packages/appflow_tracer/tracing[204] ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) ) -> NoneType: None
-[RETURN] packages/appflow_tracer/lib/log_utils[197] ( if json_data: ) -> NoneType: None
-[RETURN] packages/appflow_tracer/lib/log_utils[125] ( output_console(message, log_category, json_data or False, configs)  # Write to console ) -> NoneType: None
-[RETURN] packages/requirements/dependencies[261] ( return True ) -> bool: True
+[CALL] packages/requirements/dependencies ( if is_package_installed( )
+[CALL] packages/requirements/dependencies (install_requirements)[228] -> packages/requirements/dependencies (is_package_installed)[241]
+{"package":"pytz","version_info":{"target":"2025.1","status":false},"configs":{"colors":{"CALL":"\u001b[92m","RETURN":"\u001b[93m","IMPORT":"\u001b[94m","DEBUG":"\u001b[96m","INFO":"\u001b[97m","WARNING":"\u001b[91m","ERROR":"\u001b[31m","CRITICAL":"\u001b[41m","RESET":"\u001b[0m"},"logging":{"enable":true,"max_logfiles":5,"package_name":"requirements","module_name":"dependencies","logs_dirname":"logs/requirements","log_filename":"logs/requirements/dependencies_20250217215737.log"},"tracing":{"enable":true,"json":{"compressed":true}},"events":{"call":true,"return":true,"import":false},"stats":{"created":"2025-02-18T04:35:16.304272","updated":"2025-02-18T04:57:37.143239+00:00"}}}
+[CALL] packages/requirements/dependencies ( log_utils.log_message(f"✅ {package}=={installed_version} is installed (Pip detected).",configs=configs) )
+[CALL] packages/requirements/dependencies (is_package_installed)[278] -> packages/appflow_tracer/lib/log_utils (log_message)[75]
+{"message":"✅ pytz==2025.1 is installed (Pip detected).","log_category":"INFO","json_data":null,"serialize_json":false,"configs":{"colors":{"CALL":"\u001b[92m","RETURN":"\u001b[93m","IMPORT":"\u001b[94m","DEBUG":"\u001b[96m","INFO":"\u001b[97m","WARNING":"\u001b[91m","ERROR":"\u001b[31m","CRITICAL":"\u001b[41m","RESET":"\u001b[0m"},"logging":{"enable":true,"max_logfiles":5,"package_name":"requirements","module_name":"dependencies","logs_dirname":"logs/requirements","log_filename":"logs/requirements/dependencies_20250217215737.log"},"tracing":{"enable":true,"json":{"compressed":true}},"events":{"call":true,"return":true,"import":false},"stats":{"created":"2025-02-18T04:35:16.304272","updated":"2025-02-18T04:57:37.143239+00:00"}},"handler":null}
+[CALL] packages/appflow_tracer/lib/log_utils ( output_console(message,log_category,json_data or False,configs) )
+[CALL] packages/appflow_tracer/lib/log_utils (log_message)[128] -> packages/appflow_tracer/lib/log_utils (output_console)[167]
+{"message":"✅ pytz==2025.1 is installed (Pip detected).","log_category":"INFO","json_data":false,"configs":{"colors":{"CALL":"\u001b[92m","RETURN":"\u001b[93m","IMPORT":"\u001b[94m","DEBUG":"\u001b[96m","INFO":"\u001b[97m","WARNING":"\u001b[91m","ERROR":"\u001b[31m","CRITICAL":"\u001b[41m","RESET":"\u001b[0m"},"logging":{"enable":true,"max_logfiles":5,"package_name":"requirements","module_name":"dependencies","logs_dirname":"logs/requirements","log_filename":"logs/requirements/dependencies_20250217215737.log"},"tracing":{"enable":true,"json":{"compressed":true}},"events":{"call":true,"return":true,"import":false},"stats":{"created":"2025-02-18T04:35:16.304272","updated":"2025-02-18T04:57:37.143239+00:00"}}}
+[CALL] packages/appflow_tracer/lib/log_utils ( print(console_message) )
+[CALL] packages/appflow_tracer/lib/log_utils (output_console)[199] -> packages/appflow_tracer/tracing (<lambda>)[201]
+[CALL] packages/appflow_tracer/tracing ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) )
+[CALL] packages/appflow_tracer/tracing (<lambda>)[201] -> packages/appflow_tracer/tracing (<genexpr>)[201]
+{".0":"<tuple_iterator object at 0x1073a3be0>"}
+[RETURN] packages/appflow_tracer/tracing[201] ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) ) -> str:
+✅ pytz==2025.1 is installed (Pip detected).
+[CALL] packages/appflow_tracer/tracing ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) )
+[CALL] packages/appflow_tracer/tracing (<lambda>)[201] -> packages/appflow_tracer/tracing (<genexpr>)[201]
+{".0":"<tuple_iterator object at 0x1073a3be0>"}
+[RETURN] packages/appflow_tracer/tracing[201] ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) ) -> NoneType: None
+✅ pytz==2025.1 is installed (Pip detected).
+[RETURN] packages/appflow_tracer/tracing[201] ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) ) -> NoneType: None
+[RETURN] packages/appflow_tracer/lib/log_utils[200] ( if json_data: ) -> NoneType: None
+[RETURN] packages/appflow_tracer/lib/log_utils[128] ( output_console(message,log_category,json_data or False,configs) ) -> NoneType: None
+[RETURN] packages/requirements/dependencies[279] ( return True ) -> bool: True
 true
-
-[CALL] packages/requirements/dependencies ( if is_package_installed(package, version): )
-[CALL] packages/requirements/dependencies (install_requirements)[196] -> packages/requirements/dependencies (is_package_installed)[201]
-{
-  "package": "python-dotenv",
-  "version_info": {
-    "target": "1.0.1",
-    "status": false
-  }
-}
-
-[CALL] packages/requirements/dependencies ( log_utils.log_message(f"{package}=={version} is already installed (pip detected).", configs=CONFIGS) )
-[CALL] packages/requirements/dependencies (is_package_installed)[260] -> packages/appflow_tracer/lib/log_utils (log_message)[72]
-{
-  "message": "python-dotenv==1.0.1 is already installed (pip detected).",
-  "log_category": "INFO",
-  "json_data": null,
-  "serialize_json": false,
-  "configs": {
-    "colors": {
-      "CALL": "\u001b[92m",
-      "RETURN": "\u001b[93m",
-      "IMPORT": "\u001b[94m",
-      "DEBUG": "\u001b[96m",
-      "INFO": "\u001b[97m",
-      "WARNING": "\u001b[91m",
-      "ERROR": "\u001b[31m",
-      "CRITICAL": "\u001b[41m",
-      "RESET": "\u001b[0m"
-    },
-    "logging": {
-      "enable": true,
-      "max_logfiles": 5,
-      "package_name": "requirements",
-      "module_name": "dependencies",
-      "logs_dirname": "logs/requirements",
-      "log_filename": "logs/requirements/dependencies_20250216201159.log"
-    },
-    "tracing": {
-      "enable": true
-    },
-    "stats": {
-      "created": "2025-02-16T21:29:04.207636",
-      "updated": "2025-02-17T03:11:59.896687"
-    }
-  },
-  "handler": null
-}
-
-[CALL] packages/appflow_tracer/lib/log_utils ( output_console(message, log_category, json_data or False, configs)  # Write to console )
-[CALL] packages/appflow_tracer/lib/log_utils (log_message)[125] -> packages/appflow_tracer/lib/log_utils (output_console)[164]
-{
-  "message": "python-dotenv==1.0.1 is already installed (pip detected).",
-  "log_category": "INFO",
-  "json_data": false,
-  "configs": {
-    "colors": {
-      "CALL": "\u001b[92m",
-      "RETURN": "\u001b[93m",
-      "IMPORT": "\u001b[94m",
-      "DEBUG": "\u001b[96m",
-      "INFO": "\u001b[97m",
-      "WARNING": "\u001b[91m",
-      "ERROR": "\u001b[31m",
-      "CRITICAL": "\u001b[41m",
-      "RESET": "\u001b[0m"
-    },
-    "logging": {
-      "enable": true,
-      "max_logfiles": 5,
-      "package_name": "requirements",
-      "module_name": "dependencies",
-      "logs_dirname": "logs/requirements",
-      "log_filename": "logs/requirements/dependencies_20250216201159.log"
-    },
-    "tracing": {
-      "enable": true
-    },
-    "stats": {
-      "created": "2025-02-16T21:29:04.207636",
-      "updated": "2025-02-17T03:11:59.896687"
-    }
-  }
-}
-
-[CALL] packages/appflow_tracer/lib/log_utils ( print(console_message)  # Print colored message )
-[CALL] packages/appflow_tracer/lib/log_utils (output_console)[196] -> packages/appflow_tracer/tracing (<lambda>)[204]
-
-[CALL] packages/appflow_tracer/tracing ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) )
-[CALL] packages/appflow_tracer/tracing (<lambda>)[204] -> packages/appflow_tracer/tracing (<genexpr>)[204]
-{
-  ".0": "<tuple_iterator object at 0x104eccee0>"
-}
-[RETURN] packages/appflow_tracer/tracing[204] ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) ) -> str:
-python-dotenv==1.0.1 is already installed (pip detected).
-
-[CALL] packages/appflow_tracer/tracing ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) )
-[CALL] packages/appflow_tracer/tracing (<lambda>)[204] -> packages/appflow_tracer/tracing (<genexpr>)[204]
-{
-  ".0": "<tuple_iterator object at 0x104eccee0>"
-}
-[RETURN] packages/appflow_tracer/tracing[204] ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) ) -> NoneType: None
-python-dotenv==1.0.1 is already installed (pip detected).
-[RETURN] packages/appflow_tracer/tracing[204] ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) ) -> NoneType: None
-[RETURN] packages/appflow_tracer/lib/log_utils[197] ( if json_data: ) -> NoneType: None
-[RETURN] packages/appflow_tracer/lib/log_utils[125] ( output_console(message, log_category, json_data or False, configs)  # Write to console ) -> NoneType: None
-[RETURN] packages/requirements/dependencies[261] ( return True ) -> bool: True
+[CALL] packages/requirements/dependencies ( if is_package_installed( )
+[CALL] packages/requirements/dependencies (install_requirements)[228] -> packages/requirements/dependencies (is_package_installed)[241]
+{"package":"python-dotenv","version_info":{"target":"1.0.1","status":false},"configs":{"colors":{"CALL":"\u001b[92m","RETURN":"\u001b[93m","IMPORT":"\u001b[94m","DEBUG":"\u001b[96m","INFO":"\u001b[97m","WARNING":"\u001b[91m","ERROR":"\u001b[31m","CRITICAL":"\u001b[41m","RESET":"\u001b[0m"},"logging":{"enable":true,"max_logfiles":5,"package_name":"requirements","module_name":"dependencies","logs_dirname":"logs/requirements","log_filename":"logs/requirements/dependencies_20250217215737.log"},"tracing":{"enable":true,"json":{"compressed":true}},"events":{"call":true,"return":true,"import":false},"stats":{"created":"2025-02-18T04:35:16.304272","updated":"2025-02-18T04:57:37.143239+00:00"}}}
+[CALL] packages/requirements/dependencies ( log_utils.log_message(f"✅ {package}=={installed_version} is installed (Pip detected).",configs=configs) )
+[CALL] packages/requirements/dependencies (is_package_installed)[278] -> packages/appflow_tracer/lib/log_utils (log_message)[75]
+{"message":"✅ python-dotenv==1.0.1 is installed (Pip detected).","log_category":"INFO","json_data":null,"serialize_json":false,"configs":{"colors":{"CALL":"\u001b[92m","RETURN":"\u001b[93m","IMPORT":"\u001b[94m","DEBUG":"\u001b[96m","INFO":"\u001b[97m","WARNING":"\u001b[91m","ERROR":"\u001b[31m","CRITICAL":"\u001b[41m","RESET":"\u001b[0m"},"logging":{"enable":true,"max_logfiles":5,"package_name":"requirements","module_name":"dependencies","logs_dirname":"logs/requirements","log_filename":"logs/requirements/dependencies_20250217215737.log"},"tracing":{"enable":true,"json":{"compressed":true}},"events":{"call":true,"return":true,"import":false},"stats":{"created":"2025-02-18T04:35:16.304272","updated":"2025-02-18T04:57:37.143239+00:00"}},"handler":null}
+[CALL] packages/appflow_tracer/lib/log_utils ( output_console(message,log_category,json_data or False,configs) )
+[CALL] packages/appflow_tracer/lib/log_utils (log_message)[128] -> packages/appflow_tracer/lib/log_utils (output_console)[167]
+{"message":"✅ python-dotenv==1.0.1 is installed (Pip detected).","log_category":"INFO","json_data":false,"configs":{"colors":{"CALL":"\u001b[92m","RETURN":"\u001b[93m","IMPORT":"\u001b[94m","DEBUG":"\u001b[96m","INFO":"\u001b[97m","WARNING":"\u001b[91m","ERROR":"\u001b[31m","CRITICAL":"\u001b[41m","RESET":"\u001b[0m"},"logging":{"enable":true,"max_logfiles":5,"package_name":"requirements","module_name":"dependencies","logs_dirname":"logs/requirements","log_filename":"logs/requirements/dependencies_20250217215737.log"},"tracing":{"enable":true,"json":{"compressed":true}},"events":{"call":true,"return":true,"import":false},"stats":{"created":"2025-02-18T04:35:16.304272","updated":"2025-02-18T04:57:37.143239+00:00"}}}
+[CALL] packages/appflow_tracer/lib/log_utils ( print(console_message) )
+[CALL] packages/appflow_tracer/lib/log_utils (output_console)[199] -> packages/appflow_tracer/tracing (<lambda>)[201]
+[CALL] packages/appflow_tracer/tracing ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) )
+[CALL] packages/appflow_tracer/tracing (<lambda>)[201] -> packages/appflow_tracer/tracing (<genexpr>)[201]
+{".0":"<tuple_iterator object at 0x1073a3be0>"}
+[RETURN] packages/appflow_tracer/tracing[201] ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) ) -> str:
+✅ python-dotenv==1.0.1 is installed (Pip detected).
+[CALL] packages/appflow_tracer/tracing ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) )
+[CALL] packages/appflow_tracer/tracing (<lambda>)[201] -> packages/appflow_tracer/tracing (<genexpr>)[201]
+{".0":"<tuple_iterator object at 0x1073a3be0>"}
+[RETURN] packages/appflow_tracer/tracing[201] ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) ) -> NoneType: None
+✅ python-dotenv==1.0.1 is installed (Pip detected).
+[RETURN] packages/appflow_tracer/tracing[201] ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) ) -> NoneType: None
+[RETURN] packages/appflow_tracer/lib/log_utils[200] ( if json_data: ) -> NoneType: None
+[RETURN] packages/appflow_tracer/lib/log_utils[128] ( output_console(message,log_category,json_data or False,configs) ) -> NoneType: None
+[RETURN] packages/requirements/dependencies[279] ( return True ) -> bool: True
 true
-
-[CALL] packages/requirements/dependencies ( if is_package_installed(package, version): )
-[CALL] packages/requirements/dependencies (install_requirements)[196] -> packages/requirements/dependencies (is_package_installed)[201]
-{
-  "package": "setuptools",
-  "version_info": {
-    "target": "75.8.0",
-    "status": false
-  }
-}
-
-[CALL] packages/requirements/dependencies ( log_utils.log_message(f"{package}=={version} is already installed (pip detected).", configs=CONFIGS) )
-[CALL] packages/requirements/dependencies (is_package_installed)[260] -> packages/appflow_tracer/lib/log_utils (log_message)[72]
-{
-  "message": "setuptools==75.8.0 is already installed (pip detected).",
-  "log_category": "INFO",
-  "json_data": null,
-  "serialize_json": false,
-  "configs": {
-    "colors": {
-      "CALL": "\u001b[92m",
-      "RETURN": "\u001b[93m",
-      "IMPORT": "\u001b[94m",
-      "DEBUG": "\u001b[96m",
-      "INFO": "\u001b[97m",
-      "WARNING": "\u001b[91m",
-      "ERROR": "\u001b[31m",
-      "CRITICAL": "\u001b[41m",
-      "RESET": "\u001b[0m"
-    },
-    "logging": {
-      "enable": true,
-      "max_logfiles": 5,
-      "package_name": "requirements",
-      "module_name": "dependencies",
-      "logs_dirname": "logs/requirements",
-      "log_filename": "logs/requirements/dependencies_20250216201159.log"
-    },
-    "tracing": {
-      "enable": true
-    },
-    "stats": {
-      "created": "2025-02-16T21:29:04.207636",
-      "updated": "2025-02-17T03:11:59.896687"
-    }
-  },
-  "handler": null
-}
-
-[CALL] packages/appflow_tracer/lib/log_utils ( output_console(message, log_category, json_data or False, configs)  # Write to console )
-[CALL] packages/appflow_tracer/lib/log_utils (log_message)[125] -> packages/appflow_tracer/lib/log_utils (output_console)[164]
-{
-  "message": "setuptools==75.8.0 is already installed (pip detected).",
-  "log_category": "INFO",
-  "json_data": false,
-  "configs": {
-    "colors": {
-      "CALL": "\u001b[92m",
-      "RETURN": "\u001b[93m",
-      "IMPORT": "\u001b[94m",
-      "DEBUG": "\u001b[96m",
-      "INFO": "\u001b[97m",
-      "WARNING": "\u001b[91m",
-      "ERROR": "\u001b[31m",
-      "CRITICAL": "\u001b[41m",
-      "RESET": "\u001b[0m"
-    },
-    "logging": {
-      "enable": true,
-      "max_logfiles": 5,
-      "package_name": "requirements",
-      "module_name": "dependencies",
-      "logs_dirname": "logs/requirements",
-      "log_filename": "logs/requirements/dependencies_20250216201159.log"
-    },
-    "tracing": {
-      "enable": true
-    },
-    "stats": {
-      "created": "2025-02-16T21:29:04.207636",
-      "updated": "2025-02-17T03:11:59.896687"
-    }
-  }
-}
-
-[CALL] packages/appflow_tracer/lib/log_utils ( print(console_message)  # Print colored message )
-[CALL] packages/appflow_tracer/lib/log_utils (output_console)[196] -> packages/appflow_tracer/tracing (<lambda>)[204]
-
-[CALL] packages/appflow_tracer/tracing ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) )
-[CALL] packages/appflow_tracer/tracing (<lambda>)[204] -> packages/appflow_tracer/tracing (<genexpr>)[204]
-{
-  ".0": "<tuple_iterator object at 0x104eccee0>"
-}
-[RETURN] packages/appflow_tracer/tracing[204] ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) ) -> str:
-setuptools==75.8.0 is already installed (pip detected).
-
-[CALL] packages/appflow_tracer/tracing ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) )
-[CALL] packages/appflow_tracer/tracing (<lambda>)[204] -> packages/appflow_tracer/tracing (<genexpr>)[204]
-{
-  ".0": "<tuple_iterator object at 0x104eccee0>"
-}
-[RETURN] packages/appflow_tracer/tracing[204] ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) ) -> NoneType: None
-setuptools==75.8.0 is already installed (pip detected).
-[RETURN] packages/appflow_tracer/tracing[204] ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) ) -> NoneType: None
-[RETURN] packages/appflow_tracer/lib/log_utils[197] ( if json_data: ) -> NoneType: None
-[RETURN] packages/appflow_tracer/lib/log_utils[125] ( output_console(message, log_category, json_data or False, configs)  # Write to console ) -> NoneType: None
-[RETURN] packages/requirements/dependencies[261] ( return True ) -> bool: True
+[CALL] packages/requirements/dependencies ( if is_package_installed( )
+[CALL] packages/requirements/dependencies (install_requirements)[228] -> packages/requirements/dependencies (is_package_installed)[241]
+{"package":"setuptools","version_info":{"target":"75.8.0","status":false},"configs":{"colors":{"CALL":"\u001b[92m","RETURN":"\u001b[93m","IMPORT":"\u001b[94m","DEBUG":"\u001b[96m","INFO":"\u001b[97m","WARNING":"\u001b[91m","ERROR":"\u001b[31m","CRITICAL":"\u001b[41m","RESET":"\u001b[0m"},"logging":{"enable":true,"max_logfiles":5,"package_name":"requirements","module_name":"dependencies","logs_dirname":"logs/requirements","log_filename":"logs/requirements/dependencies_20250217215737.log"},"tracing":{"enable":true,"json":{"compressed":true}},"events":{"call":true,"return":true,"import":false},"stats":{"created":"2025-02-18T04:35:16.304272","updated":"2025-02-18T04:57:37.143239+00:00"}}}
+[CALL] packages/requirements/dependencies ( log_utils.log_message(f"✅ {package}=={installed_version} is installed (Pip detected).",configs=configs) )
+[CALL] packages/requirements/dependencies (is_package_installed)[278] -> packages/appflow_tracer/lib/log_utils (log_message)[75]
+{"message":"✅ setuptools==75.8.0 is installed (Pip detected).","log_category":"INFO","json_data":null,"serialize_json":false,"configs":{"colors":{"CALL":"\u001b[92m","RETURN":"\u001b[93m","IMPORT":"\u001b[94m","DEBUG":"\u001b[96m","INFO":"\u001b[97m","WARNING":"\u001b[91m","ERROR":"\u001b[31m","CRITICAL":"\u001b[41m","RESET":"\u001b[0m"},"logging":{"enable":true,"max_logfiles":5,"package_name":"requirements","module_name":"dependencies","logs_dirname":"logs/requirements","log_filename":"logs/requirements/dependencies_20250217215737.log"},"tracing":{"enable":true,"json":{"compressed":true}},"events":{"call":true,"return":true,"import":false},"stats":{"created":"2025-02-18T04:35:16.304272","updated":"2025-02-18T04:57:37.143239+00:00"}},"handler":null}
+[CALL] packages/appflow_tracer/lib/log_utils ( output_console(message,log_category,json_data or False,configs) )
+[CALL] packages/appflow_tracer/lib/log_utils (log_message)[128] -> packages/appflow_tracer/lib/log_utils (output_console)[167]
+{"message":"✅ setuptools==75.8.0 is installed (Pip detected).","log_category":"INFO","json_data":false,"configs":{"colors":{"CALL":"\u001b[92m","RETURN":"\u001b[93m","IMPORT":"\u001b[94m","DEBUG":"\u001b[96m","INFO":"\u001b[97m","WARNING":"\u001b[91m","ERROR":"\u001b[31m","CRITICAL":"\u001b[41m","RESET":"\u001b[0m"},"logging":{"enable":true,"max_logfiles":5,"package_name":"requirements","module_name":"dependencies","logs_dirname":"logs/requirements","log_filename":"logs/requirements/dependencies_20250217215737.log"},"tracing":{"enable":true,"json":{"compressed":true}},"events":{"call":true,"return":true,"import":false},"stats":{"created":"2025-02-18T04:35:16.304272","updated":"2025-02-18T04:57:37.143239+00:00"}}}
+[CALL] packages/appflow_tracer/lib/log_utils ( print(console_message) )
+[CALL] packages/appflow_tracer/lib/log_utils (output_console)[199] -> packages/appflow_tracer/tracing (<lambda>)[201]
+[CALL] packages/appflow_tracer/tracing ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) )
+[CALL] packages/appflow_tracer/tracing (<lambda>)[201] -> packages/appflow_tracer/tracing (<genexpr>)[201]
+{".0":"<tuple_iterator object at 0x107483a30>"}
+[RETURN] packages/appflow_tracer/tracing[201] ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) ) -> str:
+✅ setuptools==75.8.0 is installed (Pip detected).
+[CALL] packages/appflow_tracer/tracing ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) )
+[CALL] packages/appflow_tracer/tracing (<lambda>)[201] -> packages/appflow_tracer/tracing (<genexpr>)[201]
+{".0":"<tuple_iterator object at 0x107483a30>"}
+[RETURN] packages/appflow_tracer/tracing[201] ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) ) -> NoneType: None
+✅ setuptools==75.8.0 is installed (Pip detected).
+[RETURN] packages/appflow_tracer/tracing[201] ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) ) -> NoneType: None
+[RETURN] packages/appflow_tracer/lib/log_utils[200] ( if json_data: ) -> NoneType: None
+[RETURN] packages/appflow_tracer/lib/log_utils[128] ( output_console(message,log_category,json_data or False,configs) ) -> NoneType: None
+[RETURN] packages/requirements/dependencies[279] ( return True ) -> bool: True
 true
-
-[CALL] packages/requirements/dependencies ( if is_package_installed(package, version): )
-[CALL] packages/requirements/dependencies (install_requirements)[196] -> packages/requirements/dependencies (is_package_installed)[201]
-{
-  "package": "pytest",
-  "version_info": {
-    "target": "8.3.4",
-    "status": false
-  }
-}
-
-[CALL] packages/requirements/dependencies ( log_utils.log_message(f"✅ {package}=={cli_version} detected via CLI.", configs=CONFIGS) )
-[CALL] packages/requirements/dependencies (is_package_installed)[248] -> packages/appflow_tracer/lib/log_utils (log_message)[72]
-{
-  "message": "✅ pytest==8.3.4 detected via CLI.",
-  "log_category": "INFO",
-  "json_data": null,
-  "serialize_json": false,
-  "configs": {
-    "colors": {
-      "CALL": "\u001b[92m",
-      "RETURN": "\u001b[93m",
-      "IMPORT": "\u001b[94m",
-      "DEBUG": "\u001b[96m",
-      "INFO": "\u001b[97m",
-      "WARNING": "\u001b[91m",
-      "ERROR": "\u001b[31m",
-      "CRITICAL": "\u001b[41m",
-      "RESET": "\u001b[0m"
-    },
-    "logging": {
-      "enable": true,
-      "max_logfiles": 5,
-      "package_name": "requirements",
-      "module_name": "dependencies",
-      "logs_dirname": "logs/requirements",
-      "log_filename": "logs/requirements/dependencies_20250216201159.log"
-    },
-    "tracing": {
-      "enable": true
-    },
-    "stats": {
-      "created": "2025-02-16T21:29:04.207636",
-      "updated": "2025-02-17T03:11:59.896687"
-    }
-  },
-  "handler": null
-}
-
-[CALL] packages/appflow_tracer/lib/log_utils ( output_console(message, log_category, json_data or False, configs)  # Write to console )
-[CALL] packages/appflow_tracer/lib/log_utils (log_message)[125] -> packages/appflow_tracer/lib/log_utils (output_console)[164]
-{
-  "message": "✅ pytest==8.3.4 detected via CLI.",
-  "log_category": "INFO",
-  "json_data": false,
-  "configs": {
-    "colors": {
-      "CALL": "\u001b[92m",
-      "RETURN": "\u001b[93m",
-      "IMPORT": "\u001b[94m",
-      "DEBUG": "\u001b[96m",
-      "INFO": "\u001b[97m",
-      "WARNING": "\u001b[91m",
-      "ERROR": "\u001b[31m",
-      "CRITICAL": "\u001b[41m",
-      "RESET": "\u001b[0m"
-    },
-    "logging": {
-      "enable": true,
-      "max_logfiles": 5,
-      "package_name": "requirements",
-      "module_name": "dependencies",
-      "logs_dirname": "logs/requirements",
-      "log_filename": "logs/requirements/dependencies_20250216201159.log"
-    },
-    "tracing": {
-      "enable": true
-    },
-    "stats": {
-      "created": "2025-02-16T21:29:04.207636",
-      "updated": "2025-02-17T03:11:59.896687"
-    }
-  }
-}
-
-[CALL] packages/appflow_tracer/lib/log_utils ( print(console_message)  # Print colored message )
-[CALL] packages/appflow_tracer/lib/log_utils (output_console)[196] -> packages/appflow_tracer/tracing (<lambda>)[204]
-
-[CALL] packages/appflow_tracer/tracing ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) )
-[CALL] packages/appflow_tracer/tracing (<lambda>)[204] -> packages/appflow_tracer/tracing (<genexpr>)[204]
-{
-  ".0": "<tuple_iterator object at 0x104426800>"
-}
-[RETURN] packages/appflow_tracer/tracing[204] ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) ) -> str:
-✅ pytest==8.3.4 detected via CLI.
-
-[CALL] packages/appflow_tracer/tracing ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) )
-[CALL] packages/appflow_tracer/tracing (<lambda>)[204] -> packages/appflow_tracer/tracing (<genexpr>)[204]
-{
-  ".0": "<tuple_iterator object at 0x104426800>"
-}
-[RETURN] packages/appflow_tracer/tracing[204] ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) ) -> NoneType: None
-✅ pytest==8.3.4 detected via CLI.
-[RETURN] packages/appflow_tracer/tracing[204] ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) ) -> NoneType: None
-[RETURN] packages/appflow_tracer/lib/log_utils[197] ( if json_data: ) -> NoneType: None
-[RETURN] packages/appflow_tracer/lib/log_utils[125] ( output_console(message, log_category, json_data or False, configs)  # Write to console ) -> NoneType: None
-[RETURN] packages/requirements/dependencies[249] ( return True ) -> bool: True
+[CALL] packages/requirements/dependencies ( if is_package_installed( )
+[CALL] packages/requirements/dependencies (install_requirements)[228] -> packages/requirements/dependencies (is_package_installed)[241]
+{"package":"pytest","version_info":{"target":"8.3.4","status":false},"configs":{"colors":{"CALL":"\u001b[92m","RETURN":"\u001b[93m","IMPORT":"\u001b[94m","DEBUG":"\u001b[96m","INFO":"\u001b[97m","WARNING":"\u001b[91m","ERROR":"\u001b[31m","CRITICAL":"\u001b[41m","RESET":"\u001b[0m"},"logging":{"enable":true,"max_logfiles":5,"package_name":"requirements","module_name":"dependencies","logs_dirname":"logs/requirements","log_filename":"logs/requirements/dependencies_20250217215737.log"},"tracing":{"enable":true,"json":{"compressed":true}},"events":{"call":true,"return":true,"import":false},"stats":{"created":"2025-02-18T04:35:16.304272","updated":"2025-02-18T04:57:37.143239+00:00"}}}
+[CALL] packages/requirements/dependencies ( log_utils.log_message(f"✅ {package}=={brew_version} detected via Brew.",configs=configs) )
+[CALL] packages/requirements/dependencies (is_package_installed)[269] -> packages/appflow_tracer/lib/log_utils (log_message)[75]
+{"message":"✅ pytest==8.3.4 detected via Brew.","log_category":"INFO","json_data":null,"serialize_json":false,"configs":{"colors":{"CALL":"\u001b[92m","RETURN":"\u001b[93m","IMPORT":"\u001b[94m","DEBUG":"\u001b[96m","INFO":"\u001b[97m","WARNING":"\u001b[91m","ERROR":"\u001b[31m","CRITICAL":"\u001b[41m","RESET":"\u001b[0m"},"logging":{"enable":true,"max_logfiles":5,"package_name":"requirements","module_name":"dependencies","logs_dirname":"logs/requirements","log_filename":"logs/requirements/dependencies_20250217215737.log"},"tracing":{"enable":true,"json":{"compressed":true}},"events":{"call":true,"return":true,"import":false},"stats":{"created":"2025-02-18T04:35:16.304272","updated":"2025-02-18T04:57:37.143239+00:00"}},"handler":null}
+[CALL] packages/appflow_tracer/lib/log_utils ( output_console(message,log_category,json_data or False,configs) )
+[CALL] packages/appflow_tracer/lib/log_utils (log_message)[128] -> packages/appflow_tracer/lib/log_utils (output_console)[167]
+{"message":"✅ pytest==8.3.4 detected via Brew.","log_category":"INFO","json_data":false,"configs":{"colors":{"CALL":"\u001b[92m","RETURN":"\u001b[93m","IMPORT":"\u001b[94m","DEBUG":"\u001b[96m","INFO":"\u001b[97m","WARNING":"\u001b[91m","ERROR":"\u001b[31m","CRITICAL":"\u001b[41m","RESET":"\u001b[0m"},"logging":{"enable":true,"max_logfiles":5,"package_name":"requirements","module_name":"dependencies","logs_dirname":"logs/requirements","log_filename":"logs/requirements/dependencies_20250217215737.log"},"tracing":{"enable":true,"json":{"compressed":true}},"events":{"call":true,"return":true,"import":false},"stats":{"created":"2025-02-18T04:35:16.304272","updated":"2025-02-18T04:57:37.143239+00:00"}}}
+[CALL] packages/appflow_tracer/lib/log_utils ( print(console_message) )
+[CALL] packages/appflow_tracer/lib/log_utils (output_console)[199] -> packages/appflow_tracer/tracing (<lambda>)[201]
+[CALL] packages/appflow_tracer/tracing ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) )
+[CALL] packages/appflow_tracer/tracing (<lambda>)[201] -> packages/appflow_tracer/tracing (<genexpr>)[201]
+{".0":"<tuple_iterator object at 0x107483a30>"}
+[RETURN] packages/appflow_tracer/tracing[201] ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) ) -> str:
+✅ pytest==8.3.4 detected via Brew.
+[CALL] packages/appflow_tracer/tracing ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) )
+[CALL] packages/appflow_tracer/tracing (<lambda>)[201] -> packages/appflow_tracer/tracing (<genexpr>)[201]
+{".0":"<tuple_iterator object at 0x107483a30>"}
+[RETURN] packages/appflow_tracer/tracing[201] ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) ) -> NoneType: None
+✅ pytest==8.3.4 detected via Brew.
+[RETURN] packages/appflow_tracer/tracing[201] ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) ) -> NoneType: None
+[RETURN] packages/appflow_tracer/lib/log_utils[200] ( if json_data: ) -> NoneType: None
+[RETURN] packages/appflow_tracer/lib/log_utils[128] ( output_console(message,log_category,json_data or False,configs) ) -> NoneType: None
+[RETURN] packages/requirements/dependencies[270] ( return True ) -> bool: True
 true
-[RETURN] packages/requirements/dependencies[192] ( for dep in dependencies: ) -> NoneType: None
-
-[CALL] packages/requirements/dependencies ( update_installed_packages(args.requirements_file, config_filepath) )
-[CALL] packages/requirements/dependencies (main)[385] -> packages/requirements/dependencies (update_installed_packages)[295]
-{
-  "requirements_file": "./packages/requirements/requirements.json",
-  "config_filepath": "/Users/emvaldes/.repos/azure/workspaces/azure-profiles/python/packages/requirements/installed.json"
-}
-
-[CALL] packages/requirements/dependencies ( dependencies = load_requirements(requirements_file) )
-[CALL] packages/requirements/dependencies (update_installed_packages)[317] -> packages/requirements/dependencies (load_requirements)[87]
-{
-  "requirements_file": "./packages/requirements/requirements.json"
-}
-[RETURN] packages/requirements/dependencies[115] ( with open(requirements_path, "r") as f: ) -> list:
-[
-  {
-    "package": "azure-identity",
-    "version": {
-      "target": "1.15.0",
-      "status": false
-    }
-  },
-  {
-    "package": "azure-mgmt-resource",
-    "version": {
-      "target": "23.0.1",
-      "status": false
-    }
-  },
-  {
-    "package": "pytz",
-    "version": {
-      "target": "2025.1",
-      "status": false
-    }
-  },
-  {
-    "package": "python-dotenv",
-    "version": {
-      "target": "1.0.1",
-      "status": false
-    }
-  },
-  {
-    "package": "setuptools",
-    "version": {
-      "target": "75.8.0",
-      "status": false
-    }
-  },
-  {
-    "package": "pytest",
-    "version": {
-      "target": "8.3.4",
-      "status": false
-    }
-  }
-]
-
+[RETURN] packages/requirements/dependencies[225] ( for dep in dependencies: ) -> NoneType: None
+[CALL] packages/requirements/dependencies ( update_installed_packages( )
+[CALL] packages/requirements/dependencies (main)[411] -> packages/requirements/dependencies (update_installed_packages)[314]
+{"requirements_file":"./packages/requirements/requirements.json","config_filepath":"/Users/emvaldes/.repos/azure/workspaces/azure-profiles/python/packages/requirements/installed.json","configs":{"colors":{"CALL":"\u001b[92m","RETURN":"\u001b[93m","IMPORT":"\u001b[94m","DEBUG":"\u001b[96m","INFO":"\u001b[97m","WARNING":"\u001b[91m","ERROR":"\u001b[31m","CRITICAL":"\u001b[41m","RESET":"\u001b[0m"},"logging":{"enable":true,"max_logfiles":5,"package_name":"requirements","module_name":"dependencies","logs_dirname":"logs/requirements","log_filename":"logs/requirements/dependencies_20250217215737.log"},"tracing":{"enable":true,"json":{"compressed":true}},"events":{"call":true,"return":true,"import":false},"stats":{"created":"2025-02-18T04:35:16.304272","updated":"2025-02-18T04:57:37.143239+00:00"}}}
+[CALL] packages/requirements/dependencies ( dependencies = load_requirements( )
+[CALL] packages/requirements/dependencies (update_installed_packages)[341] -> packages/requirements/dependencies (load_requirements)[88]
+{"requirements_file":"./packages/requirements/requirements.json","configs":{"colors":{"CALL":"\u001b[92m","RETURN":"\u001b[93m","IMPORT":"\u001b[94m","DEBUG":"\u001b[96m","INFO":"\u001b[97m","WARNING":"\u001b[91m","ERROR":"\u001b[31m","CRITICAL":"\u001b[41m","RESET":"\u001b[0m"},"logging":{"enable":true,"max_logfiles":5,"package_name":"requirements","module_name":"dependencies","logs_dirname":"logs/requirements","log_filename":"logs/requirements/dependencies_20250217215737.log"},"tracing":{"enable":true,"json":{"compressed":true}},"events":{"call":true,"return":true,"import":false},"stats":{"created":"2025-02-18T04:35:16.304272","updated":"2025-02-18T04:57:37.143239+00:00"}}}
+[RETURN] packages/requirements/dependencies[122] ( with open(requirements_path,"r")as f: ) -> list:
+[{"package":"azure-identity","version":{"target":"1.15.0","status":false}},{"package":"azure-mgmt-resource","version":{"target":"23.0.1","status":false}},{"package":"pytz","version":{"target":"2025.1","status":false}},{"package":"python-dotenv","version":{"target":"1.0.1","status":false}},{"package":"setuptools","version":{"target":"75.8.0","status":false}},{"package":"pytest","version":{"target":"8.3.4","status":false}}]
 [CALL] packages/requirements/dependencies ( print(f'Installed JSON file: {config_filepath}') )
-[CALL] packages/requirements/dependencies (update_installed_packages)[346] -> packages/appflow_tracer/tracing (<lambda>)[204]
-
-[CALL] packages/appflow_tracer/tracing ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) )
-[CALL] packages/appflow_tracer/tracing (<lambda>)[204] -> packages/appflow_tracer/tracing (<genexpr>)[204]
-{
-  ".0": "<tuple_iterator object at 0x104edbb20>"
-}
-[RETURN] packages/appflow_tracer/tracing[204] ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) ) -> str:
+[CALL] packages/requirements/dependencies (update_installed_packages)[371] -> packages/appflow_tracer/tracing (<lambda>)[201]
+[CALL] packages/appflow_tracer/tracing ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) )
+[CALL] packages/appflow_tracer/tracing (<lambda>)[201] -> packages/appflow_tracer/tracing (<genexpr>)[201]
+{".0":"<tuple_iterator object at 0x1074b2710>"}
+[RETURN] packages/appflow_tracer/tracing[201] ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) ) -> str:
 Installed JSON file: /Users/emvaldes/.repos/azure/workspaces/azure-profiles/python/packages/requirements/installed.json
-
-[CALL] packages/appflow_tracer/tracing ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) )
-[CALL] packages/appflow_tracer/tracing (<lambda>)[204] -> packages/appflow_tracer/tracing (<genexpr>)[204]
-{
-  ".0": "<tuple_iterator object at 0x104edbb20>"
-}
-[RETURN] packages/appflow_tracer/tracing[204] ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) ) -> NoneType: None
+[CALL] packages/appflow_tracer/tracing ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) )
+[CALL] packages/appflow_tracer/tracing (<lambda>)[201] -> packages/appflow_tracer/tracing (<genexpr>)[201]
+{".0":"<tuple_iterator object at 0x1074b2710>"}
+[RETURN] packages/appflow_tracer/tracing[201] ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) ) -> NoneType: None
 Installed JSON file: /Users/emvaldes/.repos/azure/workspaces/azure-profiles/python/packages/requirements/installed.json
-[RETURN] packages/appflow_tracer/tracing[204] ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) ) -> NoneType: None
-
-[CALL] packages/requirements/dependencies ( log_utils.log_message(f"📄 Installed package status updated in {config_filepath}", configs=CONFIGS) )
-[CALL] packages/requirements/dependencies (update_installed_packages)[349] -> packages/appflow_tracer/lib/log_utils (log_message)[72]
-{
-  "message": "📄 Installed package status updated in /Users/emvaldes/.repos/azure/workspaces/azure-profiles/python/packages/requirements/installed.json",
-  "log_category": "INFO",
-  "json_data": null,
-  "serialize_json": false,
-  "configs": {
-    "colors": {
-      "CALL": "\u001b[92m",
-      "RETURN": "\u001b[93m",
-      "IMPORT": "\u001b[94m",
-      "DEBUG": "\u001b[96m",
-      "INFO": "\u001b[97m",
-      "WARNING": "\u001b[91m",
-      "ERROR": "\u001b[31m",
-      "CRITICAL": "\u001b[41m",
-      "RESET": "\u001b[0m"
-    },
-    "logging": {
-      "enable": true,
-      "max_logfiles": 5,
-      "package_name": "requirements",
-      "module_name": "dependencies",
-      "logs_dirname": "logs/requirements",
-      "log_filename": "logs/requirements/dependencies_20250216201159.log"
-    },
-    "tracing": {
-      "enable": true
-    },
-    "stats": {
-      "created": "2025-02-16T21:29:04.207636",
-      "updated": "2025-02-17T03:11:59.896687"
-    }
-  },
-  "handler": null
-}
-
-[CALL] packages/appflow_tracer/lib/log_utils ( output_console(message, log_category, json_data or False, configs)  # Write to console )
-[CALL] packages/appflow_tracer/lib/log_utils (log_message)[125] -> packages/appflow_tracer/lib/log_utils (output_console)[164]
-{
-  "message": "📄 Installed package status updated in /Users/emvaldes/.repos/azure/workspaces/azure-profiles/python/packages/requirements/installed.json",
-  "log_category": "INFO",
-  "json_data": false,
-  "configs": {
-    "colors": {
-      "CALL": "\u001b[92m",
-      "RETURN": "\u001b[93m",
-      "IMPORT": "\u001b[94m",
-      "DEBUG": "\u001b[96m",
-      "INFO": "\u001b[97m",
-      "WARNING": "\u001b[91m",
-      "ERROR": "\u001b[31m",
-      "CRITICAL": "\u001b[41m",
-      "RESET": "\u001b[0m"
-    },
-    "logging": {
-      "enable": true,
-      "max_logfiles": 5,
-      "package_name": "requirements",
-      "module_name": "dependencies",
-      "logs_dirname": "logs/requirements",
-      "log_filename": "logs/requirements/dependencies_20250216201159.log"
-    },
-    "tracing": {
-      "enable": true
-    },
-    "stats": {
-      "created": "2025-02-16T21:29:04.207636",
-      "updated": "2025-02-17T03:11:59.896687"
-    }
-  }
-}
-
-[CALL] packages/appflow_tracer/lib/log_utils ( print(console_message)  # Print colored message )
-[CALL] packages/appflow_tracer/lib/log_utils (output_console)[196] -> packages/appflow_tracer/tracing (<lambda>)[204]
-
-[CALL] packages/appflow_tracer/tracing ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) )
-[CALL] packages/appflow_tracer/tracing (<lambda>)[204] -> packages/appflow_tracer/tracing (<genexpr>)[204]
-{
-  ".0": "<tuple_iterator object at 0x104f04ee0>"
-}
-[RETURN] packages/appflow_tracer/tracing[204] ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) ) -> str:
+[RETURN] packages/appflow_tracer/tracing[201] ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) ) -> NoneType: None
+[CALL] packages/requirements/dependencies ( log_utils.log_message(f"📄 Installed package status updated in {config_filepath}",configs=configs) )
+[CALL] packages/requirements/dependencies (update_installed_packages)[374] -> packages/appflow_tracer/lib/log_utils (log_message)[75]
+{"message":"📄 Installed package status updated in /Users/emvaldes/.repos/azure/workspaces/azure-profiles/python/packages/requirements/installed.json","log_category":"INFO","json_data":null,"serialize_json":false,"configs":{"colors":{"CALL":"\u001b[92m","RETURN":"\u001b[93m","IMPORT":"\u001b[94m","DEBUG":"\u001b[96m","INFO":"\u001b[97m","WARNING":"\u001b[91m","ERROR":"\u001b[31m","CRITICAL":"\u001b[41m","RESET":"\u001b[0m"},"logging":{"enable":true,"max_logfiles":5,"package_name":"requirements","module_name":"dependencies","logs_dirname":"logs/requirements","log_filename":"logs/requirements/dependencies_20250217215737.log"},"tracing":{"enable":true,"json":{"compressed":true}},"events":{"call":true,"return":true,"import":false},"stats":{"created":"2025-02-18T04:35:16.304272","updated":"2025-02-18T04:57:37.143239+00:00"}},"handler":null}
+[CALL] packages/appflow_tracer/lib/log_utils ( output_console(message,log_category,json_data or False,configs) )
+[CALL] packages/appflow_tracer/lib/log_utils (log_message)[128] -> packages/appflow_tracer/lib/log_utils (output_console)[167]
+{"message":"📄 Installed package status updated in /Users/emvaldes/.repos/azure/workspaces/azure-profiles/python/packages/requirements/installed.json","log_category":"INFO","json_data":false,"configs":{"colors":{"CALL":"\u001b[92m","RETURN":"\u001b[93m","IMPORT":"\u001b[94m","DEBUG":"\u001b[96m","INFO":"\u001b[97m","WARNING":"\u001b[91m","ERROR":"\u001b[31m","CRITICAL":"\u001b[41m","RESET":"\u001b[0m"},"logging":{"enable":true,"max_logfiles":5,"package_name":"requirements","module_name":"dependencies","logs_dirname":"logs/requirements","log_filename":"logs/requirements/dependencies_20250217215737.log"},"tracing":{"enable":true,"json":{"compressed":true}},"events":{"call":true,"return":true,"import":false},"stats":{"created":"2025-02-18T04:35:16.304272","updated":"2025-02-18T04:57:37.143239+00:00"}}}
+[CALL] packages/appflow_tracer/lib/log_utils ( print(console_message) )
+[CALL] packages/appflow_tracer/lib/log_utils (output_console)[199] -> packages/appflow_tracer/tracing (<lambda>)[201]
+[CALL] packages/appflow_tracer/tracing ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) )
+[CALL] packages/appflow_tracer/tracing (<lambda>)[201] -> packages/appflow_tracer/tracing (<genexpr>)[201]
+{".0":"<tuple_iterator object at 0x107fd9570>"}
+[RETURN] packages/appflow_tracer/tracing[201] ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) ) -> str:
 📄 Installed package status updated in /Users/emvaldes/.repos/azure/workspaces/azure-profiles/python/packages/requirements/installed.json
-
-[CALL] packages/appflow_tracer/tracing ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) )
-[CALL] packages/appflow_tracer/tracing (<lambda>)[204] -> packages/appflow_tracer/tracing (<genexpr>)[204]
-{
-  ".0": "<tuple_iterator object at 0x104f04ee0>"
-}
-[RETURN] packages/appflow_tracer/tracing[204] ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) ) -> NoneType: None
+[CALL] packages/appflow_tracer/tracing ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) )
+[CALL] packages/appflow_tracer/tracing (<lambda>)[201] -> packages/appflow_tracer/tracing (<genexpr>)[201]
+{".0":"<tuple_iterator object at 0x107fd9570>"}
+[RETURN] packages/appflow_tracer/tracing[201] ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) ) -> NoneType: None
 📄 Installed package status updated in /Users/emvaldes/.repos/azure/workspaces/azure-profiles/python/packages/requirements/installed.json
-[RETURN] packages/appflow_tracer/tracing[204] ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) ) -> NoneType: None
-[RETURN] packages/appflow_tracer/lib/log_utils[197] ( if json_data: ) -> NoneType: None
-[RETURN] packages/appflow_tracer/lib/log_utils[125] ( output_console(message, log_category, json_data or False, configs)  # Write to console ) -> NoneType: None
-[RETURN] packages/requirements/dependencies[349] ( log_utils.log_message(f"📄 Installed package status updated in {config_filepath}", configs=CONFIGS) ) -> NoneType: None
-
-[CALL] packages/requirements/dependencies ( log_utils.log_message(f"📂 Logs are being saved in: {CONFIGS["logging"].get("log_filename")}", configs=CONFIGS) )
-[CALL] packages/requirements/dependencies (main)[386] -> packages/appflow_tracer/lib/log_utils (log_message)[72]
-{
-  "message": "📂 Logs are being saved in: logs/requirements/dependencies_20250216201159.log",
-  "log_category": "INFO",
-  "json_data": null,
-  "serialize_json": false,
-  "configs": {
-    "colors": {
-      "CALL": "\u001b[92m",
-      "RETURN": "\u001b[93m",
-      "IMPORT": "\u001b[94m",
-      "DEBUG": "\u001b[96m",
-      "INFO": "\u001b[97m",
-      "WARNING": "\u001b[91m",
-      "ERROR": "\u001b[31m",
-      "CRITICAL": "\u001b[41m",
-      "RESET": "\u001b[0m"
-    },
-    "logging": {
-      "enable": true,
-      "max_logfiles": 5,
-      "package_name": "requirements",
-      "module_name": "dependencies",
-      "logs_dirname": "logs/requirements",
-      "log_filename": "logs/requirements/dependencies_20250216201159.log"
-    },
-    "tracing": {
-      "enable": true
-    },
-    "stats": {
-      "created": "2025-02-16T21:29:04.207636",
-      "updated": "2025-02-17T03:11:59.896687"
-    }
-  },
-  "handler": null
-}
-
-[CALL] packages/appflow_tracer/lib/log_utils ( output_console(message, log_category, json_data or False, configs)  # Write to console )
-[CALL] packages/appflow_tracer/lib/log_utils (log_message)[125] -> packages/appflow_tracer/lib/log_utils (output_console)[164]
-{
-  "message": "📂 Logs are being saved in: logs/requirements/dependencies_20250216201159.log",
-  "log_category": "INFO",
-  "json_data": false,
-  "configs": {
-    "colors": {
-      "CALL": "\u001b[92m",
-      "RETURN": "\u001b[93m",
-      "IMPORT": "\u001b[94m",
-      "DEBUG": "\u001b[96m",
-      "INFO": "\u001b[97m",
-      "WARNING": "\u001b[91m",
-      "ERROR": "\u001b[31m",
-      "CRITICAL": "\u001b[41m",
-      "RESET": "\u001b[0m"
-    },
-    "logging": {
-      "enable": true,
-      "max_logfiles": 5,
-      "package_name": "requirements",
-      "module_name": "dependencies",
-      "logs_dirname": "logs/requirements",
-      "log_filename": "logs/requirements/dependencies_20250216201159.log"
-    },
-    "tracing": {
-      "enable": true
-    },
-    "stats": {
-      "created": "2025-02-16T21:29:04.207636",
-      "updated": "2025-02-17T03:11:59.896687"
-    }
-  }
-}
-
-[CALL] packages/appflow_tracer/lib/log_utils ( print(console_message)  # Print colored message )
-[CALL] packages/appflow_tracer/lib/log_utils (output_console)[196] -> packages/appflow_tracer/tracing (<lambda>)[204]
-
-[CALL] packages/appflow_tracer/tracing ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) )
-[CALL] packages/appflow_tracer/tracing (<lambda>)[204] -> packages/appflow_tracer/tracing (<genexpr>)[204]
-{
-  ".0": "<tuple_iterator object at 0x1044ceaa0>"
-}
-[RETURN] packages/appflow_tracer/tracing[204] ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) ) -> str:
-📂 Logs are being saved in: logs/requirements/dependencies_20250216201159.log
-
-[CALL] packages/appflow_tracer/tracing ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) )
-[CALL] packages/appflow_tracer/tracing (<lambda>)[204] -> packages/appflow_tracer/tracing (<genexpr>)[204]
-{
-  ".0": "<tuple_iterator object at 0x1044ceaa0>"
-}
-[RETURN] packages/appflow_tracer/tracing[204] ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) ) -> NoneType: None
-📂 Logs are being saved in: logs/requirements/dependencies_20250216201159.log
-[RETURN] packages/appflow_tracer/tracing[204] ( builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args)) ) -> NoneType: None
-[RETURN] packages/appflow_tracer/lib/log_utils[197] ( if json_data: ) -> NoneType: None
-[RETURN] packages/appflow_tracer/lib/log_utils[125] ( output_console(message, log_category, json_data or False, configs)  # Write to console ) -> NoneType: None
+[RETURN] packages/appflow_tracer/tracing[201] ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) ) -> NoneType: None
+[RETURN] packages/appflow_tracer/lib/log_utils[200] ( if json_data: ) -> NoneType: None
+[RETURN] packages/appflow_tracer/lib/log_utils[128] ( output_console(message,log_category,json_data or False,configs) ) -> NoneType: None
+[RETURN] packages/requirements/dependencies[374] ( log_utils.log_message(f"📄 Installed package status updated in {config_filepath}",configs=configs) ) -> NoneType: None
+[CALL] packages/requirements/dependencies ( log_utils.log_message(f"📂 Logs are being saved in: {CONFIGS["logging"].get("log_filename")}",configs=CONFIGS) )
+[CALL] packages/requirements/dependencies (main)[416] -> packages/appflow_tracer/lib/log_utils (log_message)[75]
+{"message":"📂 Logs are being saved in: logs/requirements/dependencies_20250217215737.log","log_category":"INFO","json_data":null,"serialize_json":false,"configs":{"colors":{"CALL":"\u001b[92m","RETURN":"\u001b[93m","IMPORT":"\u001b[94m","DEBUG":"\u001b[96m","INFO":"\u001b[97m","WARNING":"\u001b[91m","ERROR":"\u001b[31m","CRITICAL":"\u001b[41m","RESET":"\u001b[0m"},"logging":{"enable":true,"max_logfiles":5,"package_name":"requirements","module_name":"dependencies","logs_dirname":"logs/requirements","log_filename":"logs/requirements/dependencies_20250217215737.log"},"tracing":{"enable":true,"json":{"compressed":true}},"events":{"call":true,"return":true,"import":false},"stats":{"created":"2025-02-18T04:35:16.304272","updated":"2025-02-18T04:57:37.143239+00:00"}},"handler":null}
+[CALL] packages/appflow_tracer/lib/log_utils ( output_console(message,log_category,json_data or False,configs) )
+[CALL] packages/appflow_tracer/lib/log_utils (log_message)[128] -> packages/appflow_tracer/lib/log_utils (output_console)[167]
+{"message":"📂 Logs are being saved in: logs/requirements/dependencies_20250217215737.log","log_category":"INFO","json_data":false,"configs":{"colors":{"CALL":"\u001b[92m","RETURN":"\u001b[93m","IMPORT":"\u001b[94m","DEBUG":"\u001b[96m","INFO":"\u001b[97m","WARNING":"\u001b[91m","ERROR":"\u001b[31m","CRITICAL":"\u001b[41m","RESET":"\u001b[0m"},"logging":{"enable":true,"max_logfiles":5,"package_name":"requirements","module_name":"dependencies","logs_dirname":"logs/requirements","log_filename":"logs/requirements/dependencies_20250217215737.log"},"tracing":{"enable":true,"json":{"compressed":true}},"events":{"call":true,"return":true,"import":false},"stats":{"created":"2025-02-18T04:35:16.304272","updated":"2025-02-18T04:57:37.143239+00:00"}}}
+[CALL] packages/appflow_tracer/lib/log_utils ( print(console_message) )
+[CALL] packages/appflow_tracer/lib/log_utils (output_console)[199] -> packages/appflow_tracer/tracing (<lambda>)[201]
+[CALL] packages/appflow_tracer/tracing ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) )
+[CALL] packages/appflow_tracer/tracing (<lambda>)[201] -> packages/appflow_tracer/tracing (<genexpr>)[201]
+{".0":"<tuple_iterator object at 0x1073a3be0>"}
+[RETURN] packages/appflow_tracer/tracing[201] ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) ) -> str:
+📂 Logs are being saved in: logs/requirements/dependencies_20250217215737.log
+[CALL] packages/appflow_tracer/tracing ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) )
+[CALL] packages/appflow_tracer/tracing (<lambda>)[201] -> packages/appflow_tracer/tracing (<genexpr>)[201]
+{".0":"<tuple_iterator object at 0x1073a3be0>"}
+[RETURN] packages/appflow_tracer/tracing[201] ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) ) -> NoneType: None
+📂 Logs are being saved in: logs/requirements/dependencies_20250217215737.log
+[RETURN] packages/appflow_tracer/tracing[201] ( builtins.print=lambda*args,**kwargs:logger.info(" ".join(str(arg)for arg in args)) ) -> NoneType: None
+[RETURN] packages/appflow_tracer/lib/log_utils[200] ( if json_data: ) -> NoneType: None
+[RETURN] packages/appflow_tracer/lib/log_utils[128] ( output_console(message,log_category,json_data or False,configs) ) -> NoneType: None

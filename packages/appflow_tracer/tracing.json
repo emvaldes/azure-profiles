@@ -21,7 +21,7 @@
     "tracing": {
         "enable": true,
         "json": {
-            "compressed": true
+            "compressed": false
         }
     },
     "events": {
@@ -31,6 +31,6 @@
     },
     "stats": {
         "created": "2025-02-18T04:36:09.546924",
-        "updated": "2025-02-18T04:44:43.632385+00:00"
+        "updated": "2025-02-18T04:55:40.210155+00:00"
     }
 }
