@@ -46,6 +46,8 @@ To log a message with a warning level:
 > log_message("Something might be wrong", category.warning.id)
 """
 
+import sys
+
 import json  # If structured data is part of logging
 import logging
 
@@ -104,7 +106,8 @@ def log_message(
         >>> log_message("Structured log", json_data={"key": "value"})
     """
 
-    configs = configs or CONFIGS  # Default to global CONFIGS if not provided
+    # configs = configs or CONFIGS  # Default to global CONFIGS if not provided
+    # print(f'log_message(configs): {json.dumps(configs, indent=default_indent, ensure_ascii=False)}')
     # Define logger if not available
     logger = handler or logging.getLogger(f"{configs['logging']['package_name']}.{configs['logging']['module_name']}")
     # print(f'Logger: {logger}')
@@ -196,6 +199,7 @@ def output_console(
     print(console_message)  # Print colored message
     if json_data:
         compressed = configs["tracing"]["json"].get("compressed", None)
+        # print(f"DEBUG: compressed={compressed} json_data={json_data}")  # Debugging output
         if compressed is not None:
             if isinstance(json_data, str):
                 # Print strings as-is (no JSON formatting)

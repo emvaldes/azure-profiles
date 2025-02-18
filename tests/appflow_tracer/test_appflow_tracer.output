@@ -1,37 +1,28 @@
-$ pytest -v tests/ ;
+$ pytest -v ./tests/
 ====================================================================================== test session starts =======================================================================================
 platform darwin -- Python 3.13.2, pytest-8.3.4, pluggy-1.5.0 -- /usr/local/Cellar/pytest/8.3.4/libexec/bin/python
 cachedir: .pytest_cache
 rootdir: /Users/emvaldes/.repos/azure/workspaces/azure-profiles/python
-collected 17 items
+collected 19 items
 
 tests/appflow_tracer/tracing/file_utils/test_file_utils.py::test_is_project_file PASSED                                                                                                    [  5%]
-tests/appflow_tracer/tracing/file_utils/test_file_utils.py::test_manage_logfiles PASSED                                                                                                    [ 11%]
-tests/appflow_tracer/tracing/file_utils/test_file_utils.py::test_relative_path PASSED                                                                                                      [ 17%]
-tests/appflow_tracer/tracing/file_utils/test_file_utils.py::test_remove_ansi_escape_codes PASSED                                                                                           [ 23%]
-tests/appflow_tracer/tracing/log_utils/test_log_utils.py::test_log_message PASSED                                                                                                          [ 29%]
-tests/appflow_tracer/tracing/log_utils/test_log_utils.py::test_output_logfile PASSED                                                                                                       [ 35%]
-tests/appflow_tracer/tracing/log_utils/test_log_utils.py::test_output_console PASSED                                                                                                       [ 41%]
-tests/appflow_tracer/tracing/serialize_utils/test_serialize_utils.py::test_safe_serialize PASSED                                                                                           [ 47%]
-tests/appflow_tracer/tracing/serialize_utils/test_serialize_utils.py::test_sanitize_token_string PASSED                                                                                    [ 52%]
-tests/appflow_tracer/tracing/test_tracing.py::test_setup_logging PASSED                                                                                                                    [ 58%]
-tests/appflow_tracer/tracing/test_tracing.py::test_print_capture PASSED                                                                                                                    [ 64%]
-tests/appflow_tracer/tracing/test_tracing.py::test_ansi_file_handler PASSED                                                                                                                [ 70%]
-tests/appflow_tracer/tracing/trace_utils/test_trace_utils.py::test_start_tracing PASSED                                                                                                    [ 76%]
-tests/appflow_tracer/tracing/trace_utils/test_trace_utils.py::test_start_tracing_disabled PASSED                                                                                           [ 82%]
-tests/appflow_tracer/tracing/trace_utils/test_trace_utils.py::test_trace_all PASSED                                                                                                        [ 88%]
+tests/appflow_tracer/tracing/file_utils/test_file_utils.py::test_manage_logfiles PASSED                                                                                                    [ 10%]
+tests/appflow_tracer/tracing/file_utils/test_file_utils.py::test_relative_path PASSED                                                                                                      [ 15%]
+tests/appflow_tracer/tracing/file_utils/test_file_utils.py::test_remove_ansi_escape_codes PASSED                                                                                           [ 21%]
+tests/appflow_tracer/tracing/log_utils/test_log_utils.py::test_log_message PASSED                                                                                                          [ 26%]
+tests/appflow_tracer/tracing/log_utils/test_log_utils.py::test_output_logfile PASSED                                                                                                       [ 31%]
+tests/appflow_tracer/tracing/log_utils/test_log_utils.py::test_output_console[True-{"alert":"true"}-True] PASSED                                                                           [ 36%]
+tests/appflow_tracer/tracing/log_utils/test_log_utils.py::test_output_console[False-{\n    "alert": "true"\n}-True] PASSED                                                                 [ 42%]
+tests/appflow_tracer/tracing/log_utils/test_log_utils.py::test_output_console[None-None-False] PASSED                                                                                      [ 47%]
+tests/appflow_tracer/tracing/serialize_utils/test_serialize_utils.py::test_safe_serialize PASSED                                                                                           [ 52%]
+tests/appflow_tracer/tracing/serialize_utils/test_serialize_utils.py::test_sanitize_token_string PASSED                                                                                    [ 57%]
+tests/appflow_tracer/tracing/test_tracing.py::test_setup_logging PASSED                                                                                                                    [ 63%]
+tests/appflow_tracer/tracing/test_tracing.py::test_print_capture PASSED                                                                                                                    [ 68%]
+tests/appflow_tracer/tracing/test_tracing.py::test_ansi_file_handler PASSED                                                                                                                [ 73%]
+tests/appflow_tracer/tracing/trace_utils/test_trace_utils.py::test_start_tracing PASSED                                                                                                    [ 78%]
+tests/appflow_tracer/tracing/trace_utils/test_trace_utils.py::test_start_tracing_disabled PASSED                                                                                           [ 84%]
+tests/appflow_tracer/tracing/trace_utils/test_trace_utils.py::test_trace_all PASSED                                                                                                        [ 89%]
 tests/appflow_tracer/tracing/trace_utils/test_trace_utils.py::test_call_events PASSED                                                                                                      [ 94%]
 tests/appflow_tracer/tracing/trace_utils/test_trace_utils.py::test_return_events PASSED                                                                                                    [100%]
 
-======================================================================================== warnings summary ========================================================================================
-lib/pkgconfig_loader.py:276
-lib/pkgconfig_loader.py:276
-lib/pkgconfig_loader.py:276
-lib/pkgconfig_loader.py:276
-lib/pkgconfig_loader.py:276
-tests/appflow_tracer/tracing/test_tracing.py::test_setup_logging
-  /Users/emvaldes/.repos/azure/workspaces/azure-profiles/python/lib/pkgconfig_loader.py:276: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
-    config["stats"]["updated"] = datetime.utcnow().isoformat()
-
--- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-================================================================================ 17 passed, 6 warnings in 13.20s =================================================================================
+====================================================================================== 19 passed in 17.02s =======================================================================================

@@ -95,9 +95,15 @@ def test_setup_logging(mock_logger: MagicMock) -> None:
         # Validate `stats` properties
         assert "created" in config["stats"]
         assert "updated" in config["stats"]
+
         created_time = datetime.fromisoformat(config["stats"]["created"])
         updated_time = datetime.fromisoformat(config["stats"]["updated"])
-        assert created_time < updated_time  # Ensure `updated` is newer
+
+        # Normalize both to naive datetimes
+        if updated_time.tzinfo is not None:
+            updated_time = updated_time.replace(tzinfo=None)
+
+        assert created_time < updated_time, "Expected `updated` to be newer than `created`"
 
 # Test PrintCapture handler
 def test_print_capture(mock_logger: MagicMock) -> None:

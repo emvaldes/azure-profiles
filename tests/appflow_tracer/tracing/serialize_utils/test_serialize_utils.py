@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-Test Module: test_serialize_utils.py
+Test Module: ./tests/appflow_tracer/tracing/test_serialize_utils.py
 
 This module contains unit tests for the `serialize_utils.py` module in `appflow_tracer.lib`.
 It ensures that serialization and string sanitization functions operate correctly, including:

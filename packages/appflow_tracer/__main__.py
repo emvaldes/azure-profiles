@@ -20,9 +20,7 @@ Usage:
 
 > python -m packages.appflow_tracer
 """
-import json
-from .tracing import setup_logging
 
+from .tracing import main
 if __name__ == "__main__":
-    CONFIGS = setup_logging()
-    # print("Logging system initialized via standalone execution.")
+    main()

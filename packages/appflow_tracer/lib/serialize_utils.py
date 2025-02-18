@@ -167,44 +167,29 @@ def sanitize_token_string(line: str) -> str:
         "another_line"
     """
 
-    # Latest attempt to fix this issue:
+    # # Legacy code:
     # try:
     #     tokens = tokenize.generate_tokens(StringIO(line).readline)
     #     new_line = []
-    #     last_was_name_or_number = False
-    #
+    #     last_token_was_name = False  # Track if the last token was an identifier or keyword
     #     for token in tokens:
     #         if token.type == tokenize.COMMENT:
-    #             break  # Stop at the first comment
-    #         if last_was_name_or_number and token.type in (tokenize.NAME, tokenize.NUMBER):
-    #             new_line.append(" ")  # Ensure spacing between identifiers/numbers
+    #             break  # Stop at the first comment outside of strings
+    #         if last_token_was_name and token.type in (tokenize.NAME, tokenize.NUMBER):
+    #             new_line.append(" ")  # Add space between concatenated names/numbers
     #         new_line.append(token.string)
-    #         last_was_name_or_number = token.type in (tokenize.NAME, tokenize.NUMBER)
-    #
-    #     return "".join(new_line).strip()  # Trim spaces/tabs/newlines
+    #         last_token_was_name = token.type in (tokenize.NAME, tokenize.NUMBER)
+    #         new_line = "".join(new_line).strip()  # Trim spaces/tabs/newlines
+    #     return new_line
+    #     # return "".join(new_line).strip()  # Trim spaces/tabs/newlines
     # except Exception:
     #     return line.strip()  # Ensure fallback trims spaces
 
-    # # PyTest compliant code but breaks readability:
-    # try:
-    #     tokens = tokenize.generate_tokens(StringIO(line).readline)
-    #     new_line = []
-    #     # last_token_was_name = False  # Track if the last token was an identifier or keyword
-    #     for token in tokens:
-    #         if token.type == tokenize.COMMENT:
-    #             break  # Stop at the first comment
-    #         # if last_token_was_name and token.type in (tokenize.NAME, tokenize.NUMBER):
-    #         #     new_line.append(" ")  # Add space between concatenated names/numbers
-    #         new_line.append(token.string)
-    #     return "".join(new_line).strip()  # Trim spaces/tabs/newlines
-    # except Exception:
-    #     return line.strip()  # Ensure fallback trims spaces
-
-    # Legacy code:
     try:
         tokens = tokenize.generate_tokens(StringIO(line).readline)
         new_line = []
         last_token_was_name = False  # Track if the last token was an identifier or keyword
+
         for token in tokens:
             if token.type == tokenize.COMMENT:
                 break  # Stop at the first comment outside of strings
@@ -212,8 +197,7 @@ def sanitize_token_string(line: str) -> str:
                 new_line.append(" ")  # Add space between concatenated names/numbers
             new_line.append(token.string)
             last_token_was_name = token.type in (tokenize.NAME, tokenize.NUMBER)
-            new_line = "".join(new_line).strip()  # Trim spaces/tabs/newlines
-        return new_line
-        # return "".join(new_line).strip()  # Trim spaces/tabs/newlines
+
+        return "".join(new_line).strip()  # Trim spaces/tabs/newlines
     except Exception:
         return line.strip()  # Ensure fallback trims spaces

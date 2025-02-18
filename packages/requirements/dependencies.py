@@ -85,7 +85,10 @@ from lib.system_variables import (
     category
 )
 
-def load_requirements(requirements_file: str) -> list:
+def load_requirements(
+    requirements_file: str,
+    configs: dict
+) -> list:
     """
     Load dependencies from a JSON requirements file.
 
@@ -103,27 +106,35 @@ def load_requirements(requirements_file: str) -> list:
         list: A list of dictionaries, each containing a package name and version details.
 
     Example:
-        >>> load_requirements("requirements.json")
+        >>> load_requirements(
+                requirements_file="requirements.json",
+                configs=CONFIGS
+            )
         [{"package": "requests", "version": {"target": "2.28.1"}}]
     """
 
     requirements_path = Path(requirements_file).resolve()
+
     if not requirements_path.exists():
-        log_utils.log_message(f"Requirements file not found at {requirements_path}", category.error.id, configs=CONFIGS)
+        log_utils.log_message(f"❌ Requirements file not found: {requirements_path}", category.error.id, configs=configs)
         raise FileNotFoundError(f"ERROR: Requirements file not found at {requirements_path}")
     try:
         with open(requirements_path, "r") as f:
             data = json.load(f)
-            dependencies = [
-                {"package": pkg["package"], "version": pkg["version"]}
-                for pkg in data.get("dependencies", [])
-            ]
+            if not isinstance(data, dict) or "dependencies" not in data:
+                raise ValueError("Invalid JSON format: Missing `dependencies` key.")
+
+            dependencies = [{"package": pkg["package"], "version": pkg["version"]} for pkg in data.get("dependencies", [])]
             return dependencies
     except json.JSONDecodeError as e:
-        log_utils.log_message(f"Invalid JSON structure in '{requirements_path}'. Details: {e}", category.error.id, configs=CONFIGS)
+        log_utils.log_message(f"❌ Invalid JSON in '{requirements_path}': {e}", category.error.id, configs=configs)
         raise ValueError(f"ERROR: Invalid JSON structure in '{requirements_path}'.\nDetails: {e}")
 
-def install_package(package: str, version_info: dict) -> None:
+def install_package(
+    package: str,
+    version_info: dict,
+    configs: dict
+) -> None:
     """
     Install a specific package version using pip.
 
@@ -141,14 +152,31 @@ def install_package(package: str, version_info: dict) -> None:
         None
 
     Example:
-        >>> install_package("requests", {"target": "2.28.1"})
+        >>> install_package(
+                package="requests",
+                version_info={"target": "2.28.1"},
+                configs=configs
+            )
         Installing requests==2.28.1...
     """
 
     version = version_info["target"]
-    log_utils.log_message(f"Installing {package}=={version}...", configs=CONFIGS)
+    # **Check if the package is already installed**
+    if is_package_installed(package, version_info, configs=configs):
+        log_utils.log_message(f"✅ {package}=={version} is already installed, skipping installation.", configs=configs)
+        return
+    # **Check if package is managed by Brew (macOS)**
+    if sys.platform == "darwin":
+        try:
+            result = subprocess.run(["brew", "list", "--versions", package], capture_output=True, text=True, check=True)
+            brew_version = result.stdout.strip().split()[-1] if result.stdout else None
+            if brew_version == version:
+                log_utils.log_message(f"Skipping installation: Managed environment (brew-controlled)", configs=configs)
+                return  # **Skip pip installation**
+        except subprocess.CalledProcessError:
+            pass  # Continue if Brew check fails
+    log_utils.log_message(f"Installing {package}=={version}...", configs=configs)
     try:
-        # subprocess.check_call([sys.executable, "-m", "pip", "install", f"{package}=={version}"])
         subprocess.check_call([
             sys.executable,
             "-m",
@@ -157,12 +185,15 @@ def install_package(package: str, version_info: dict) -> None:
             "--user",
             f"{package}=={version}"
         ])
-        log_utils.log_message(f"Successfully installed {package}=={version}", configs=CONFIGS)
+        log_utils.log_message(f"✅ Successfully installed {package}=={version}", configs=configs)
     except subprocess.CalledProcessError as e:
-        log_utils.log_message(f"Failed to install {package}=={version}. Pip error: {e}", category.error.id, configs=CONFIGS)
+        log_utils.log_message(f"❌ Failed to install {package}=={version}. Pip error: {e}", category.error.id, configs=configs)
         sys.exit(1)
 
-def install_requirements(requirements_file: str) -> None:
+def install_requirements(
+    requirements_file: str,
+    configs: dict
+) -> None:
     """
     Install missing dependencies from a JSON requirements file.
 
@@ -176,91 +207,42 @@ def install_requirements(requirements_file: str) -> None:
         None
 
     Example:
-        >>> install_requirements("requirements.json")
+        >>> install_requirements(
+                requirements_file="requirements.json",
+                configs=configs
+            )
         Installing missing dependencies...
     """
 
-    dependencies = load_requirements(requirements_file)
+    dependencies = load_requirements(
+        requirements_file=requirements_file,
+        configs=configs
+    )
 
     if not dependencies:
-        log_utils.log_message("⚠ No dependencies found in requirements.json", category.warning.id, configs=CONFIGS)
+        log_utils.log_message("⚠ No dependencies found in requirements.json", category.warning.id, configs=configs)
         return
-
     for dep in dependencies:
         package = dep["package"]
         version = dep["version"]
-
-        if is_package_installed(package, version):
+        if is_package_installed(
+                package=package,
+                version_info=version,
+                configs=configs
+            ):
             continue
         else:
-            install_package(package, version)
+            install_package(
+                package=package,
+                version_info=version,
+                configs=configs
+            )
 
-def __is_package_installed(package: str, version_info: dict) -> bool:
-    """
-    Check if a specific package version is installed.
-
-    This function verifies whether the installed version of a package matches
-    the required target version.
-    First, attempts to retrieve the version via CLI if available.
-    If CLI check fails, checks via importlib.metadata.version().
-
-    Args:
-        package (str): The name of the package.
-        version_info (dict): A dictionary containing the target version.
-
-    Returns:
-        bool: True if the package is installed with the correct version, False otherwise.
-
-    Example:
-        >>> is_package_installed("requests", {"target": "2.28.1"})
-        True
-    """
-
-    version = version_info.get("target", None)
-    if not version:
-        log_utils.log_message(f"⚠️ Skipping {package}: Missing 'target' version.", category.warning.id, configs=CONFIGS)
-        return False
-    # Attempt to get the package version via CLI
-
-    # try:
-    #     installed_version = importlib.metadata.version(package)
-    #     if installed_version == version:
-    #         log_utils.log_message(f"{package}=={version} is already installed.", configs=CONFIGS)
-    #         return True
-    #     else:
-    #         log_utils.log_message(f"⚠️ {package} installed, but version {installed_version} != {version} (expected).", category.warning.id, configs=CONFIGS)
-    #         return False
-    # except importlib.metadata.PackageNotFoundError:
-    #     log_utils.log_message(f"{package} is NOT installed.", category.error.id, configs=CONFIGS)
-    #     return False
-
-# Attempt to get the package version via CLI
-    try:
-        result = subprocess.run([package, "--version"], capture_output=True, text=True, check=True)
-        cli_version = result.stdout.split()[-1]
-        if cli_version == version:
-            log_utils.log_message(f"✅ {package}=={cli_version} detected via CLI.", configs=CONFIGS)
-            return True
-        else:
-            log_utils.log_message(f"⚠️ {package} installed, but version {cli_version} != {version} (expected).", category.warning.id, configs=CONFIGS)
-            return False
-    except (subprocess.CalledProcessError, FileNotFoundError):
-        pass  # Fallback to importlib.metadata check
-
-    # Check if installed via pip
-    try:
-        installed_version = importlib.metadata.version(package)
-        if installed_version == version:
-            log_utils.log_message(f"{package}=={version} is already installed (pip detected).", configs=CONFIGS)
-            return True
-        else:
-            log_utils.log_message(f"⚠️ {package} installed, but version {installed_version} != {version} (expected).", category.warning.id, configs=CONFIGS)
-            return False
-    except importlib.metadata.PackageNotFoundError:
-        log_utils.log_message(f"❌ {package} is NOT installed via pip.", category.error.id, configs=CONFIGS)
-        return False
-
-def is_package_installed(package: str, version_info: dict) -> bool:
+def is_package_installed(
+    package: str,
+    version_info: dict,
+    configs: dict
+) -> bool:
     """
     Check if a specific package version is installed via Pip or Brew.
 
@@ -276,33 +258,31 @@ def is_package_installed(package: str, version_info: dict) -> bool:
     """
     version = version_info.get("target")
     if not version:
-        log_utils.log_message(f"⚠️ Skipping {package}: Missing 'target' version.", category.warning.id, configs=CONFIGS)
+        log_utils.log_message(f"⚠️ Skipping {package}: Missing 'target' version.", category.warning.id, configs=configs)
         return False
-
     brew_version = None
     if sys.platform == "darwin":
         try:
             result = subprocess.run(["brew", "list", "--versions", package], capture_output=True, text=True, check=True)
             brew_version = result.stdout.strip().split()[-1] if result.stdout else None
             if brew_version == version:
-                log_utils.log_message(f"✅ {package}=={brew_version} detected via Brew.", configs=CONFIGS)
+                log_utils.log_message(f"✅ {package}=={brew_version} detected via Brew.", configs=configs)
                 return True
             elif brew_version:
-                log_utils.log_message(f"⚠️ {package} installed via Brew, but version {brew_version} != {version} (expected).", category.warning.id, configs=CONFIGS)
+                log_utils.log_message(f"⚠️ {package} installed via Brew, but version {brew_version} != {version} (expected).", category.warning.id, configs=configs)
         except subprocess.CalledProcessError:
             pass  # Brew check failed, continue with Pip check
-
     try:
         installed_version = importlib.metadata.version(package)
         if installed_version == version:
-            log_utils.log_message(f"✅ {package}=={installed_version} is installed (Pip detected).", configs=CONFIGS)
+            log_utils.log_message(f"✅ {package}=={installed_version} is installed (Pip detected).", configs=configs)
             return True
         else:
-            log_utils.log_message(f"⚠️ {package} installed, but version {installed_version} != {version} (expected).", category.warning.id, configs=CONFIGS)
+            log_utils.log_message(f"⚠️ {package} installed, but version {installed_version} != {version} (expected).", category.warning.id, configs=configs)
             return False
     except importlib.metadata.PackageNotFoundError:
         if not brew_version:
-            log_utils.log_message(f"❌ {package} is NOT installed via Pip or Brew.", category.error.id, configs=CONFIGS)
+            log_utils.log_message(f"❌ {package} is NOT installed via Pip or Brew.", category.error.id, configs=configs)
         return False
 
 def parse_arguments() -> argparse.Namespace:
@@ -331,7 +311,11 @@ def parse_arguments() -> argparse.Namespace:
     )
     return parser.parse_args()
 
-def update_installed_packages(requirements_file: str, config_filepath: str) -> None:
+def update_installed_packages(
+    requirements_file: str,
+    config_filepath: str,
+    configs: dict
+) -> None:
     """
     Create or update the `installed.json` file with details of the currently installed packages.
 
@@ -346,17 +330,22 @@ def update_installed_packages(requirements_file: str, config_filepath: str) -> N
         None
 
     Example:
-        >>> update_installed_packages("requirements.json", "installed.json")
+        >>> update_installed_packages(
+                requirements_file="requirements.json",
+                config_filepath="installed.json",
+                configs=configs
+            )
         Updating installed packages...
     """
 
-    dependencies = load_requirements(requirements_file)
+    dependencies = load_requirements(
+        requirements_file=requirements_file,
+        configs=configs
+    )
     installed_data = []
-
     for dep in dependencies:
         package = dep["package"]
         target_version = dep["version"]["target"]
-
         try:
             installed_version = importlib.metadata.version(package)
             if installed_version == target_version:
@@ -382,7 +371,7 @@ def update_installed_packages(requirements_file: str, config_filepath: str) -> N
     print(f'Installed JSON file: {config_filepath}')
     with open(config_filepath, "w") as f:
         json.dump({"dependencies": installed_data}, f, indent=4)
-    log_utils.log_message(f"📄 Installed package status updated in {config_filepath}", configs=CONFIGS)
+    log_utils.log_message(f"📄 Installed package status updated in {config_filepath}", configs=configs)
 
 # ---------- Module Global variables:
 
@@ -408,17 +397,22 @@ def main() -> None:
 
     # Ensure the variable exists globally
     global CONFIGS
-
-    CONFIGS = tracing.setup_logging()
+    # CONFIGS = tracing.setup_logging(events=False)
+    CONFIGS = tracing.setup_logging(events=["call", "return"])
     # print( f'CONFIGS: {json.dumps(CONFIGS, indent=default_indent)}' )
-
     packages = environment.project_root / "packages" / CONFIGS["logging"].get("package_name")
     config_filepath = packages / "installed.json"
-
     args = parse_arguments()
     log_utils.log_message("🔍 Starting dependency installation process...", configs=CONFIGS)
-    install_requirements(args.requirements_file)
-    update_installed_packages(args.requirements_file, config_filepath)
+    install_requirements(
+        requirements_file=args.requirements_file,
+        configs=CONFIGS
+    )
+    update_installed_packages(
+        requirements_file=args.requirements_file,
+        config_filepath=config_filepath,
+        configs=CONFIGS
+    )
     log_utils.log_message(f"📂 Logs are being saved in: {CONFIGS["logging"].get("log_filename")}", configs=CONFIGS)
 
 if __name__ == "__main__":

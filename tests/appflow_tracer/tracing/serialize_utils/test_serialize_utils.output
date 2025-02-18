@@ -9,9 +9,9 @@ tests/appflow_tracer/tracing/serialize_utils/test_serialize_utils.py::test_safe_
 tests/appflow_tracer/tracing/serialize_utils/test_serialize_utils.py::test_sanitize_token_string PASSED                                                                                    [100%]
 
 ======================================================================================== warnings summary ========================================================================================
-lib/pkgconfig_loader.py:276
-  /Users/emvaldes/.repos/azure/workspaces/azure-profiles/python/lib/pkgconfig_loader.py:276: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+lib/pkgconfig_loader.py:285
+  /Users/emvaldes/.repos/azure/workspaces/azure-profiles/python/lib/pkgconfig_loader.py:285: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
     config["stats"]["updated"] = datetime.utcnow().isoformat()
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-================================================================================== 2 passed, 1 warning in 0.64s ==================================================================================
+================================================================================== 2 passed, 1 warning in 0.65s ==================================================================================

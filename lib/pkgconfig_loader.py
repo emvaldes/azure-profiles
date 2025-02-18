@@ -49,8 +49,10 @@ import sys
 import json
 import inspect
 
+from typing import Optional, Union
+
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone
 
 from system_variables import (
     project_root,
@@ -156,7 +158,7 @@ def package_configs(overrides: dict = None) -> dict:
                 category.imports.id.lower(): True
             },
             "stats": {
-                "created": datetime.utcnow().isoformat(),
+                "created": datetime.now(timezone.utc).isoformat(),
                 "updated": None
             }
         }
@@ -171,7 +173,7 @@ def package_configs(overrides: dict = None) -> dict:
         # Generate log file path
         config["logging"]["log_filename"] = str(config_logfile(config))  # Generate the log file path
         # print( f'Config Type:   {type( config )}' )
-        print( f'Config Object: {json.dumps(config, indent=default_indent)}' )
+        # print( f'Config Object: {json.dumps(config, indent=default_indent)}' )
 
         return config
 
@@ -179,7 +181,11 @@ def package_configs(overrides: dict = None) -> dict:
         print(f"⚠️ Error loading {config_file}: {e}")
         sys.exit(1)
 
-def setup_configs(absolute_path: Path, logname_override: str = None) -> dict:
+def setup_configs(
+    absolute_path: Path,
+    logname_override: str = None,
+    events: Optional[Union[bool, list, dict]] = None
+) -> dict:
     """
     Dynamically initialize and update logging configuration for the calling module.
 
@@ -190,6 +196,7 @@ def setup_configs(absolute_path: Path, logname_override: str = None) -> dict:
     Args:
         absolute_path (Path): The absolute path of the module requesting logging setup.
         logname_override (str, optional): A custom name for the log file, if needed.
+        events (dict, optional): Events control settings.
 
     Raises:
         RuntimeError: If the function is called in an environment where the module path cannot be determined.
@@ -198,7 +205,6 @@ def setup_configs(absolute_path: Path, logname_override: str = None) -> dict:
     Returns:
         dict: The updated logging configuration for the module.
     """
-
 
     # Identify the calling module's file path
     caller_path = sys._getframe(1).f_globals.get("__file__", None)
@@ -267,6 +273,24 @@ def setup_configs(absolute_path: Path, logname_override: str = None) -> dict:
     if config is None:
         config = package_configs()  # Call `package_configs()` to create a base config
 
+    # Default event settings
+    default_events = config["events"]
+    # Transform `events` into the proper format
+    if events is None or events is False:
+        # Disable all event logging
+        config["events"] = {key: False for key in default_events}
+    elif events is True:
+        # Enable all event logging
+        config["events"] = {key: True for key in default_events}
+    elif isinstance(events, list):
+        # Enable only specified events
+        config["events"] = {key: (key in events) for key in default_events}
+    elif isinstance(events, dict):
+        # Merge user-defined settings with defaults (keeping unspecified settings unchanged)
+        config["events"] = {**default_events, **events}
+    else:
+        raise ValueError("Invalid `events` format. Must be None, bool, list, or dict.")
+
     # Ensure the "logging" section is properly updated
     logs_dirname = project_logs / package_name
     logs_dirname.mkdir(parents=True, exist_ok=True)  # Ensure log directory exists
@@ -282,7 +306,7 @@ def setup_configs(absolute_path: Path, logname_override: str = None) -> dict:
     # print(json.dumps(config, indent=4))
 
     # Update "updated" timestamp only if modifications were needed
-    config["stats"]["updated"] = datetime.utcnow().isoformat()
+    config["stats"]["updated"] = datetime.now(timezone.utc).isoformat()
     # Save the modified configuration to disk in the correct package location
     with open(config_file, "w") as f:
         json.dump(config, f, indent=default_indent)

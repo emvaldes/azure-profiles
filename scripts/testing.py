@@ -79,8 +79,8 @@ def main() -> None:
 
     global LOGGING, CONFIGS, logger  # Ensure CONFIGS is globally accessible
 
-    CONFIGS = tracing.setup_logging()
-    print(f'CONFIGS: {json.dumps(CONFIGS, indent=default_indent)}')
+    CONFIGS = tracing.setup_logging(events=["call", "return"])
+    # print(f'CONFIGS: {json.dumps(CONFIGS, indent=default_indent)}')
 
     print("I am a stand-alone script minding my own business")
 

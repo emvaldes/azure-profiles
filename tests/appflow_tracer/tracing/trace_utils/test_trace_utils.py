@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-Test Module: test_trace_utils.py
+Test Module: ./tests/appflow_tracer/test_trace_utils.py
 
 This module contains unit tests for the `trace_utils.py` module in `appflow_tracer.lib`.
 It ensures correct function execution tracing and structured logging, covering:
@@ -138,43 +138,51 @@ def test_trace_all(
     trace_function = trace_all(mock_logger, mock_configs)
     assert callable(trace_function), "trace_all() did not return a callable trace function."
 
+@patch("packages.appflow_tracer.lib.file_utils.is_project_file", return_value=True)
 @patch("packages.appflow_tracer.lib.log_utils.log_message")
 def test_call_events(
+    mock_is_project_file: MagicMock,
     mock_log_message: MagicMock,
     mock_logger: MagicMock,
     mock_configs: dict
 ) -> None:
-    """Ensure `call_events()` logs function calls correctly.
+    """Ensure `call_events()` logs function calls correctly."""
 
-    Tests:
-    - Simulates a function call and verifies that the logger captures call metadata.
-    - Ensures that arguments are correctly logged in a structured format.
-    - Checks that only **project-related function calls** are logged.
-    """
+    # Explicitly enable logging and ensure events are properly configured
+    mock_configs["logging"]["enable"] = True
+    mock_configs["tracing"]["enable"] = True
+    mock_configs["events"] = {category.calls.id.lower(): True, category.returns.id.lower(): True}
+
     frame_mock = MagicMock()
     frame_mock.f_code.co_name = "test_function"
     frame_mock.f_back.f_code.co_name = "caller_function"
-    frame_mock.f_globals.get.return_value = "test_file.py"
+    frame_mock.f_globals.get.return_value = "/Users/emvaldes/.repos/azure/workspaces/azure-profiles/python/test_file.py"
 
     call_events(mock_logger, frame_mock, "test_file.py", None, mock_configs)
-    mock_log_message.assert_called()
 
+    # Ensure log_message was called
+    assert mock_log_message.called, "Expected log_message() to be called, but it wasn't."
+
+@patch("packages.appflow_tracer.lib.file_utils.is_project_file", return_value=True)
 @patch("packages.appflow_tracer.lib.log_utils.log_message")
 def test_return_events(
+    mock_is_project_file: MagicMock,
     mock_log_message: MagicMock,
     mock_logger: MagicMock,
     mock_configs: dict
 ) -> None:
-    """Ensure `return_events()` logs function return values correctly.
+    """Ensure `return_events()` logs function return values correctly."""
 
-    Tests:
-    - Captures function return values and ensures correct serialization.
-    - Ensures that logging occurs only when return values exist.
-    - Validates correct handling of **primitive types, dictionaries, and objects**.
-    """
+    # Explicitly enable logging and events
+    mock_configs["logging"]["enable"] = True
+    mock_configs["tracing"]["enable"] = True
+    mock_configs["events"] = {category.calls.id.lower(): True, category.returns.id.lower(): True}
+
     frame_mock = MagicMock()
     frame_mock.f_code.co_name = "test_function"
-    frame_mock.f_globals.get.return_value = "test_file.py"
+    frame_mock.f_globals.get.return_value = "/Users/emvaldes/.repos/azure/workspaces/azure-profiles/python/test_file.py"
 
     return_events(mock_logger, frame_mock, "test_file.py", "return_value", mock_configs)
-    mock_log_message.assert_called()
+
+    # Ensure log_message was called
+    assert mock_log_message.called, "Expected log_message() to be called, but it wasn't."

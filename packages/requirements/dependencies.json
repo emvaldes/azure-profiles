@@ -25,12 +25,12 @@
         }
     },
     "events": {
-        "call": false,
-        "return": false,
+        "call": true,
+        "return": true,
         "import": false
     },
     "stats": {
-        "created": "2025-02-17T20:43:01.958250",
-        "updated": "2025-02-17T20:43:58.806757"
+        "created": "2025-02-18T04:35:16.304272",
+        "updated": "2025-02-18T04:44:24.275059+00:00"
     }
 }

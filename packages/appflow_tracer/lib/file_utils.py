@@ -44,6 +44,7 @@ To check if a file belongs to the project:
 > is_project_file("scripts/devops-workflow.py")
 """
 
+import sys
 import re
 
 from pathlib import Path
@@ -127,25 +128,27 @@ def manage_logfiles(configs: dict = None) -> None:
 
     """
 
-    logs_basedir = Path(project_logs)
+    logs_dir = Path(configs["logging"]["logs_dirname"])  # Target the correct logs directory
     deleted_logs = []
-    for log_subdir in logs_basedir.iterdir():
-        if log_subdir.is_dir():  # Ensure it's a directory
-            log_files = sorted(
-                log_subdir.glob("*.log"),
-                key=lambda f: f.stat().st_mtime
-            )
-            num_to_remove = len(log_files) - (configs["logging"].get("max_logfiles", max_logfiles))
-            if num_to_remove > 0:
-                logs_to_remove = log_files[:num_to_remove]
-                for log_file in logs_to_remove:
-                    try:
-                        log_file.unlink()
-                        deleted_logs.append(log_file.as_posix())
-                        log_utils.log_message(f"🗑️ Deleted old log: {log_file.as_posix()}", category.warning.id)
-                    except Exception as e:
-                        print( f'CONFIGS: {json.dumps(configs, indent=default_indent)}' )
-                        print(f"⚠️ Error deleting {log_file.as_posix()}: {e}", category.error.id)
+    if not logs_dir.exists() or not logs_dir.is_dir():
+        return deleted_logs  # If the log directory doesn't exist, return empty
+    log_files = sorted(
+        logs_dir.glob("*.log"),  # Only target logs in the configured directory
+        key=lambda f: f.stat().st_mtime  # Sort by modification time (oldest first)
+    )
+    num_to_remove = len(log_files) - configs["logging"].get("max_logfiles", 5)  # Default max to 5 if missing
+    if num_to_remove > 0:
+        logs_to_remove = log_files[:num_to_remove]  # Get oldest logs to remove
+        for log_file in logs_to_remove:
+            try:
+                log_file.unlink()  # Delete the log file
+                deleted_logs.append(log_file.as_posix())
+                # Ensure logging only runs if enabled
+                if configs["logging"].get("enable", True):
+                    log_utils.log_message(f"🗑️ Deleted old log: {log_file.as_posix()}", category.warning.id, configs=configs)
+            except Exception as e:
+                if configs["logging"].get("enable", True):
+                    log_utils.log_message(f"⚠️ Error deleting {log_file.as_posix()}: {e}", category.error.id, configs=configs)
     return deleted_logs
 
 def relative_path(filepath: str) -> str:

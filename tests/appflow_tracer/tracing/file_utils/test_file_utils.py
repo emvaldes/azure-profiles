@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-Test Module: test_file_utils.py
+Test Module: ./tests/appflow_tracer/tracing/test_file_utils.py
 
 This module contains unit tests for the `file_utils.py` module in `appflow_tracer.lib`.
 It ensures that file handling functions operate correctly, including:
@@ -33,11 +33,15 @@ It ensures that file handling functions operate correctly, including:
 - `manage_logfiles()` now **returns a list of deleted files**, making validation straightforward.
 - The test dynamically **adjusts `max_logfiles`** to trigger controlled log deletion.
 - Instead of assuming a deletion count, the test **compares expected vs. actual deleted logs**.
+- Fixed `Path.stat()` mocking to properly handle `follow_symlinks=True`, preventing test failures.
+- Ensured logging does not interfere when disabled in `CONFIGS`.
 
 ## Expected Behavior:
 - **Logs exceeding `max_logfiles` are removed**, with older logs prioritized.
 - **Deleted logs are returned and verified** to ensure the function works correctly.
 - **Path handling and text sanitization functions operate as expected**.
+- **Logging is only enabled when explicitly set in `CONFIGS`.**
+- **Path handling and text sanitization functions operate as expected.**
 
 Author: Eduardo Valdes
 Date: 2025/01/01
@@ -70,8 +74,16 @@ from packages.appflow_tracer.lib.file_utils import (
 
 # Initialize CONFIGS from setup_logging
 CONFIGS = setup_logging(logname_override='logs/tests/test_file_utils.log')
-CONFIGS['logging']['max_logfiles'] = 3  # Reduce max_logfiles to trigger deletion logic
-print("DEBUG: CONFIGS Loaded ->", CONFIGS)  # Debugging CONFIGS object
+CONFIGS['logging']['max_logfiles'] = 6  # Adjust max_logfiles to trigger deletion
+CONFIGS['logging']['enable'] = False  # Disable logging for test consistency
+# print("DEBUG: CONFIGS Loaded ->", CONFIGS)  # Debugging CONFIGS object
+
+@pytest.fixture
+def mock_configs():
+    """Mock CONFIGS globally for test stability."""
+    CONFIGS["logging"]["max_logfiles"] = 6  # Ensure deletion triggers
+    with patch("packages.appflow_tracer.tracing.CONFIGS", CONFIGS):
+        yield CONFIGS
 
 # Test if a file is correctly identified as part of the project
 def test_is_project_file() -> None:
@@ -87,8 +99,7 @@ def test_is_project_file() -> None:
     assert is_project_file(valid_path) is True
     assert is_project_file(invalid_path) is False
 
-# Test log file management by simulating excessive log count
-def test_manage_logfiles() -> None:
+def test_manage_logfiles():
     """Simulates log file cleanup by `manage_logfiles()` and validates the list of deleted logs.
 
     Tests:
@@ -97,21 +108,25 @@ def test_manage_logfiles() -> None:
     - Compares expected vs. actual deleted logs to validate accuracy.
     """
     with patch("os.path.exists", return_value=True), \
-         patch("os.makedirs") as mock_makedirs, \
-         patch.object(Path, "iterdir", return_value=[Path("logs")]), \
+         patch("os.makedirs"), \
+         patch.object(Path, "iterdir", return_value=[Path(CONFIGS['logging']['logs_dirname'])]), \
          patch.object(Path, "is_dir", return_value=True), \
-         patch.object(Path, "glob", return_value=[Path(f"{CONFIGS['logging']['logs_dirname']}/log{i}.txt") for i in range(15)]), \
-         patch("pathlib.Path.stat", side_effect=lambda: type('MockStat', (), {"st_mtime": 1739747800})()), \
+         patch.object(Path, "glob", return_value=[Path(f"{CONFIGS['logging']['logs_dirname']}/log{i}.txt") for i in range(10)]), \
+         patch("pathlib.Path.stat", side_effect=lambda *args, **kwargs: type('MockStat', (), {"st_mtime": 1739747800})()), \
          patch("pathlib.Path.unlink") as mock_remove:
         log_files = sorted(
-            Path(CONFIGS['logging']['logs_dirname']).glob('*.log'),
+            Path(CONFIGS['logging']['logs_dirname']).glob('*.txt'),
             key=lambda f: f.stat().st_mtime
         )
         expected_deletions = log_files[:max(0, len(log_files) - CONFIGS['logging']['max_logfiles'])]
         deleted_logs = manage_logfiles(CONFIGS)
-        assert set(deleted_logs) == set(f.as_posix() for f in expected_deletions)  # Ensure deleted logs match expectations
-        assert isinstance(deleted_logs, list)  # Ensure it returns a list
-        assert len(deleted_logs) > 0  # Ensure logs were actually deleted
+        # Ensure the deleted logs match expected deletions
+        assert set(deleted_logs) == set(f.as_posix() for f in expected_deletions), \
+            f"Expected {expected_deletions}, but got {deleted_logs}"
+        # Ensure return type is a list
+        assert isinstance(deleted_logs, list)
+        # Ensure logs were actually deleted
+        assert len(deleted_logs) > 0, "No logs were deleted!"
 
 # Test relative path conversion
 def test_relative_path() -> None:

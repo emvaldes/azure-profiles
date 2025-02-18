@@ -1,4 +1,4 @@
-$ pytest -v ./tests/appflow_tracer/tracing/file_utils/test_file_utils.py 
+$ pytest -v tests/appflow_tracer/tracing/file_utils/test_file_utils.py ;
 ====================================================================================== test session starts =======================================================================================
 platform darwin -- Python 3.13.2, pytest-8.3.4, pluggy-1.5.0 -- /usr/local/Cellar/pytest/8.3.4/libexec/bin/python
 cachedir: .pytest_cache
@@ -10,14 +10,4 @@ tests/appflow_tracer/tracing/file_utils/test_file_utils.py::test_manage_logfiles
 tests/appflow_tracer/tracing/file_utils/test_file_utils.py::test_relative_path PASSED                                                                                                      [ 75%]
 tests/appflow_tracer/tracing/file_utils/test_file_utils.py::test_remove_ansi_escape_codes PASSED                                                                                           [100%]
 
-======================================================================================== warnings summary ========================================================================================
-lib/pkgconfig_loader.py:150
-  /Users/emvaldes/.repos/azure/workspaces/azure-profiles/python/lib/pkgconfig_loader.py:150: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
-    "created": datetime.utcnow().isoformat(),
-
-lib/pkgconfig_loader.py:276
-  /Users/emvaldes/.repos/azure/workspaces/azure-profiles/python/lib/pkgconfig_loader.py:276: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
-    config["stats"]["updated"] = datetime.utcnow().isoformat()
-
--- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-================================================================================= 4 passed, 2 warnings in 1.51s ==================================================================================
+======================================================================================= 4 passed in 1.31s ========================================================================================

@@ -82,7 +82,8 @@ from lib import (
 
 def setup_logging(
     configs: Optional[dict] = None,
-    logname_override: Optional[str] = None
+    logname_override: Optional[str] = None,
+    events: Optional[Union[bool, dict]] = None  # New parameter
 ) -> Union[bool, dict]:
     """
     Configures and initializes the global logging system.
@@ -96,6 +97,11 @@ def setup_logging(
             If None, the default global configurations are used.
         logname_override (str, optional): A custom name for the log file.
             If None, the log file name is derived from the calling script.
+        events (bool, list, or dict, optional):
+            - `None` / `False` → Disables all event logging.
+            - `True` → Enables all event logging.
+            - `list` → Enables only specified events (e.g., ["call", "return"]).
+            - `dict` → Enables/disables events per user settings (e.g., {"call": True, "return": False}).
 
     Raises:
         ValueError: If the provided logging configurations are not in a dictionary format.
@@ -117,29 +123,24 @@ def setup_logging(
 
     # Ensure the variable exists globally
     global LOGGING, CONFIGS, logger
-
     try:
         if not LOGGING:  # Check if logging has already been initialized
             LOGGING = True  # Mark logging as initialized
             # print(f'\nInitializing Setup Logging ... \n')
     except NameError:
         return False
-
     if logname_override:
         log_filename = logname_override
-# else:
     # Inspect the stack to find the caller’s module name or file
     caller_frame = inspect.stack()[1]
     # Determine the caller's module or file
     caller_module = inspect.getmodule(caller_frame[0])
-
     if caller_module and caller_module.__file__:
         # Extract the script/module name without extension
         log_filename = Path(caller_module.__file__).stem
     else:
         # Fallback if the name can’t be determined
         log_filename = "unknown"
-
     # Handle the case where __main__ is used
     if log_filename == "__main__":
         # Use the module that defines setup_logging as a fallback
@@ -150,7 +151,6 @@ def setup_logging(
         else:
             # Fallback if the name can’t be determined
             log_filename = "default"
-
     absolute_path = None
     # Construct the full log path separately
     if caller_module and caller_module.__file__:
@@ -166,25 +166,22 @@ def setup_logging(
     # else:
     #     # If we couldn’t determine the caller file, fallback to a default
     #     log_filename = f"default"
-
     # Determining configs parameter
     if configs:
         CONFIGS = configs
     else:
         CONFIGS = pkgconfig.setup_configs(
             absolute_path=Path(absolute_path),
-            logname_override=log_filename
+            logname_override=log_filename,
+            events=events
         )
-
     if not isinstance(CONFIGS, dict):
         raise ValueError("Configs must be a dictionary")
     # print( f'CONFIGS: {json.dumps(CONFIGS, indent=default_indent)}' )
-
     logfile = CONFIGS["logging"].get("log_filename", False)
     logger = logging.getLogger(f"{CONFIGS['logging']['package_name']}.{CONFIGS['logging']['module_name']}")
     logger.propagate = False  # Prevent handler duplication
     logger.setLevel(logging.DEBUG)
-
     # Remove existing handlers before adding new ones (Prevents duplicate logging)
     if logger.hasHandlers():
         logger.handlers.clear()  # Ensure handlers are properly cleared before adding new ones
@@ -200,16 +197,13 @@ def setup_logging(
         logger.addHandler(console_handler)
         # console_handler.setFormatter(formatter)
         # console_handler.setLevel(logging.DEBUG)
-
     # Redirect print function statements to logger
     builtins.print = lambda *args, **kwargs: logger.info(" ".join(str(arg) for arg in args))
     # if CONFIGS["logging"].get("enable", False):
     #     builtins.print = lambda *args, **kwargs: sys.__stdout__.write(" ".join(str(arg) for arg in args) + "\n")
-
     # Ensure all logs are flushed immediately
     sys.stdout.flush()
     sys.stderr.flush()
-
     # if not LOGGING:  # Check if logging has already been initialized
     if CONFIGS["tracing"].get("enable", True):
         try:
@@ -221,10 +215,8 @@ def setup_logging(
             # log_utils.log_message("🔍 \nTracing system initialized.\n", "INFO", configs=CONFIGS)
         except NameError:
             return False
-
     # Manage log files before starting new tracing session
     file_utils.manage_logfiles(CONFIGS)
-
     return CONFIGS
 
 class PrintCapture(logging.StreamHandler):
@@ -240,7 +232,6 @@ class PrintCapture(logging.StreamHandler):
         log_entry = self.format(record)
         sys.__stdout__.write(log_entry + "\n")  # Write to actual stdout
         sys.__stdout__.flush()  # Ensure immediate flushing
-
     def emit(self, record):
         log_entry = self.format(record)
         sys.__stdout__.write(log_entry + "\n")  # Write to actual stdout
@@ -254,6 +245,7 @@ class ANSIFileHandler(logging.FileHandler):
     This prevents unnecessary ANSI escape codes from appearing in log files
     and ensures only relevant logs are recorded.
     """
+
     def emit(self, record):
         # Ensure only Python's internal logging system is ignored
         if "logging/__init__.py" in record.pathname:
@@ -290,14 +282,15 @@ def main():
     global LOGGING, CONFIGS, logger  # Ensure CONFIGS is globally accessible
 
     # Ensure logging is set up globally before anything else
-    CONFIGS = setup_logging()
+    CONFIGS = setup_logging(events=["call", "return"])
+    # CONFIGS = setup_logging(events={"call": True, "return": False})
     # print( f'CONFIGS: {json.dumps(CONFIGS, indent=default_indent)}' )
 
 # Automatically start tracing when executed directly
 if __name__ == "__main__":
     main()
 
-# # Debug: Read and display log content to verify logging works
+# Debug: Read and display log content to verify logging works
 # try:
 #     log_file = CONFIGS["logging"].get("log_filename", False)
 #     print( f'\nReading Log-file: {log_file}' )
