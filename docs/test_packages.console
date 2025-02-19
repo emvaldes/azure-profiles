@@ -1,0 +1,41 @@
+devops: python (python *+$%=) $ pytest -v -s --capture=no --log-cli-level=DEBUG tests/
+=================================================================================================================== test session starts ====================================================================================================================
+platform darwin -- Python 3.13.2, pytest-8.3.4, pluggy-1.5.0 -- /usr/local/Cellar/pytest/8.3.4/libexec/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/emvaldes/.repos/azure/workspaces/azure-profiles/python
+collecting 19 items                                                                                                                                                                                                                                        🗑️ Deleted old log: logs/tests/requirements/dependencies/test_dependencies_20250218152210.log
+collected 31 items
+
+tests/appflow_tracer/tracing/file_utils/test_file_utils.py::test_is_project_file PASSED
+tests/appflow_tracer/tracing/file_utils/test_file_utils.py::test_manage_logfiles PASSED
+tests/appflow_tracer/tracing/file_utils/test_file_utils.py::test_relative_path PASSED
+tests/appflow_tracer/tracing/file_utils/test_file_utils.py::test_remove_ansi_escape_codes PASSED
+tests/appflow_tracer/tracing/log_utils/test_log_utils.py::test_log_message PASSED
+tests/appflow_tracer/tracing/log_utils/test_log_utils.py::test_output_logfile PASSED
+tests/appflow_tracer/tracing/log_utils/test_log_utils.py::test_output_console[True-{"alert":"true"}-True] PASSED
+tests/appflow_tracer/tracing/log_utils/test_log_utils.py::test_output_console[False-{\n    "alert": "true"\n}-True] PASSED
+tests/appflow_tracer/tracing/log_utils/test_log_utils.py::test_output_console[None-None-False] PASSED
+tests/appflow_tracer/tracing/serialize_utils/test_serialize_utils.py::test_safe_serialize PASSED
+tests/appflow_tracer/tracing/serialize_utils/test_serialize_utils.py::test_sanitize_token_string PASSED
+tests/appflow_tracer/tracing/test_tracing.py::test_setup_logging PASSED
+tests/appflow_tracer/tracing/test_tracing.py::test_print_capture PASSED
+tests/appflow_tracer/tracing/test_tracing.py::test_ansi_file_handler PASSED
+tests/appflow_tracer/tracing/trace_utils/test_trace_utils.py::test_start_tracing PASSED
+tests/appflow_tracer/tracing/trace_utils/test_trace_utils.py::test_start_tracing_disabled PASSED
+tests/appflow_tracer/tracing/trace_utils/test_trace_utils.py::test_trace_all PASSED
+tests/appflow_tracer/tracing/trace_utils/test_trace_utils.py::test_call_events PASSED
+tests/appflow_tracer/tracing/trace_utils/test_trace_utils.py::test_return_events PASSED
+tests/requirements/dependencies/test_dependencies.py::test_debug_installation[requests-2.28.1] PASSED
+tests/requirements/dependencies/test_dependencies.py::test_debug_installation[nonexistent-package-None] PASSED
+tests/requirements/dependencies/test_dependencies.py::test_load_requirements_invalid_json PASSED
+tests/requirements/dependencies/test_dependencies.py::test_load_requirements_missing PASSED
+tests/requirements/dependencies/test_dependencies.py::test_load_requirements_valid PASSED
+tests/requirements/dependencies/test_dependencies.py::test_install_or_update_package PASSED
+tests/requirements/dependencies/test_dependencies.py::test_install_requirements PASSED
+tests/requirements/dependencies/test_dependencies.py::test_is_package_installed PASSED
+tests/requirements/dependencies/test_dependencies.py::test_parse_arguments_custom PASSED
+tests/requirements/dependencies/test_dependencies.py::test_parse_arguments_default PASSED
+tests/requirements/dependencies/test_dependencies.py::test_print_installed_packages PASSED
+tests/requirements/dependencies/test_dependencies.py::test_update_installed_packages PASSED
+
+=================================================================================================================== 31 passed in 21.44s ====================================================================================================================
